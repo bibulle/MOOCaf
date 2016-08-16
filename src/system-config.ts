@@ -17,29 +17,13 @@ const map: any = {
   'marked': 'vendor/marked',
   'highlight.js': 'vendor/highlightjs',
   'angular2-in-memory-web-api': 'vendor/angular2-in-memory-web-api',
-  'prism': 'vendor/prism'
 };
 
 /** User packages configuration. */
 const packages: any = {
-  'moment':{
-    format: 'cjs'
-  },
-  'marked':{
-    main: 'index.js',
-    defaultExtension: 'js',
-    format: 'cjs'
-  },
-  'highlight.js':{
-    main: 'highlight.pack.js',
-    defaultExtension: 'js',
-    format: 'cjs'
-  },
-  'prism':{
-    main: 'prism.js',
-    defaultExtension: 'js',
-    format: 'cjs'
-  },
+  'moment':{ format: 'cjs' },
+  'marked':{ main: 'index.js', defaultExtension: 'js', format: 'cjs' },
+  'highlight.js':{ main: 'highlight.pack.js', defaultExtension: 'js', format: 'cjs' },
   'angular2-in-memory-web-api': { main: 'index.js', defaultExtension: 'js' },
 };
 

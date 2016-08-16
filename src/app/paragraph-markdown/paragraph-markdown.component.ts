@@ -3,7 +3,6 @@ import {Paragraph} from "../paragraph";
 
 import * as marked from 'marked';
 import * as highlight from 'highlight.js';
-//import * as Prism from 'prism';
 
 @Component({
   moduleId: module.id,

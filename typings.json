@@ -9,6 +9,5 @@
     "highlightjs": "registry:dt/highlightjs#9.1.0+20160317120654",
     "marked": "registry:dt/marked#0.0.0+20160325085301",
     "moment": "registry:dt/moment#2.8.0+20160316155526",
-    "prism": "registry:dt/prism#1.4.4+20160321233308"
   }
 }

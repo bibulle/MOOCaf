@@ -19,7 +19,6 @@ module.exports = function(defaults) {
       'moment/moment.js',
       'marked/**/*.+(js|js.map)',
       'highlightjs/**/*.+(js|js.map|css)',
-      'prism/**/*.+(js|js.map)',
       'angular2-in-memory-web-api/**/*.+(ts|js|js.map)'
     ]
   });
