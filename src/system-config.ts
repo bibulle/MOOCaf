@@ -13,7 +13,6 @@
  **********************************************************************************************/
 /** Map relative paths to URLs. */
 const map: any = {
-  'moment': 'vendor/moment/moment.js',
   'marked': 'vendor/marked',
   'highlight.js': 'vendor/highlightjs',
   'angular2-in-memory-web-api': 'vendor/angular2-in-memory-web-api',
@@ -21,7 +20,6 @@ const map: any = {
 
 /** User packages configuration. */
 const packages: any = {
-  'moment':{ format: 'cjs' },
   'marked':{ main: 'index.js', defaultExtension: 'js', format: 'cjs' },
   'highlight.js':{ main: 'highlight.pack.js', defaultExtension: 'js', format: 'cjs' },
   'angular2-in-memory-web-api': { main: 'index.js', defaultExtension: 'js' },

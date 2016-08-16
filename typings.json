@@ -8,6 +8,5 @@
     "es6-shim": "registry:dt/es6-shim#0.31.2+20160602141504",
     "highlightjs": "registry:dt/highlightjs#9.1.0+20160317120654",
     "marked": "registry:dt/marked#0.0.0+20160325085301",
-    "moment": "registry:dt/moment#2.8.0+20160316155526",
   }
 }

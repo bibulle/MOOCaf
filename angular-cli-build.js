@@ -16,7 +16,6 @@ module.exports = function(defaults) {
       'reflect-metadata/**/*.+(ts|js|js.map)',
       'rxjs/**/*.+(js|js.map)',
       '@angular/**/*.+(js|js.map)',
-      'moment/moment.js',
       'marked/**/*.+(js|js.map)',
       'highlightjs/**/*.+(js|js.map|css)',
       'angular2-in-memory-web-api/**/*.+(ts|js|js.map)'
