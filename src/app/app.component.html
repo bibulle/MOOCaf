@@ -1,4 +1,4 @@
-<h1>
-  {{title}}
-</h1>
-<app-paragraph-markdown [content]="markdown1"></app-paragraph-markdown>
+
+<app-paragraph-markdown content="# Titre "></app-paragraph-markdown>
+<app-paragraph-markdown *ngFor="let markdown of markdowns" [data]="markdown"></app-paragraph-markdown>
+<app-paragraph-markdown [data]="markdow1"></app-paragraph-markdown>

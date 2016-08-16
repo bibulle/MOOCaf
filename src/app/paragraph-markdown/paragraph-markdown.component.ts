@@ -1,37 +1,54 @@
 import {Component, OnInit, Input} from '@angular/core';
+import {Paragraph} from "../paragraph";
 
-//import Showdown from 'showdown';
-//
-import marked from 'marked';
-//import marked = require('marked');
+import * as marked from 'marked';
+import * as highlight from 'highlight.js';
+//import * as Prism from 'prism';
 
 @Component({
   moduleId: module.id,
   selector: 'app-paragraph-markdown',
   inputs: [ 'src', 'data' ],
   templateUrl: 'paragraph-markdown.component.html',
-  styleUrls: ['paragraph-markdown.component.css']
+  styleUrls: ['paragraph-markdown.component.css', '/vendor/highlightjs/styles/default.css']
 })
 export class ParagraphMarkdownComponent implements OnInit {
 
   @Input()
-  src: String;
+  src: string;
 
   @Input()
-  data: String;
+  data: Paragraph;
+
+  @Input()
+  content: string;
+
+  html: string;
+  element;
 
   constructor() {
+    // Synchronous highlighting with highlight.js
+    marked.setOptions({
+    highlight: function (code) {
+        return highlight.highlightAuto(code).value;
+      }
+    });
+
   }
 
   ngOnInit() {
-    let content: String = "To be done... innerHTML";
-    if (this.src) {
+    var content = "";
+    if (this.content) {
+      content = this.content;
+    } else if (this.src) {
       console.log("Not yet implemented");
     } else if (this.data) {
-      content = this.data;
+      content = this.data.content;
     }
 
-    //content = marked(content);
+    this.html = marked(content);
+
+    //console.log(content);
   }
 
 }

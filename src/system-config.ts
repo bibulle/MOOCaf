@@ -4,19 +4,43 @@
 // https://github.com/systemjs/systemjs
 // https://github.com/systemjs/systemjs/blob/master/docs/config-api.md
 
+// to install new library : https://github.com/angular/angular-cli/wiki/3rd-party-libs
+//    npm install moment --save
+//    typings install dt~moment --global --save
+
 /***********************************************************************************************
  * User Configuration.
  **********************************************************************************************/
 /** Map relative paths to URLs. */
 const map: any = {
-  'marked': 'vendor/marked/index.js'
+  'moment': 'vendor/moment/moment.js',
+  'marked': 'vendor/marked',
+  'highlight.js': 'vendor/highlightjs',
+  'angular2-in-memory-web-api': 'vendor/angular2-in-memory-web-api',
+  'prism': 'vendor/prism'
 };
 
 /** User packages configuration. */
 const packages: any = {
-  'marked':{
+  'moment':{
     format: 'cjs'
-  }
+  },
+  'marked':{
+    main: 'index.js',
+    defaultExtension: 'js',
+    format: 'cjs'
+  },
+  'highlight.js':{
+    main: 'highlight.pack.js',
+    defaultExtension: 'js',
+    format: 'cjs'
+  },
+  'prism':{
+    main: 'prism.js',
+    defaultExtension: 'js',
+    format: 'cjs'
+  },
+  'angular2-in-memory-web-api': { main: 'index.js', defaultExtension: 'js' },
 };
 
 ////////////////////////////////////////////////////////////////////////////////////////////////

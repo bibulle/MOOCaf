@@ -1,17 +1,28 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 
 import { ParagraphMarkdownComponent } from './paragraph-markdown/paragraph-markdown.component'
+import {Paragraph} from "./paragraph";
+import {ParagraphService} from "./paragraph.service";
 
 @Component({
   moduleId: module.id,
   selector: 'app-root',
   templateUrl: 'app.component.html',
   styleUrls: ['app.component.css'],
-  directives: [ParagraphMarkdownComponent]
+  directives: [ParagraphMarkdownComponent],
+  providers: [ParagraphService]
 })
-export class AppComponent {
-  title = 'app works!';
-  markdown1 = `This is some markdown text
-  Or it should be...
-  Is it ?`;
+export class AppComponent implements OnInit {
+
+  constructor(private paragraphService: ParagraphService) { }
+
+  ngOnInit() {
+    this.getParagraphs();
+  }
+
+  getParagraphs() {
+    this.paragraphService.getParagraphs().then(paragraphs => this.markdowns = paragraphs);
+  }
+
+  markdowns: Paragraph[];
 }

@@ -16,8 +16,11 @@ module.exports = function(defaults) {
       'reflect-metadata/**/*.+(ts|js|js.map)',
       'rxjs/**/*.+(js|js.map)',
       '@angular/**/*.+(js|js.map)',
-      'marked/index.js',
-      'marked/lib/marked.js'
+      'moment/moment.js',
+      'marked/**/*.+(js|js.map)',
+      'highlightjs/**/*.+(js|js.map|css)',
+      'prism/**/*.+(js|js.map)',
+      'angular2-in-memory-web-api/**/*.+(ts|js|js.map)'
     ]
   });
 };
