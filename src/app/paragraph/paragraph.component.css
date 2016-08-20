@@ -1,0 +1,30 @@
+.paragraph {
+  width: 100%;
+}
+.paragraph .buttons {
+  width: 10%;
+  min-height: 10px;
+  float: left;
+}
+.paragraph .content_box {
+  width: 89%;
+  /* min-height: 10px;*/
+  float: left;
+  margin-bottom: 6px;
+
+  border-bottom: 1px solid #eeeeee;
+  border-radius: 3px;
+
+  /*-webkit-box-shadow: 2px 2px 4px 0px rgba(0,0,0,0.4);
+  -moz-box-shadow: 2px 2px 4px 0px rgba(0,0,0,0.4);
+  box-shadow: 2px 2px 4px 0px rgba(0,0,0,0.4);*/
+}
+.paragraph .content {
+  /*padding: 10px;*/
+}
+.paragraph:after {
+  content: '';
+  display: block;
+  clear: both;
+
+}

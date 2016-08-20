@@ -1,10 +1,10 @@
 /* tslint:disable:no-unused-variable */
 
 import { addProviders, async, inject } from '@angular/core/testing';
-import {Paragraph} from './paragraph';
+import {ParagraphContentText} from './paragraph-content-text';
 
-describe('Paragraph', () => {
+describe('ParagraphContentText', () => {
   it('should create an instance', () => {
-    expect(new Paragraph()).toBeTruthy();
+    expect(new ParagraphContentText("")).toBeTruthy();
   });
 });

@@ -47,6 +47,8 @@ const barrels: string[] = [
   'app',
   'app/shared',
   'app/paragraph-markdown',
+  'app/paragraph',
+  'app/paragraph-form',
   /** @cli-barrel */
 ];
 

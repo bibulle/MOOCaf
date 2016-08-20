@@ -1,15 +1,15 @@
 import { Component, OnInit } from '@angular/core';
 
-import { ParagraphMarkdownComponent } from './paragraph-markdown/paragraph-markdown.component'
-import {Paragraph} from "./paragraph";
-import {ParagraphService} from "./paragraph.service";
+import {Paragraph} from "./model/paragraph";
+import {ParagraphService} from "./services/paragraph.service";
+import {ParagraphComponent} from "./paragraph/paragraph.component";
 
 @Component({
   moduleId: module.id,
   selector: 'app-root',
   templateUrl: 'app.component.html',
   styleUrls: ['app.component.css'],
-  directives: [ParagraphMarkdownComponent],
+  directives: [ParagraphComponent],
   providers: [ParagraphService]
 })
 export class AppComponent implements OnInit {

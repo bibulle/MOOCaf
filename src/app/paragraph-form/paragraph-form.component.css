@@ -1,0 +1,98 @@
+label {
+  display: inline-block;
+  clear: both;
+  width: 100%;
+  float: left;
+  padding: 10px;
+  box-sizing: border-box;
+  border: 2px solid #eeeeee;
+  border-radius: 3px;
+  margin-bottom: 5px;
+}
+
+label.content_type_0 {
+  border: 0px;
+}
+
+label.check_ok {
+  border-color: green;
+}
+
+label.check_ko {
+  border-color: red;
+}
+
+label:last-child {
+  margin-bottom: 15px;
+}
+
+label input {
+  float: left;
+}
+
+label div {
+  float: left;
+  margin: 0.5em 0px 0px 0px;
+}
+
+label.content_type_3 div {
+  margin-top: 1em;
+}
+
+label >>> div p {
+  margin: 0.5em 0px 0px 0px;
+}
+
+label >>> div p:first-child {
+  margin-top: 0px;
+}
+
+label input[type="text"], label input[type="radio"], label input[type="checkbox"] {
+  margin: 0.55em 1em 0.5em 0.5em;
+  font-size: 120%;
+}
+
+input:disabled {
+  background-color: #f0f0f0;
+}
+
+button {
+  text-transform: capitalize;
+  margin: 10px 10% 0px 7%;
+  width: 83%;
+  padding-top: 10px;
+  padding-bottom: 10px;
+
+  border-radius: 5px;
+  border: none;
+  display: inline-block;
+}
+
+button:disabled {
+  background-color: #f8f8f8;
+  color: #AAAAAA;
+}
+
+.nb-check {
+  font-size: 0.6em;
+  width: 100%;
+  display: block;
+  text-align: center;
+}
+
+label div.answer {
+  float: right;
+  color: green;
+  font-weight: bold;
+  margin-right: 20px;
+
+  font-size: 1.2em;
+
+}
+label div.answer {
+  margin: 0.3em 2em 0px 0px;
+}
+
+label.content_type_3 div.answer p {
+  margin-top: 0.4em;
+}

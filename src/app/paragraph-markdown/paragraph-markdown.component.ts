@@ -1,53 +1,41 @@
 import {Component, OnInit, Input} from '@angular/core';
-import {Paragraph} from "../paragraph";
+import {Paragraph} from "../model/paragraph";
 
-import * as marked from 'marked';
-import * as highlight from 'highlight.js';
+import {ParagraphAbstract} from "../paragraph-abstract.component";
 
 @Component({
   moduleId: module.id,
   selector: 'app-paragraph-markdown',
-  inputs: [ 'src', 'data' ],
+  inputs: [ 'data' ],
   templateUrl: 'paragraph-markdown.component.html',
-  styleUrls: ['paragraph-markdown.component.css', '/vendor/highlightjs/styles/default.css']
+  styleUrls: ['../paragraph/paragraph.component.css', 'paragraph-markdown.component.css']
 })
-export class ParagraphMarkdownComponent implements OnInit {
 
-  @Input()
-  src: string;
+export class ParagraphMarkdownComponent extends ParagraphAbstract implements OnInit {
 
   @Input()
   data: Paragraph;
 
-  @Input()
-  content: string;
-
-  html: string;
-  element;
+  html: string = "";
 
   constructor() {
-    // Synchronous highlighting with highlight.js
-    marked.setOptions({
-    highlight: function (code) {
-        return highlight.highlightAuto(code).value;
-      }
-    });
+    super();
 
   }
 
   ngOnInit() {
-    var content = "";
-    if (this.content) {
-      content = this.content;
-    } else if (this.src) {
-      console.log("Not yet implemented");
-    } else if (this.data) {
-      content = this.data.content;
+    var contents = [];
+
+    if (this.data && this.data.content) {
+      for (let c of this.data.content) {
+        contents.push(c);
+      }
     }
 
-    this.html = marked(content);
+    for (var c of contents) {
+      this.html += this.marktownToHTML(c);
+    }
 
-    //console.log(content);
   }
 
 }
