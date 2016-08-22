@@ -15,7 +15,7 @@ import {Logger} from "angular2-logger/app/core/logger";
 @Component({
   moduleId: module.id,
   selector: 'app-paragraph-form',
-  inputs: ['data'],
+  //inputs: ['data'],
   templateUrl: 'paragraph-form.component.html',
   styleUrls: ['../paragraph/paragraph.component.css', 'paragraph-form.component.css'],
   providers: [ParagraphService],

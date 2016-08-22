@@ -16,7 +16,8 @@ const map: any = {
   'marked': 'vendor/marked',
   'highlight.js': 'vendor/highlightjs',
   'angular2-in-memory-web-api': 'vendor/angular2-in-memory-web-api',
-  'angular2-log': 'vendor/angular2-log',
+  'angular2-logger': 'vendor/angular2-logger',
+  'angular2-notifications': 'vendor/angular2-notifications'
 };
 
 /** User packages configuration. */
@@ -24,7 +25,8 @@ const packages: any = {
   'marked':{ main: 'index.js', defaultExtension: 'js', format: 'cjs' },
   'highlight.js':{ main: 'highlight.pack.js', defaultExtension: 'js', format: 'cjs' },
   'angular2-in-memory-web-api': { main: 'index.js', defaultExtension: 'js' },
-  'angular2-log': { defaultExtension: 'js' },
+  'angular2-logger': { defaultExtension: 'js' },
+  'angular2-notifications': { main: 'components.js', defaultExtension: 'js' }
 };
 
 ////////////////////////////////////////////////////////////////////////////////////////////////

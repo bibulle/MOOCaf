@@ -6,7 +6,7 @@ import {ParagraphAbstract} from "../paragraph-abstract.component";
 @Component({
   moduleId: module.id,
   selector: 'app-paragraph-markdown',
-  inputs: [ 'data' ],
+  //inputs: [ 'data' ],
   templateUrl: 'paragraph-markdown.component.html',
   styleUrls: ['../paragraph/paragraph.component.css', 'paragraph-markdown.component.css']
 })

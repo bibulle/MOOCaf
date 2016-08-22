@@ -4,6 +4,7 @@ import 'rxjs/add/operator/toPromise';
 
 import {Paragraph} from "../model/paragraph";
 import {Logger} from "angular2-logger/app/core/logger";
+import {NotificationsService} from "angular2-notifications";
 
 @Injectable()
 export class ParagraphService {
@@ -11,7 +12,8 @@ export class ParagraphService {
   private paragraphsUrl = 'app/paragraphs';
 
   constructor(private http: Http,
-              private _logger: Logger) {
+              private _logger: Logger,
+              private _service: NotificationsService) {
   }
 
   /**
@@ -60,7 +62,10 @@ export class ParagraphService {
     return this.http
       .post(this.paragraphsUrl, JSON.stringify(paragraph), {headers: headers})
       .toPromise()
-      .then(res => res.json().data)
+      .then(res => {
+        //this._service.success("Saved", "your change have been saved");
+        return res.json().data;
+      })
       .catch(this.handleError);
   }
 
@@ -74,7 +79,10 @@ export class ParagraphService {
     return this.http
       .put(url, JSON.stringify(paragraph), {headers: headers})
       .toPromise()
-      .then(() => paragraph)
+      .then(() => {
+        //this._service.success("Saved", "your change have been saved");
+        return paragraph
+      })
       .catch(this.handleError);
   }
 
@@ -107,7 +115,18 @@ export class ParagraphService {
         paragraph.userChoice = fullUserChoice.userChoice;
         return (paragraph);
       })
-      .then(paragraph => this.save(paragraph))
+      .then(paragraph => {
+        if (paragraph.userCheckOK === true) {
+          this._service.success("Correct !!", "Your answer is correct");
+        } else {
+          if (paragraph.userCheckCount >= paragraph.maxCheckCount) {
+            this._service.error("Wrong answer !!", "Your answer is not correct (no more try)");
+          } else {
+            this._service.alert("Wrong answer !!", "Your answer is not correct ("+(paragraph.maxCheckCount - paragraph.userCheckCount)+" try remaining)");
+          }
+        }
+        return this.save(paragraph);
+      })
       .catch(this.handleError);
 
     return paragraph;
