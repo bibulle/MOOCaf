@@ -10,6 +10,7 @@ import {ParagraphAbstract} from "../paragraph-abstract.component";
 import {Paragraph} from "../model/paragraph";
 import {ParagraphService} from "../services/paragraph.service";
 import {Subject} from "rxjs/Subject";
+import {Logger} from "angular2-logger/app/core/logger";
 
 @Component({
   moduleId: module.id,
@@ -29,12 +30,13 @@ export class ParagraphFormComponent extends ParagraphAbstract implements OnInit 
   private userChoiceSubject: Subject<{UID; userChoice}>;
 
   // the constructor
-  constructor(private paragraphService: ParagraphService) {
+  constructor(private paragraphService: ParagraphService,
+              private _logger: Logger) {
     super();
 
   }
 
-  // Initialisation
+// Initialisation
   ngOnInit() {
 
     // Change Markdown to HTM in each label
@@ -54,19 +56,19 @@ export class ParagraphFormComponent extends ParagraphAbstract implements OnInit 
         .debounceTime(500)
         .subscribe(
           fullUserChoice => this.paragraphService.saveUserChoice(fullUserChoice),
-          error => console.log(error)
+          error =>     this._logger.error(error)
         );
     }
 
 
   }
 
-  // Is the paragraph closed (interface should then be disabled)
+// Is the paragraph closed (interface should then be disabled)
   isClosed(paragraph) {
     return paragraph.userCheckOK || (paragraph.userCheckCount >= paragraph.maxCheckCount)
   }
 
-  // In case of chekbox, create the user choices as an array of selected items
+// In case of chekbox, create the user choices as an array of selected items
   checkboxChanged(event) {
     // remove the value from the result
     var index = this.data.userChoice.indexOf(event.target.value, 0);
@@ -83,7 +85,7 @@ export class ParagraphFormComponent extends ParagraphAbstract implements OnInit 
 
   }
 
-  // save the user choices
+// save the user choices
   saveUserChoice() {
     this.userChoiceSubject.next({
       UID: this.data.id,
@@ -91,7 +93,7 @@ export class ParagraphFormComponent extends ParagraphAbstract implements OnInit 
     });
   }
 
-  // check user choice
+// check user choice
   checkUserChoice() {
     // Send this to the backend
     this.paragraphService
@@ -103,7 +105,7 @@ export class ParagraphFormComponent extends ParagraphAbstract implements OnInit 
         // Update the paragraph
         this.data = modifiedParagraph;
         this.ngOnInit();
-        console.log(this.data);
+        this._logger.debug(this.data);
       });
 
   }
