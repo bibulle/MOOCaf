@@ -5,8 +5,8 @@
   },
   "apps": [
     {
-      "main": "src/main.ts",
-      "tsconfig": "src/tsconfig.json",
+      "main": "src/client/main.ts",
+      "tsconfig": "src/client/tsconfig.json",
       "mobile": false
     }
   ],
@@ -24,7 +24,7 @@
   },
   "defaults": {
     "prefix": "app",
-    "sourceDir": "src",
+    "sourceDir": "src/client",
     "styleExt": "css",
     "prefixInterfaces": false,
     "lazyRoutePrefix": "+"

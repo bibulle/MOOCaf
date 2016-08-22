@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 
+import {Logger} from "angular2-logger/core";
+
 import {Paragraph} from "./model/paragraph";
 import {ParagraphService} from "./services/paragraph.service";
 import {ParagraphComponent} from "./paragraph/paragraph.component";
@@ -14,9 +16,13 @@ import {ParagraphComponent} from "./paragraph/paragraph.component";
 })
 export class AppComponent implements OnInit {
 
-  constructor(private paragraphService: ParagraphService) { }
+  constructor(
+    private paragraphService: ParagraphService,
+    private _logger: Logger
+  ) { }
 
   ngOnInit() {
+    this._logger.info('Init AppComponent');
     this.getParagraphs();
   }
 

@@ -9,7 +9,7 @@
     "moduleResolution": "node",
     "noEmitOnError": true,
     "noImplicitAny": false,
-    "outDir": "../dist/",
+    "outDir": "../server/public",
     "rootDir": ".",
     "sourceMap": true,
     "target": "es5",
@@ -19,5 +19,8 @@
   "files": [
     "main.ts",
     "typings.d.ts"
+  ],
+  "exclude": [
+    "../../node_modules"
   ]
 }

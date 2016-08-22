@@ -3,13 +3,15 @@ import {Http, Headers, Response} from '@angular/http';
 import 'rxjs/add/operator/toPromise';
 
 import {Paragraph} from "../model/paragraph";
+import {Logger} from "angular2-logger/app/core/logger";
 
 @Injectable()
 export class ParagraphService {
 
   private paragraphsUrl = 'app/paragraphs';
 
-  constructor(private http: Http) {
+  constructor(private http: Http,
+              private _logger: Logger) {
   }
 
   /**
@@ -82,7 +84,7 @@ export class ParagraphService {
    * @returns {Promise<void>|Promise<T>}
    */
   saveUserChoice(fullUserChoice: {UID; userChoice}) {
-    console.log("saveUserChoice : "+JSON.stringify(fullUserChoice));
+    this._logger.debug("saveUserChoice : "+JSON.stringify(fullUserChoice));
     let paragraph = this.getParagraph(fullUserChoice.UID)
       .then(paragraph => {
         if (!paragraph.userCheckOK && (paragraph.userCheckCount < paragraph.maxCheckCount)) {
@@ -97,7 +99,7 @@ export class ParagraphService {
   }
 
   checkUserChoice(fullUserChoice: {UID; userChoice}) {
-    console.log("checkUserChoice : "+JSON.stringify(fullUserChoice));
+    this._logger.debug("checkUserChoice : "+JSON.stringify(fullUserChoice));
     let paragraph = this.getParagraph(fullUserChoice.UID)
       .then(paragraph => {
         paragraph.userCheckCount += 1;
@@ -113,7 +115,7 @@ export class ParagraphService {
 
   private handleError(error: any) {
     // TODO: Just do it !!
-    console.error('An error occurred', error);
+    this._logger.error('An error occurred', error);
     return Promise.reject(error.message || error);
   }
 

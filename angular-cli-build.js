@@ -18,7 +18,9 @@ module.exports = function(defaults) {
       '@angular/**/*.+(js|js.map)',
       'marked/**/*.+(js|js.map)',
       'highlightjs/**/*.+(js|js.map|css)',
-      'angular2-in-memory-web-api/**/*.+(ts|js|js.map)'
+      'angular2-in-memory-web-api/**/*.+(ts|js|js.map)',
+      'angular2-logger/*.+(js|js.map)',
+      'angular2-logger/app/core/*.+(js|js.map)'
     ]
   });
 };
