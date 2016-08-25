@@ -4,17 +4,19 @@ import 'rxjs/add/operator/toPromise';
 
 import {Paragraph} from "../model/paragraph";
 import {Logger} from "angular2-logger/app/core/logger";
-import {NotificationsService} from "angular2-notifications";
+import {AuthHttp} from 'angular2-jwt';
 
 @Injectable()
 export class ParagraphService {
 
-  private paragraphsUrl = 'app/paragraphs';
+  private paragraphsUrl = 'http://localhost:3000/api/paragraph';
 
   constructor(private http: Http,
               private _logger: Logger,
-              private _service: NotificationsService) {
+              public authHttp: AuthHttp) {
   }
+
+
 
   /**
    * get the paragraphs for the connected user
@@ -22,10 +24,12 @@ export class ParagraphService {
    * @returns {Promise<Paragraph[]>}
    */
   getParagraphs(): Promise<Paragraph[]> {
-    return this.http.get(this.paragraphsUrl)
+    return this.authHttp.get(this.paragraphsUrl)
       .toPromise()
-      .then(response => response.json().data as Paragraph[])
-      .catch(this.handleError);
+      .then(response => {
+        return response.json().data as Paragraph[]
+      })
+      .catch(error => this.handleError(error, this._logger));
   }
 
   /**
@@ -34,10 +38,12 @@ export class ParagraphService {
    * @returns {Promise<Paragraph>}
    */
   getParagraph(uid: string): Promise<Paragraph> {
-    //console.log("getParagraph "+uid)
-    return this.getParagraphs()
-      .then(paragraphs => paragraphs.find(p => p.id === uid))
-      .catch(this.handleError);
+    return this.authHttp.get(`${this.paragraphsUrl}/${uid}`)
+      .toPromise()
+      .then(response => {
+        return response.json().data as Paragraph
+      })
+      .catch(error => this.handleError(error, this._logger));
   }
 
   /**
@@ -52,38 +58,34 @@ export class ParagraphService {
     return this.post(paragraph);
   }
 
-// Add new Paragraph
+  // Add new Paragraph
   private post(paragraph: Paragraph): Promise<Paragraph> {
-    //console.log("post");
-    //console.log(paragraph);
     let headers = new Headers({
       'Content-Type': 'application/json'
     });
-    return this.http
+    return this.authHttp
       .post(this.paragraphsUrl, JSON.stringify(paragraph), {headers: headers})
       .toPromise()
       .then(res => {
         //this._service.success("Saved", "your change have been saved");
         return res.json().data;
       })
-      .catch(this.handleError);
+      .catch(error => this.handleError(error, this._logger));
   }
 
   // Update existing Paragraph
   private put(paragraph: Paragraph): Promise<Paragraph> {
-    //console.log("put");
-    //console.log(paragraph);
     let headers = new Headers();
     headers.append('Content-Type', 'application/json');
     let url = `${this.paragraphsUrl}/${paragraph.id}`;
-    return this.http
+    return this.authHttp
       .put(url, JSON.stringify(paragraph), {headers: headers})
       .toPromise()
       .then(() => {
         //this._service.success("Saved", "your change have been saved");
         return paragraph
       })
-      .catch(this.handleError);
+      //.catch(error => this.handleError(error, this._logger));
   }
 
   /**
@@ -91,51 +93,57 @@ export class ParagraphService {
    * @param fullUserChoice (UID and userchoice)
    * @returns {Promise<void>|Promise<T>}
    */
-  saveUserChoice(fullUserChoice: {UID; userChoice}) {
-    this._logger.debug("saveUserChoice : "+JSON.stringify(fullUserChoice));
-    let paragraph = this.getParagraph(fullUserChoice.UID)
-      .then(paragraph => {
-        if (!paragraph.userCheckOK && (paragraph.userCheckCount < paragraph.maxCheckCount)) {
-          paragraph.userChoice = fullUserChoice.userChoice
-        }
-        return paragraph;
-      })
-      .then(paragraph => this.save(paragraph))
-      .catch(this.handleError);
+  saveUserChoice(paragraph: Paragraph): Promise<Paragraph> {
+    this._logger.debug("saveUserChoice : " + JSON.stringify(paragraph));
 
-    return paragraph;
+    this.getParagraph(paragraph.id);
+
+
+    return this.save(paragraph);
   }
 
   checkUserChoice(fullUserChoice: {UID; userChoice}) {
-    this._logger.debug("checkUserChoice : "+JSON.stringify(fullUserChoice));
+    this._logger.debug("checkUserChoice : " + JSON.stringify(fullUserChoice));
     let paragraph = this.getParagraph(fullUserChoice.UID)
       .then(paragraph => {
         paragraph.userCheckCount += 1;
-        paragraph.userCheckOK = !(Math.random()+.5|0);
+        paragraph.userCheckOK = !(Math.random() + .5 | 0);
         paragraph.userChoice = fullUserChoice.userChoice;
         return (paragraph);
       })
       .then(paragraph => {
         if (paragraph.userCheckOK === true) {
-          this._service.success("Correct !!", "Your answer is correct");
+          //this._service.success("Correct !!", "Your answer is correct");
         } else {
           if (paragraph.userCheckCount >= paragraph.maxCheckCount) {
-            this._service.error("Wrong answer !!", "Your answer is not correct (no more try)");
+            //this._service.error("Wrong answer !!", "Your answer is not correct (no more try)");
           } else {
-            this._service.alert("Wrong answer !!", "Your answer is not correct ("+(paragraph.maxCheckCount - paragraph.userCheckCount)+" try remaining)");
+            //this._service.alert("Wrong answer !!", "Your answer is not correct (" + (paragraph.maxCheckCount - paragraph.userCheckCount) + " try remaining)");
           }
         }
         return this.save(paragraph);
       })
-      .catch(this.handleError);
+      .catch(error => this.handleError(error, this._logger));
 
     return paragraph;
   }
 
-  private handleError(error: any) {
-    // TODO: Just do it !!
-    this._logger.error('An error occurred', error);
-    return Promise.reject(error.message || error);
+  private handleError(error: any, logger) {
+
+    if (typeof error.json === "function") {
+      error = error.json()
+    }
+
+    var msg = error.message  || error;
+
+    //logger.error('An error occurred : '+msg);
+
+    return Promise.reject(error);
   }
+
+
+
+
+
 
 }

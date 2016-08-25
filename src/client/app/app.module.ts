@@ -1,14 +1,15 @@
-import {NgModule, enableProdMode}      from '@angular/core';
-import {BrowserModule} from '@angular/platform-browser';
-
-import {AppComponent}  from './app.component';
+import {NgModule, enableProdMode} from "@angular/core";
+import {BrowserModule} from "@angular/platform-browser";
+import {AppComponent} from "./app.component";
 import {SimpleNotificationsModule} from "angular2-notifications";
-import {HTTP_PROVIDERS, XHRBackend} from "@angular/http";
-import {InMemoryBackendService, SEED_DATA} from "angular2-in-memory-web-api";
-import {InMemoryDataService} from "./services/in-memory-data.service";
+import {HttpModule} from "@angular/http";
 import {LOG_LOGGER_PROVIDERS, INFO_LOGGER_PROVIDERS} from "angular2-logger/core";
 import {environment} from "./environment";
 import {FormsModule} from "@angular/forms";
+import {APP_ROUTES_PROVIDER} from "./app.routes";
+import {UserService} from "./services/user.service";
+import {AuthGuard} from "./auth.guard";
+import {AUTH_PROVIDERS} from "angular2-jwt";
 
 let loggerProvider = LOG_LOGGER_PROVIDERS;
 if (environment.production) {
@@ -17,13 +18,10 @@ if (environment.production) {
 }
 
 @NgModule({
-  imports: [BrowserModule, SimpleNotificationsModule, FormsModule],
+  imports: [BrowserModule, SimpleNotificationsModule, FormsModule, HttpModule],
   declarations: [AppComponent],
   bootstrap: [AppComponent],
-  providers: [HTTP_PROVIDERS,
-    {provide: XHRBackend, useClass: InMemoryBackendService}, // in-mem server
-    {provide: SEED_DATA, useClass: InMemoryDataService},      // in-mem server data
-    loggerProvider]
+  providers: [loggerProvider, APP_ROUTES_PROVIDER, UserService, AuthGuard, AUTH_PROVIDERS]
 })
 export class AppModule {
 }

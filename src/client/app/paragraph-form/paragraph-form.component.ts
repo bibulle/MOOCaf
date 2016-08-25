@@ -6,11 +6,13 @@ import "rxjs/add/operator/distinctUntilChanged";
 import "rxjs/add/operator/switchMap";
 import "rxjs/add/operator/catch";
 
+import {Subject} from "rxjs/Subject";
+import {Logger} from "angular2-logger/app/core/logger";
+import {NotificationsService} from "angular2-notifications";
+
 import {ParagraphAbstract} from "../paragraph-abstract.component";
 import {Paragraph} from "../model/paragraph";
 import {ParagraphService} from "../services/paragraph.service";
-import {Subject} from "rxjs/Subject";
-import {Logger} from "angular2-logger/app/core/logger";
 
 @Component({
   moduleId: module.id,
@@ -27,11 +29,12 @@ export class ParagraphFormComponent extends ParagraphAbstract implements OnInit 
   data: Paragraph;
 
   // The queue to manage user choices
-  private userChoiceSubject: Subject<{UID; userChoice}>;
+  private subjectParagraph: Subject<Paragraph>;
 
   // the constructor
   constructor(private paragraphService: ParagraphService,
-              private _logger: Logger) {
+              private _logger: Logger,
+              private _service: NotificationsService) {
     super();
 
   }
@@ -48,15 +51,28 @@ export class ParagraphFormComponent extends ParagraphAbstract implements OnInit 
       }
     }
 
+    console.log(this.data.id+" "+this.data.userChoice);
+
     // Save user choice changes
-    // TODO: Should be a promise and error should be send back to interface
-    if (!this.userChoiceSubject) {
-      this.userChoiceSubject = new Subject<{UID; userChoice}>();
-      this.userChoiceSubject
+    if (!this.subjectParagraph) {
+      this.subjectParagraph = new Subject<Paragraph>();
+      this.subjectParagraph
         .debounceTime(500)
         .subscribe(
-          fullUserChoice => this.paragraphService.saveUserChoice(fullUserChoice),
-          error =>     this._logger.error(error)
+          paragraph => {
+            return this.paragraphService.saveUserChoice(paragraph)
+              .then(paragraph => {
+                console.log('========');
+                console.log(paragraph);
+              })
+              .catch(error => {
+                this._logger.error(error);
+                this._service.error("System error !!", "Error saving you changes !!\n\t" +(error.message || error));
+              });
+          },
+          error => {
+            this._logger.error(error)
+          }
         );
     }
 
@@ -87,10 +103,8 @@ export class ParagraphFormComponent extends ParagraphAbstract implements OnInit 
 
 // save the user choices
   saveUserChoice() {
-    this.userChoiceSubject.next({
-      UID: this.data.id,
-      userChoice: this.data.userChoice
-    });
+    this.subjectParagraph
+      .next(this.data);
   }
 
 // check user choice

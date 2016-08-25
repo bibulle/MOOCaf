@@ -6,20 +6,21 @@ import {NotificationsService, SimpleNotificationsModule, SimpleNotificationsComp
 import {Paragraph} from "./model/paragraph";
 import {ParagraphService} from "./services/paragraph.service";
 import {ParagraphComponent} from "./paragraph/paragraph.component";
+import {ROUTER_DIRECTIVES} from "@angular/router";
 
 @Component({
   moduleId: module.id,
   selector: 'app-root',
   templateUrl: 'app.component.html',
   styleUrls: ['app.component.css'],
-  directives: [ParagraphComponent, SimpleNotificationsComponent],
+  directives: [ParagraphComponent, SimpleNotificationsComponent, ROUTER_DIRECTIVES],
   providers: [ParagraphService]
 })
-export class AppComponent implements OnInit {
+export class AppComponent  {
 
   // notification options
   public options = {
-    timeOut: 3000,
+    timeOut: 5000,
     lastOnBottom: true,
     clickToClose: true,
     maxLength: 0,
@@ -33,20 +34,4 @@ export class AppComponent implements OnInit {
     position: ["right", "bottom"]
   };
 
-  constructor(
-    private paragraphService: ParagraphService,
-    private _logger: Logger,
-    private _service: NotificationsService
-  ) { }
-
-  ngOnInit() {
-    this._logger.info('Init AppComponent');
-    this.getParagraphs();
-  }
-
-  getParagraphs() {
-    this.paragraphService.getParagraphs().then(paragraphs => this.markdowns = paragraphs);
-  }
-
-  markdowns: Paragraph[];
 }

@@ -1,24 +1,20 @@
 import { Router, Response, Request, NextFunction } from "express";
 import { verify } from "jsonwebtoken";
 import { secret } from "../config";
+import * as jwt from "express-jwt";
+var debug = require('debug')('server:protected');
+
 
 const protectedRouter: Router = Router();
 
-protectedRouter.use((request: Request & { headers: { auth: string } }, response: Response, next: NextFunction) => {
-    const token = request.headers.auth;
-
-    verify(token, secret, function(tokenError) {
-        if (tokenError) {
-            return response.status(403).json({
-                message: "Invalid token, please Log in first"
-            });
-        }
-
-        next();
-    });
+var jwtCheck = jwt({
+  secret: "jgjhghjg"
 });
 
-protectedRouter.get("/", (request: Request, response: Response) => {
+protectedRouter.use(jwtCheck);
+
+protectedRouter.get("/random-quote", (request: Request, response: Response) => {
+  debug("connected user : "+JSON.stringify(request['user']));
     response.json({
         text: "Greetings, you have valid token.",
         title: "Protected call"

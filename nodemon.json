@@ -12,7 +12,8 @@
     "src/server/", "src/client/"
   ],
   "env": {
-    "NODE_ENV": "development"
+    "NODE_ENV": "development",
+    "DEBUG": "server:*"
   },
   "ext": "js json"
 }
