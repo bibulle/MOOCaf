@@ -13,7 +13,7 @@ var debug = require('debug')('server:route:login');
 const loginRouter: Router = Router();
 
 function createToken(user) {
-  return sign(_.pick(user, ['username', 'isAdmin']), secret, {expiresIn: "7d"});
+  return sign(_.pick(user, ['username', 'isAdmin', 'id']), secret, {expiresIn: "7d"});
 }
 
 // Try to create a new user (Signup)

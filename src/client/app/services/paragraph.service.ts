@@ -58,6 +58,25 @@ export class ParagraphService {
     return this.post(paragraph);
   }
 
+  /**
+   * Save a paragraph
+   * @param paragraph
+   * @returns {any}
+   */
+  _saveUserChoice(userChoice): Promise<Paragraph> {
+    let headers = new Headers({
+      'Content-Type': 'application/json'
+    });
+    let url = `${this.paragraphsUrl}/${userChoice.paragraphId}/userchoice`;
+    return this.authHttp
+      .put(url, JSON.stringify(userChoice), {headers: headers})
+      .toPromise()
+      .then(() => {
+        //this._service.success("Saved", "your change have been saved");
+        return userChoice
+      })
+  }
+
   // Add new Paragraph
   private post(paragraph: Paragraph): Promise<Paragraph> {
     let headers = new Headers({
@@ -94,12 +113,15 @@ export class ParagraphService {
    * @returns {Promise<void>|Promise<T>}
    */
   saveUserChoice(paragraph: Paragraph): Promise<Paragraph> {
-    this._logger.debug("saveUserChoice : " + JSON.stringify(paragraph));
 
-    this.getParagraph(paragraph.id);
+    var userChoice = {
+      paragraphId: paragraph.id,
+      userChoice: paragraph.userChoice
+    }
 
+    this._logger.debug("saveUserChoice : " + JSON.stringify(userChoice));
 
-    return this.save(paragraph);
+    return this._saveUserChoice(userChoice);
   }
 
   checkUserChoice(fullUserChoice: {UID; userChoice}) {
