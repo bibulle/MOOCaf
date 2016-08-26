@@ -13,6 +13,7 @@ import {NotificationsService} from "angular2-notifications";
 import {ParagraphAbstract} from "../paragraph-abstract.component";
 import {Paragraph} from "../model/paragraph";
 import {ParagraphService} from "../services/paragraph.service";
+import {ParagraphContentType} from "../model/paragraph-content-type.enum";
 
 @Component({
   moduleId: module.id,
@@ -41,6 +42,11 @@ export class ParagraphFormComponent extends ParagraphAbstract implements OnInit 
 
 // Initialisation
   ngOnInit() {
+
+    // Used to get access of the enum in the template (won't be in the model)
+    this.data.paragraphContentType = ParagraphContentType;
+
+
 
     // Change Markdown to HTM in each label
     if (this.data.content) {

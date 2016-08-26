@@ -127,7 +127,7 @@ class User extends IUser {
                 resolve(user);
               },
               err => {
-                console.log("findOrCreate : after create " + err);
+                debug("findOrCreate : after create " + err);
                 reject(err);
               });
         });

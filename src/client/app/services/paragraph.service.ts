@@ -106,9 +106,11 @@ export class ParagraphService {
     this._logger.debug("checkUserChoice : " + JSON.stringify(fullUserChoice));
     let paragraph = this.getParagraph(fullUserChoice.UID)
       .then(paragraph => {
+        this._logger.debug(paragraph);
         paragraph.userCheckCount += 1;
         paragraph.userCheckOK = !(Math.random() + .5 | 0);
         paragraph.userChoice = fullUserChoice.userChoice;
+        this._logger.debug(paragraph);
         return (paragraph);
       })
       .then(paragraph => {
