@@ -8,7 +8,7 @@ var app = require('../app').app;
 var debug = require('debug')('server:server');
 var http = require('http');
 
-debug('essai');
+debug('Starting.....');
 
 /**
  * Get port from environment and store in Express.

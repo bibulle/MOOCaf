@@ -5,6 +5,7 @@ import 'rxjs/add/operator/toPromise';
 import {Paragraph} from "../model/paragraph";
 import {Logger} from "angular2-logger/app/core/logger";
 import {AuthHttp} from 'angular2-jwt';
+import {contentHeaders} from "../common/headers";
 
 @Injectable()
 export class ParagraphService {
@@ -64,12 +65,9 @@ export class ParagraphService {
    * @returns {any}
    */
   _saveUserChoice(userChoice): Promise<Paragraph> {
-    let headers = new Headers({
-      'Content-Type': 'application/json'
-    });
     let url = `${this.paragraphsUrl}/${userChoice.paragraphId}/userchoice`;
     return this.authHttp
-      .put(url, JSON.stringify(userChoice), {headers: headers})
+      .put(url, JSON.stringify(userChoice), contentHeaders)
       .toPromise()
       .then(() => {
         //this._service.success("Saved", "your change have been saved");
@@ -79,11 +77,8 @@ export class ParagraphService {
 
   // Add new Paragraph
   private post(paragraph: Paragraph): Promise<Paragraph> {
-    let headers = new Headers({
-      'Content-Type': 'application/json'
-    });
     return this.authHttp
-      .post(this.paragraphsUrl, JSON.stringify(paragraph), {headers: headers})
+      .post(this.paragraphsUrl, JSON.stringify(paragraph), contentHeaders)
       .toPromise()
       .then(res => {
         //this._service.success("Saved", "your change have been saved");
@@ -94,11 +89,9 @@ export class ParagraphService {
 
   // Update existing Paragraph
   private put(paragraph: Paragraph): Promise<Paragraph> {
-    let headers = new Headers();
-    headers.append('Content-Type', 'application/json');
     let url = `${this.paragraphsUrl}/${paragraph.id}`;
     return this.authHttp
-      .put(url, JSON.stringify(paragraph), {headers: headers})
+      .put(url, JSON.stringify(paragraph), contentHeaders)
       .toPromise()
       .then(() => {
         //this._service.success("Saved", "your change have been saved");
