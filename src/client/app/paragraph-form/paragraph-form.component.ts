@@ -57,7 +57,7 @@ export class ParagraphFormComponent extends ParagraphAbstract implements OnInit 
       }
     }
 
-    console.log(this.data.id+" "+this.data.userChoice);
+    //console.log(this.data.id+" "+this.data.userChoice);
 
     // Save user choice changes
     if (!this.subjectParagraph) {

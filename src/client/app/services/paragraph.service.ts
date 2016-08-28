@@ -67,7 +67,7 @@ export class ParagraphService {
   _saveUserChoice(userChoice): Promise<Paragraph> {
     let url = `${this.paragraphsUrl}/${userChoice.paragraphId}/userchoice`;
     return this.authHttp
-      .put(url, JSON.stringify(userChoice), contentHeaders)
+      .put(url, userChoice, contentHeaders)
       .toPromise()
       .then(() => {
         //this._service.success("Saved", "your change have been saved");

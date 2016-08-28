@@ -2,6 +2,8 @@
 import * as express from "express";
 import {join} from "path";
 import * as favicon from "serve-favicon";
+var bodyParser = require('body-parser');
+
 import {json, urlencoded} from "body-parser";
 var debug = require('debug')('server:server');
 
@@ -23,8 +25,8 @@ app.disable("x-powered-by");
 app.use(favicon(join(__dirname, "public", "favicon.png")));
 app.use(express.static(join(__dirname, 'public')));
 
-app.use(json());
-app.use(urlencoded({extended: true}));
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json());
 
 // api routes
 app.use("/api/random-quote", anonymousRouter);
