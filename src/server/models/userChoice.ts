@@ -41,11 +41,11 @@ var _schema: Mongoose.Schema = new Mongoose.Schema({
   },
   userCheckCount: {
     type: Number,
-    require: true
+    default: 0
   },
   userCheckOK: {
     type: Boolean,
-    require: true
+    default: null
   },
   userChoice: {
     type: Mongoose.Schema.Types.Mixed,
@@ -121,6 +121,8 @@ class UserChoice extends IUserChoice {
     return new Promise < IUserChoice >((resolve, reject) => {
 
       debug("updateOrCreate ids:" + userChoice.paragraphId + ", " + userChoice.userId);
+
+      userChoice.updated = new Date();
       _model.update(
         {paragraphId: userChoice.paragraphId, userId: userChoice.userId},
         userChoice,

@@ -68,8 +68,12 @@ export class ParagraphFormComponent extends ParagraphAbstract implements OnInit 
           paragraph => {
             return this.paragraphService.saveUserChoice(paragraph)
               .then(paragraph => {
-                console.log('========');
-                console.log(paragraph);
+                // TODO : Add a message at the top (All your modification have been saved..."
+                //console.log('========');
+                //console.log(paragraph.userCheckCount);
+                this.data.userChoice = paragraph.userChoice;
+                this.data.userCheckCount = paragraph.userCheckCount;
+                this.data.userCheckOK = paragraph.userCheckOK;
               })
               .catch(error => {
                 this._logger.error(error);
@@ -117,15 +121,11 @@ export class ParagraphFormComponent extends ParagraphAbstract implements OnInit 
   checkUserChoice() {
     // Send this to the backend
     this.paragraphService
-      .checkUserChoice({
-        UID: this.data.id,
-        userChoice: this.data.userChoice
-      })
+      .checkUserChoice(this.data)
       .then(modifiedParagraph => {
         // Update the paragraph
         this.data = modifiedParagraph;
         this.ngOnInit();
-        this._logger.debug(this.data);
       });
 
   }

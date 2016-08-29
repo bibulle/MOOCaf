@@ -11,7 +11,6 @@ var db = {
       null,
       error => {
         if (error) {
-          console.log("-1-");
           console.log(error);
         }
       }

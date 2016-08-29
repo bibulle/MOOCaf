@@ -60,21 +60,46 @@ export class ParagraphService {
   }
 
   /**
-   * Save a paragraph
-   * @param paragraph
-   * @returns {any}
+   * Save a userchoice
+   * @param userChoice
+   * @returns Promise<Paragraph>
    */
   _saveUserChoice(userChoice): Promise<Paragraph> {
     let url = `${this.paragraphsUrl}/${userChoice.paragraphId}/userchoice`;
     return this.authHttp
       .put(url, userChoice, contentHeaders)
       .toPromise()
-      .then(() => {
+      .then(res => {
+        //console.log(res.json().data);
         //this._service.success("Saved", "your change have been saved");
-        return userChoice
+        return res.json().data;
       })
+      .catch(error => this.handleError(error, this._logger));
   }
 
+  /**
+   * Check a userchoice
+   * @param userChoice
+   * @returns Promise<Paragraph>
+   */
+  _checkUserChoice(userChoice): Promise<Paragraph> {
+    let url = `${this.paragraphsUrl}/${userChoice.paragraphId}/userchoice/check`;
+    return this.authHttp
+      .put(url, userChoice, contentHeaders)
+      .toPromise()
+      .then(res => {
+        //console.log(res.json().data);
+        //this._service.success("Saved", "your change have been saved");
+        return res.json().data;
+      })
+      .catch(error => this.handleError(error, this._logger));
+  }
+
+  /**
+   * Save a paragraph
+   * @param paragraph
+   * @returns {any}
+   */
   // Add new Paragraph
   private post(paragraph: Paragraph): Promise<Paragraph> {
     return this.authHttp
@@ -117,18 +142,18 @@ export class ParagraphService {
     return this._saveUserChoice(userChoice);
   }
 
-  checkUserChoice(fullUserChoice: {UID; userChoice}) {
-    this._logger.debug("checkUserChoice : " + JSON.stringify(fullUserChoice));
-    let paragraph = this.getParagraph(fullUserChoice.UID)
+  checkUserChoice(paragraph: Paragraph): Promise<Paragraph> {
+
+    var userChoice = {
+      paragraphId: paragraph.id,
+      userChoice: paragraph.userChoice
+    }
+
+    this._logger.debug("checkUserChoice : " + JSON.stringify(userChoice));
+
+    return this._checkUserChoice(userChoice)
       .then(paragraph => {
-        this._logger.debug(paragraph);
-        paragraph.userCheckCount += 1;
-        paragraph.userCheckOK = !(Math.random() + .5 | 0);
-        paragraph.userChoice = fullUserChoice.userChoice;
-        this._logger.debug(paragraph);
-        return (paragraph);
-      })
-      .then(paragraph => {
+        //this._logger.debug(paragraph);
         if (paragraph.userCheckOK === true) {
           //this._service.success("Correct !!", "Your answer is correct");
         } else {
@@ -138,11 +163,10 @@ export class ParagraphService {
             //this._service.alert("Wrong answer !!", "Your answer is not correct (" + (paragraph.maxCheckCount - paragraph.userCheckCount) + " try remaining)");
           }
         }
-        return this.save(paragraph);
+        return paragraph;
       })
       .catch(error => this.handleError(error, this._logger));
 
-    return paragraph;
   }
 
   private handleError(error: any, logger) {
