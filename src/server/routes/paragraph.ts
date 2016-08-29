@@ -271,7 +271,6 @@ function _fillParagraphForUser(paragraph: Paragraph, user: User): Promise < Para
         console.log(err);
         reject(err)
       })
-
   })
 }
 
@@ -283,7 +282,12 @@ function _getParagraph(paragraphId: string, user: User, response) {
         _fillParagraphForUser(paragraph, user)
           .then(para => {
             response.json({data: para})
-          });
+          })
+          .catch(err => {
+            console.log(err);
+            response.status(500).send("System error " + err);
+          })
+        ;
       } else {
         response.status(404).json({status: 404, message: "Paragraph not found"});
       }

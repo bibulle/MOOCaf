@@ -126,6 +126,10 @@ export class ParagraphFormComponent extends ParagraphAbstract implements OnInit 
         // Update the paragraph
         this.data = modifiedParagraph;
         this.ngOnInit();
+      })
+      .catch(error => {
+        this._logger.error(error);
+        this._service.error("System error !!", "Error saving you changes !!\n\t" +(error.message || error));
       });
 
   }
