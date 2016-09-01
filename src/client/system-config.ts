@@ -18,7 +18,8 @@ const map: any = {
   'angular2-in-memory-web-api': 'vendor/angular2-in-memory-web-api',
   'angular2-logger': 'vendor/angular2-logger',
   'angular2-notifications': 'vendor/angular2-notifications',
-  'angular2-jwt': 'vendor/angular2-jwt'
+  'angular2-jwt': 'vendor/angular2-jwt',
+  '@angular2-material': 'vendor/@angular2-material'
 };
 
 /** User packages configuration. */
@@ -30,6 +31,17 @@ const packages: any = {
   'angular2-notifications': { main: 'components.js', defaultExtension: 'js' },
   'angular2-jwt': { main: 'angular2-jwt.js', defaultExtension: 'js' }
 };
+
+// put the names of any of your Material components here
+const materialPkgs:string[] = [
+  'core',
+  'button',
+  'card',
+];
+
+materialPkgs.forEach((pkg) => {
+  packages[`@angular2-material/${pkg}`] = {main: `${pkg}.js`};
+});
 
 ////////////////////////////////////////////////////////////////////////////////////////////////
 /***********************************************************************************************

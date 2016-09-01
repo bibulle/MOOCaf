@@ -23,7 +23,8 @@ module.exports = function(defaults) {
       'angular2-logger/app/core/*.+(js|js.map)',
       'angular2-notifications/components.js',
       'angular2-notifications/lib/*.+(js|js.map)',
-      'angular2-jwt/*.+(js|js.map)'
+      'angular2-jwt/*.+(js|js.map)',
+      '@angular2-material/**/*'
     ]
   });
 };
