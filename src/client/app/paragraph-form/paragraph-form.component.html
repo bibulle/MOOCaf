@@ -1,0 +1,21 @@
+<div class="paragraph">
+  <div class="buttons">
+    <button [disabled]="isClosed(data)" (click)="checkUserChoice()">Check</button>
+    <span class="nb-check" *ngIf="data.userCheckCount >= data.maxCheckCount">No more check ({{data.maxCheckCount}} max)</span>
+    <span class="nb-check" *ngIf="(data.userCheckCount <= 1 ) && (data.userCheckCount <  data.maxCheckCount)">{{data.userCheckCount}} check done ({{data.maxCheckCount}} max)</span>
+    <span class="nb-check" *ngIf="(data.userCheckCount >  1 ) && (data.userCheckCount <  data.maxCheckCount)">{{data.userCheckCount}} checks done ({{data.maxCheckCount}} max)</span>
+  </div>
+  <div class="content_box">
+    <div class="content">
+      <label *ngFor="let content of data.content" [class]="'content_type_'+content.type" [class.check_ok]="data.userCheckOK" [class.check_ko]="data.userCheckOK === false">
+        <input *ngIf="content.type == data.paragraphContentType.Radio"    type="radio"    [name]="data.id" [disabled]="isClosed(data)" [value]="content.value" [checked]="data.userChoice == content.value" (click)="data.userChoice = content.value; saveUserChoice()">
+        <input *ngIf="content.type == data.paragraphContentType.Checkbox" type="checkbox" [name]="data.id" [disabled]="isClosed(data)" [value]="content.value" [checked]="(data.userChoice.indexOf(content.value) > -1)" (change)="checkboxChanged($event)">
+        <input *ngIf="content.type == data.paragraphContentType.Text"     type="text"     [name]="data.id" [disabled]="isClosed(data)" [(ngModel)]="data.userChoice" [size]="content.size" (ngModelChange)="saveUserChoice()" >
+        <div [innerHTML]="content.label"></div>
+        <div *ngIf="isClosed(data) && (data.userCheckOK === false) && data.answer && (content.type == data.paragraphContentType.Radio)    && (data.answer == content.value)"            class="answer" title="answer"><p>&#x2714;</p></div>
+        <div *ngIf="isClosed(data) && (data.userCheckOK === false) && data.answer && (content.type == data.paragraphContentType.Checkbox) && (data.answer.indexOf(content.value) > -1)" class="answer" title="answer"><p>&#x2714;</p></div>
+        <div *ngIf="isClosed(data) && (data.userCheckOK === false) && data.answer && (content.type == data.paragraphContentType.Text)"                                                  class="answer" title="answer"><p>{{data.answer}}</p></div>
+      </label>
+    </div>
+  </div>
+</div>
