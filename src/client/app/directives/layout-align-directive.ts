@@ -9,6 +9,7 @@ export class LayoutAlignDirective{
 
 
   @HostBinding('class.layout-align-start-center') get layout1() {return this.layoutAlign == 'start center'}
+  @HostBinding('class.layout-align-end-center') get layout2() {return this.layoutAlign == 'end center'}
 
   constructor() {
     //console.log("---------------");
