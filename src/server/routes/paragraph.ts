@@ -233,7 +233,7 @@ function isUserChoiceAllowed(userChoice: UserChoice): Promise<{ err: string, use
  * @private
  */
 function _fillParagraphForUser(paragraph: Paragraph, user: User): Promise < Paragraph > {
-  debug("_fillParagraphForUser : " + paragraph["id"] + ", " + user["id"]);
+  //debug("_fillParagraphForUser : " + paragraph["id"] + ", " + user["id"]);
   return new Promise < Paragraph >((resolve, reject) => {
     var p = paragraph['_doc'];
     var answer = p.answer;

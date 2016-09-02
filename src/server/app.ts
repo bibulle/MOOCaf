@@ -22,7 +22,7 @@ mongoose.init();
 const app: express.Application = express();
 app.disable("x-powered-by");
 
-app.use(favicon(join(__dirname, "public", "favicon.png")));
+app.use(favicon(join(__dirname, "public/img", "favicon.png")));
 app.use(express.static(join(__dirname, 'public')));
 
 app.use(bodyParser.urlencoded({ extended: true }));

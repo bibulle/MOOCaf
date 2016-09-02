@@ -8,7 +8,7 @@ import {environment} from "./environment";
 import {FormsModule} from "@angular/forms";
 import {APP_ROUTES_PROVIDER} from "./app.routes";
 import {UserService} from "./services/user.service";
-import {AuthGuard} from "./auth.guard";
+import {AuthGuard} from "./common/auth.guard";
 import {AUTH_PROVIDERS} from "angular2-jwt";
 
 let loggerProvider = LOG_LOGGER_PROVIDERS;

@@ -1,0 +1,21 @@
+body, input {
+  /*text-align: left;*/
+  /*font-family: "Open Sans",Verdana,Geneva,sans-serif,sans-serif;*/
+}
+
+button, input, select, textarea, form#wiki_revision .CodeMirror {
+  font-size: 100%;
+  margin: 0;
+  vertical-align: baseline;
+}
+
+span.default-logo {
+  display: block;
+  width: 80px;
+  height: 80px;
+  background-image: url(/img/home.png);
+  background-repeat: no-repeat;
+  background-size: contain;
+  background-position: center;
+  margin-left: 20px;
+}
