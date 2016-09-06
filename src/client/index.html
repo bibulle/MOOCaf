@@ -14,19 +14,23 @@
   <!--<link rel="stylesheet" href="css/layouts.css">-->
   <link rel="stylesheet" href="css/angular-material.css">
   <link rel="stylesheet" href="vendor/highlightjs/styles/default.css">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700,400italic">
 </head>
 <body>
   <app-root>Loading...</app-root>
 
-    {{#each scripts.polyfills}}
-    <script src="{{.}}"></script>
-    {{/each}}
-    <script>
-      System.import('system-config.js').then(function () {
-        System.import('main');
-      }).catch(console.error.bind(console));
-    </script>
+  <!-- 1. Load libraries -->
+  <!-- Polyfill(s) for older browsers -->
+  <script src="vendor/core-js/client/shim.min.js"></script>
+  <script src="vendor/zone.js/dist/zone.js"></script>
+  <script src="vendor/reflect-metadata/Reflect.js"></script>
+  <script src="vendor/systemjs/dist/system.src.js"></script>
+  <!-- 2. Configure SystemJS -->
+  <script src="system-config.js"></script>
+  <script>
+    System.import('app').catch(function(err){ console.error(err); });
+  </script>
 
 </body>
 </html>

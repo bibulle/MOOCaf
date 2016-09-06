@@ -1,14 +1,11 @@
-import { Component } from '@angular/core';
-import { Router, ROUTER_DIRECTIVES } from '@angular/router';
-import { CORE_DIRECTIVES } from '@angular/common';
-import { Http, Headers } from '@angular/http';
-import { contentHeaders } from '../common/headers';
-import {FORM_DIRECTIVES} from "@angular/forms";
+import {Component} from "@angular/core";
+import {Router} from "@angular/router";
+import {Http, Headers} from "@angular/http";
+import {contentHeaders} from "../common/headers";
 
 @Component({
   moduleId: module.id,
   selector: 'login',
-  directives: [ ROUTER_DIRECTIVES, CORE_DIRECTIVES, FORM_DIRECTIVES ],
   templateUrl: 'login.html',
   styleUrls: [ 'login.css' ]
 })

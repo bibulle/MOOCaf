@@ -1,17 +1,12 @@
-import { Component } from '@angular/core';
-import { Router, ROUTER_DIRECTIVES } from '@angular/router';
-import { CORE_DIRECTIVES } from '@angular/common';
-
+import {Component} from "@angular/core";
 import {ParagraphService} from "../services/paragraph.service";
 import {Logger} from "angular2-logger/app/core/logger";
 import {NotificationsService} from "angular2-notifications";
 import {Paragraph} from "../model/paragraph";
-import {FORM_DIRECTIVES} from "@angular/forms";
 
 @Component({
   moduleId: module.id,
   selector: 'page',
-  directives: [ ROUTER_DIRECTIVES, CORE_DIRECTIVES, FORM_DIRECTIVES ],
   templateUrl: 'page.html',
   styleUrls: [ 'page.css' ]
 })

@@ -1,15 +1,11 @@
-import { Component } from '@angular/core';
-import { CORE_DIRECTIVES } from '@angular/common';
-import { Http, Headers } from '@angular/http';
-import { Router } from '@angular/router';
-import {AuthHttp, JwtHelper} from 'angular2-jwt';
-import {FORM_DIRECTIVES} from "@angular/forms";
+import {Component} from "@angular/core";
+import {Http, Headers} from "@angular/http";
+import {Router} from "@angular/router";
 import {contentHeaders} from "../common/headers";
 
 @Component({
   moduleId: module.id,
   selector: 'signup',
-  directives: [ CORE_DIRECTIVES, FORM_DIRECTIVES ],
   templateUrl: 'signup.html',
   styleUrls: [ 'signup.css' ]
 })
@@ -17,9 +13,9 @@ export class SignupComponent {
   constructor(public router: Router, public http: Http) {
   }
 
-  signup(event, username, password) {
+  signup(event, username, password, firstname, lastname, email) {
     event.preventDefault();
-    let body = JSON.stringify({ username, password });
+    let body = JSON.stringify({ username, password, firstname, lastname, email });
     this.http.post('http://localhost:3000/users', body, { headers: contentHeaders })
       .subscribe(
         response => {

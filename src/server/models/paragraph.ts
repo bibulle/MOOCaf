@@ -3,6 +3,7 @@ import {ParagraphType} from "./paragraphType";
 import {ParagraphContent} from "./paragraphContent";
 import * as _ from 'lodash';
 import Mongoose = require("mongoose");
+import db from "./db";
 var debug = require('debug')('server:model:paragraph');
 
 class IParagraph {
@@ -28,6 +29,7 @@ class IParagraph {
   created: Date;
   updated: Date;
 
+
   /**
    * Constructor
    * @param mongoose.Document<IUser>
@@ -52,37 +54,54 @@ interface IParagraphModel extends IParagraph, Mongoose.Document {
  * @private
  */
 var _schema: Mongoose.Schema = new Mongoose.Schema({
-  type: {
-    type: ParagraphType,
-    require: true
-  },
-  content: {
-    type: [],
-    default: new Array<ParagraphContent>()
-  },
-  answer: {
-    type: Mongoose.Schema.Types.Mixed,
-    require: false
-  },
-  maxCheckCount: {
-    type: Number,
-    require: false
-  },
-  created: {
-    type: Date,
-    default: Date.now
-  },
-  updated: {
-    type: Date,
-    default: Date.now
-  }
+    type: {
+      type: ParagraphType,
+      require: true
+    },
+    content: {
+      type: [],
+      default: new Array<ParagraphContent>()
+    },
+    answer: {
+      type: Mongoose.Schema.Types.Mixed,
+      require: false
+    },
+    maxCheckCount: {
+      type: Number,
+      require: false
+    },
+    created: {
+      type: Date,
+      default: Date.now
+    },
+    updated: {
+      type: Date,
+      default: Date.now
+    }
 
-})
-  .pre('save', function (next) {
-    console.log("dsfs");
-    this.updated = new Date();
-    next();
-  });
+  })
+    .pre('save', function (next) {
+      console.log("pre save");
+      this.updated = new Date();
+      next();
+    })
+    // .post('init', function (doc) {
+    //   console.log('%s has been initialized from the db', doc['_id']);
+    // })
+    // .post('count', function (doc) {
+    //   console.log('%s has been initialized from the db', doc['_id']);
+    // })
+    // .post('validate', function (doc) {
+    //   console.log('%s has been validated (but not saved yet)', doc['_id']);
+    // })
+    // .post('save', function (doc) {
+    //   console.log('%s has been saved', doc['_id']);
+    // })
+    // .post('remove', function (doc) {
+    //   console.log('%s has been removed', doc['_id']);
+    // })
+  ;
+
 
 /**
  * Mongoose.Model
@@ -99,29 +118,49 @@ class Paragraph extends IParagraph {
    */
   constructor(document: {}) {
     super(document);
+    _model.on('error', function(err) {
+      debug("Error : "+err);
+    });
   }
 
+
   static count(): Promise<number> {
+    debug("count");
     return new Promise<number>((resolve, reject) => {
       _model.count(
         {},
         (err, count) => {
-          err ? reject(err) : resolve(count);
+          //debug("count " + err + " " + count);
+          if (err) {
+            db.init();
+            this.count()
+              .then(result => resolve(result))
+              .catch(err => reject(err))
+          } else {
+            resolve(count);
+          }
         });
     })
   };
 
   static find(): Promise < Paragraph[] > {
+    debug("find");
     return new Promise < IParagraph[] >((resolve, reject) => {
       _model.find({})
         .exec()
         .then(
           paragraphs => {
+            debug("find then");
             resolve(paragraphs);
           },
           err => {
-            reject(err);
-          });
+            debug("find " + err);
+            db.init();
+            this.find()
+              .then(result => resolve(result))
+              .catch(err => reject(err))
+          })
+        ;
     })
   }
 
@@ -142,7 +181,7 @@ class Paragraph extends IParagraph {
   static updateOrCreate(paragraph: Paragraph): Promise < Paragraph > {
     return new Promise < IParagraph >((resolve, reject) => {
 
-      debug("updateOrCreate id:"+paragraph["_id"]);
+      debug("updateOrCreate id:" + paragraph["_id"]);
       if (paragraph["_id"]) {
         paragraph.updated = new Date();
         _model.findByIdAndUpdate(paragraph["_id"], paragraph)
@@ -177,6 +216,7 @@ export = Paragraph
 // Init database if it's empty
 Paragraph.count()
   .then(count => {
+    //debug("init then");
     if (count === 0) {
       var paragraphs: Paragraph[] = [
 
@@ -420,6 +460,7 @@ Paragraph.count()
     }
   })
   .catch(err => {
+    debug("init catch");
     console.log(err);
   });
 

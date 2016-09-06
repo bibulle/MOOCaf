@@ -8,10 +8,8 @@ import {ParagraphFormComponent} from "../paragraph-form/paragraph-form.component
 @Component({
   moduleId: module.id,
   selector: 'app-paragraph',
-  //inputs: [ 'rawContent', 'src', 'data' ],
   templateUrl: 'paragraph.component.html',
-  styleUrls: ['paragraph.component.css'],
-  directives: [ParagraphMarkdownComponent, ParagraphFormComponent]
+  styleUrls: ['paragraph.component.css']
 })
 export class ParagraphComponent implements OnInit {
 

@@ -1,4 +1,4 @@
-import { provideRouter } from '@angular/router';
+import { RouterModule } from '@angular/router';
 
 import { HomeComponent } from './home.component/home';
 import { LoginComponent } from './login.component/login';
@@ -15,4 +15,4 @@ export const routes = [
   { path: 'page', component: PageComponent, canActivate: [AuthGuard] }
 ];
 
-export const APP_ROUTES_PROVIDER = provideRouter(routes);
+export const APP_ROUTES_PROVIDER = RouterModule.forRoot(routes);

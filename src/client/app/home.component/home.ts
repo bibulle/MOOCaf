@@ -1,13 +1,11 @@
-import { Component } from '@angular/core';
-import { CORE_DIRECTIVES } from '@angular/common';
-import { Http, Headers } from '@angular/http';
-import { Router } from '@angular/router';
-import {AuthHttp, JwtHelper} from 'angular2-jwt';
+import {Component} from "@angular/core";
+import {Http, Headers} from "@angular/http";
+import {Router} from "@angular/router";
+import {AuthHttp, JwtHelper} from "angular2-jwt";
 
 @Component({
   moduleId: module.id,
   selector: 'home',
-  directives: [ CORE_DIRECTIVES ],
   templateUrl: 'home.html',
   styleUrls: [ 'home.css' ]
 })
