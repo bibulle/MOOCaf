@@ -1,1 +1,8 @@
-<md-button id="profile-button" aria-label="Your profile" ng-click="profileButton.openProfile($event, user)">{{user.firstName}} {{user.lastName}}</md-button>
+<span *ngIf="user.username" >
+  Welcome <button md-button class="md-primary md-button" id="profile-button" aria-label="Your profile" ng-click="profileButton.openProfile($event, user)">{{user.firstname}} {{user.lastname}}</button>
+  |
+  <button md-button class="md-primary md-button" id="logout-button" aria-label="Logout" ng-click="header.logout()">LOGOUT</button>
+</span>
+<span *ngIf="!user.username">
+  <button md-button class="md-primary md-button" id="login-button"  aria-label="Login"  ng-click="header.login()">LOGIN</button>
+</span>

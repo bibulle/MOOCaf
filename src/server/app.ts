@@ -15,7 +15,11 @@ import {paragraphRouter} from "./routes/paragraph";
 
 
 // Init Db access
-mongoose.init();
+mongoose.init()
+  .catch(err => {
+    debug("Starting error... stopping");
+    process.exit(-1);
+  });
 
 
 // init webApp
