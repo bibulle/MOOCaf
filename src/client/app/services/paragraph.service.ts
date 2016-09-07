@@ -2,7 +2,7 @@ import {Injectable} from '@angular/core';
 import {Http, Headers, Response} from '@angular/http';
 import 'rxjs/add/operator/toPromise';
 
-import {Paragraph} from "../model/paragraph";
+import {Paragraph} from "../models/paragraph";
 import {Logger} from "angular2-logger/app/core/logger";
 import {AuthHttp} from 'angular2-jwt';
 import {contentHeaders} from "../common/headers";
@@ -124,7 +124,7 @@ export class ParagraphService {
         //this._service.success("Saved", "your change have been saved");
         return paragraph
       })
-      //.catch(error => this.handleError(error, this._logger));
+    //.catch(error => this.handleError(error, this._logger));
   }
 
   /**

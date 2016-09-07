@@ -1,0 +1,45 @@
+<main-layout layout="row" flex="100">
+  <div layout="column" flex="100">
+
+    <!-- Header -->
+    <div layout="row" class="header">
+      <div layout="row" flex="100">
+        <div flex="50" layout="row" layout-align="start center">
+          <span class="default-logo"></span>
+          <div class="md-display-1">MOOCer</div>
+        </div>
+
+        <div flex="50" layout="row" layout-align="end center">
+          <profile-button></profile-button>
+          |
+          <about-button></about-button>
+        </div>
+      </div>
+
+      <!--<div flex="100" layout="row" layout-align="start center" md-colors="{background: 'accent'}">-->
+      <!--<md-button class="md-icon-button md-primary" ng-click="header.toggleSideNav()">-->
+      <!--<md-icon>menu</md-icon>-->
+      <!--</md-button>-->
+      <!--<md-tabs flex="100" class="md-accent">-->
+      <!--<md-tab label="Projects" ui-sref="home" md-active="$state.includes('home')" class="md-primary"></md-tab>-->
+      <!--<md-tab label="Repos" ui-sref="repos" md-active="$state.includes('repos')"></md-tab>-->
+      <!--</md-tabs>-->
+      <!--</div>-->
+
+    </div>
+
+    <!-- Content -->
+    <!--<div layout="row" flex="100" layout-align="center center" class="container body-container" style="-->
+    <!--overflow: auto;-->
+    <!--top: 200px;-->
+    <!--bottom: 0;-->
+    <!--position: fixed;-->
+    <!--width: 100%;-->
+    <!--">-->
+    <router-outlet></router-outlet>
+    <!--</div>-->
+  </div>
+</main-layout>
+
+<simple-notifications [options]="notificationsOptions"></simple-notifications>
+

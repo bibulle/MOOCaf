@@ -8,8 +8,9 @@ export class LayoutAlignDirective{
   @Input('layout-align') layoutAlign:string;
 
 
-  @HostBinding('class.layout-align-start-center') get layout1() {return this.layoutAlign == 'start center'}
-  @HostBinding('class.layout-align-end-center') get layout2() {return this.layoutAlign == 'end center'}
+  @HostBinding('class.layout-align-start-center')  get layout1() {return this.layoutAlign == 'start center'}
+  @HostBinding('class.layout-align-end-center')    get layout2() {return this.layoutAlign == 'end center'}
+  @HostBinding('class.layout-align-center-center') get layout3() {return this.layoutAlign == 'center center'}
 
   constructor() {
     //console.log("---------------");

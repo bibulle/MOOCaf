@@ -15,5 +15,5 @@
     "NODE_ENV": "development",
     "DEBUG": "server:*"
   },
-  "ext": "js json"
+  "ext": "js json html css svg"
 }

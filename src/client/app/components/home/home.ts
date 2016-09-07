@@ -1,13 +1,11 @@
-import { Component } from '@angular/core';
-import { CORE_DIRECTIVES } from '@angular/common';
-import { Http, Headers } from '@angular/http';
-import { Router } from '@angular/router';
-import {AuthHttp, JwtHelper} from 'angular2-jwt';
+import {Component} from "@angular/core";
+import {Http, Headers} from "@angular/http";
+import {Router} from "@angular/router";
+import {AuthHttp, JwtHelper} from "angular2-jwt";
 
 @Component({
   moduleId: module.id,
   selector: 'home',
-  directives: [ CORE_DIRECTIVES ],
   templateUrl: 'home.html',
   styleUrls: [ 'home.css' ]
 })
@@ -19,7 +17,9 @@ export class HomeComponent {
 
   jwtHelper: JwtHelper = new JwtHelper();
 
-  constructor(public router: Router, public http: Http, public authHttp: AuthHttp) {
+  constructor(public router: Router,
+              public http: Http,
+              public authHttp: AuthHttp) {
     this.jwt = localStorage.getItem('id_token');
     this.decodedJwt = this.jwt && this.jwtHelper.decodeToken(this.jwt);
   }

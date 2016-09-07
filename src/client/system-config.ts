@@ -1,92 +1,112 @@
 'use strict';
 
-// SystemJS configuration file, see links for more information
-// https://github.com/systemjs/systemjs
-// https://github.com/systemjs/systemjs/blob/master/docs/config-api.md
-
+/**
+ * System configuration for Angular 2 samples
+ * Adjust as necessary for your application needs.
+ */
 // to install new library : https://github.com/angular/angular-cli/wiki/3rd-party-libs
 //    npm install moment --save
 //    typings install dt~moment --global --save
 
-/***********************************************************************************************
- * User Configuration.
- **********************************************************************************************/
-/** Map relative paths to URLs. */
-const map: any = {
-  'marked': 'vendor/marked',
-  'highlight.js': 'vendor/highlightjs',
-  'angular2-in-memory-web-api': 'vendor/angular2-in-memory-web-api',
-  'angular2-logger': 'vendor/angular2-logger',
-  'angular2-notifications': 'vendor/angular2-notifications',
-  'angular2-jwt': 'vendor/angular2-jwt',
-  '@angular2-material': 'vendor/@angular2-material'
+// paths serve as alias
+var paths = {
+      'npm:': 'vendor/'
+    };
+
+// map tells the System loader where to look for things
+var map = {
+  // our app is within the app folder
+  app:                                 'app',
+  // angular bundles
+  '@angular/core':                     'npm:@angular/core/bundles/core.umd.js',
+  '@angular/common':                   'npm:@angular/common/bundles/common.umd.js',
+  '@angular/compiler':                 'npm:@angular/compiler/bundles/compiler.umd.js',
+  '@angular/platform-browser':         'npm:@angular/platform-browser/bundles/platform-browser.umd.js',
+  '@angular/platform-browser-dynamic': 'npm:@angular/platform-browser-dynamic/bundles/platform-browser-dynamic.umd.js',
+  '@angular/http':                     'npm:@angular/http/bundles/http.umd.js',
+  '@angular/router':                   'npm:@angular/router/bundles/router.umd.js',
+  '@angular/forms':                    'npm:@angular/forms/bundles/forms.umd.js',
+  // other libraries
+  'rxjs':                              'npm:rxjs',
+  'angular2-in-memory-web-api':        'npm:angular2-in-memory-web-api',
+
+  // Mine
+  'angular2-logger':                   'npm:angular2-logger',
+  'angular2-notifications':            'npm:angular2-notifications',
+  'angular2-jwt':                      'npm:angular2-jwt',
+  'marked':                            'npm:marked',
+  'highlight.js':                      'npm:highlightjs',
+
+  // Material
+  '@angular2-material':                'npm:@angular2-material',
+
 };
 
-/** User packages configuration. */
 const packages: any = {
-  'marked':{ main: 'index.js', defaultExtension: 'js', format: 'cjs' },
-  'highlight.js':{ main: 'highlight.pack.js', defaultExtension: 'js', format: 'cjs' },
   'angular2-in-memory-web-api': { main: 'index.js', defaultExtension: 'js' },
   'angular2-logger': { defaultExtension: 'js' },
   'angular2-notifications': { main: 'components.js', defaultExtension: 'js' },
   'angular2-jwt': { main: 'angular2-jwt.js', defaultExtension: 'js' }
 };
+// packages tells the System loader how to load when no filename and/or no extension
+var packages = {
+  app:                          {main: './main.js',           defaultExtension: 'js'},
+  rxjs:                         {                             defaultExtension: 'js'},
+  'angular2-in-memory-web-api': {main: './index.js',          defaultExtension: 'js'},
+  'angular2-logger':            {                             defaultExtension: 'js' },
+  'angular2-notifications':     {main: './components.js',     defaultExtension: 'js' },
+  'angular2-jwt':               {main: './angular2-jwt.js',   defaultExtension: 'js' },
+  'marked':                     {main: './index.js',          defaultExtension: 'js', format: 'cjs' },
+  'highlight.js':               {main: './highlight.pack.js', defaultExtension: 'js', format: 'cjs' },
 
-// put the names of any of your Material components here
-const materialPkgs:string[] = [
-  'core',
+
+  '@angular2-material/core':    {main: './core.js'                                 },
+  '@angular2-material/button':  {main: './button.js'                               },
+  '@angular2-material/card':    {main: './card.js'                                 },
+  '@angular2-material/icon':    {main: './icon.js'                                 }
+};
+
+
+// Materials
+var  materialPackageNames = [
+  'all',
   'button',
+  'button-toggle',
   'card',
+  'checkbox',
+  'core',
+  'dialog',
+  'grid-list',
+  'icon',
+  'input',
+  'list',
+  'menu',
+  'progress-bar',
+  'progress-circle',
+  'radio',
+  'sidenav',
+  'slide-toggle',
+  'slider',
+  'tabs',
+  'toolbar',
+  'tooltip',
 ];
-
-materialPkgs.forEach((pkg) => {
-  packages[`@angular2-material/${pkg}`] = {main: `${pkg}.js`};
-});
-
-////////////////////////////////////////////////////////////////////////////////////////////////
-/***********************************************************************************************
- * Everything underneath this line is managed by the CLI.
- **********************************************************************************************/
-const barrels: string[] = [
-  // Angular specific barrels.
-  '@angular/core',
-  '@angular/common',
-  '@angular/compiler',
-  '@angular/forms',
-  '@angular/http',
-  '@angular/router',
-  '@angular/platform-browser',
-  '@angular/platform-browser-dynamic',
-
-  // Thirdparty barrels.
-  'rxjs',
-
-  // App specific barrels.
-  'app',
-  'app/shared',
-  'app/paragraph-markdown',
-  'app/paragraph',
-  'app/paragraph-form',
-  /** @cli-barrel */
-];
-
-const cliSystemConfigPackages: any = {};
-barrels.forEach((barrelName: string) => {
-  cliSystemConfigPackages[barrelName] = { main: 'index' };
+materialPackageNames.forEach(function (Material_PKG) {
+  packages[("@angular2-material/" + Material_PKG)] = {
+    format: 'cjs',
+    main: Material_PKG + '.umd.js',
+    defaultExtension: 'js'
+  };
 });
 
 /** Type declaration for ambient System. */
 declare var System: any;
 
-// Apply the CLI SystemJS configuration.
-System.config({
-  map: {
-    '@angular': 'vendor/@angular',
-    'rxjs': 'vendor/rxjs',
-    'main': 'main.js'
-  },
-  packages: cliSystemConfigPackages
-});
+(function (global) {
+  System.config({
+    paths: paths,
+    map: map,
+    packages: packages
+  });
+})(this);
 
-// Apply the user's configuration.
-System.config({ map, packages });

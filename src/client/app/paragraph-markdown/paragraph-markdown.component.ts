@@ -1,5 +1,5 @@
 import {Component, OnInit, Input} from '@angular/core';
-import {Paragraph} from "../model/paragraph";
+import {Paragraph} from "../models/paragraph";
 
 import {ParagraphAbstract} from "../paragraph-abstract.component";
 
