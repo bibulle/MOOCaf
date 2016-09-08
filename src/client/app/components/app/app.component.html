@@ -5,8 +5,9 @@
     <div layout="row" class="header">
       <div layout="row" flex="100">
         <div flex="50" layout="row" layout-align="start center">
-          <span class="default-logo"></span>
-          <div class="md-display-1">MOOCer</div>
+          <!--<logo-svg></logo-svg>-->
+          <span class="logo"></span>
+          <div class="text-logo">MOOCer</div>
         </div>
 
         <div flex="50" layout="row" layout-align="end center">
@@ -28,6 +29,27 @@
 
     </div>
 
+    <md-toolbar color="primary">
+      <button  md-button class="md-icon-button" aria-label="Home" title="Home">
+        <md-icon>home</md-icon>
+      </button>
+      <button  md-button class="md-icon-button" aria-label="Class catalogue" title="Class catalogue">
+        <md-icon>store</md-icon>
+      </button>
+      <button  md-button class="md-icon-button" aria-label="Classes" title="Classes">
+        <md-icon>class</md-icon>
+      </button>
+
+      <!-- This fills the remaining space of the current row -->
+      <span class="fill-remaining-space"></span>
+
+      <button  md-button class="md-icon-button" aria-label="Progression" title="Progression">
+        <md-icon>dashboard</md-icon>
+      </button>
+      <button  md-button class="md-icon-button" aria-label="Awards" title="Awards">
+        <md-icon>cake</md-icon>
+      </button>
+    </md-toolbar>
     <!-- Content -->
     <!--<div layout="row" flex="100" layout-align="center center" class="container body-container" style="-->
     <!--overflow: auto;-->

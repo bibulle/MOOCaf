@@ -1,8 +1,38 @@
 
 .header {
-  /*height: 200px;*/
+  color: #009688;
+  margin-top: 10px;
+}
+
+.logo {
+  display: block;
+  width: 100px;
+  height: 80px;
+  background-image: url(/img/logo.svg);
+  background-repeat: no-repeat;
+  background-size: contain;
+  background-position: center;
+  margin-left: 20px;
+  margin-right: 5px;
+}
+.text-logo {
+  font-size: 40px;
+  font-weight: bold;
+  margin-bottom: 14px;
+}
+
+.fill-remaining-space {
+flex: 1 1 auto;
 }
 
 simple-notifications >>> div.simple-notification-wrapper {
   width: 40%;
+}
+
+md-icon {
+  padding-top: 15px;
+}
+
+main-layout md-icon {
+  color: white;
 }

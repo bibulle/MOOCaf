@@ -11,6 +11,7 @@ import {MdButtonModule} from "@angular2-material/button";
 import {MdIconModule} from "@angular2-material/icon";
 import {MdCardModule} from "@angular2-material/card";
 import {MdInputModule} from "@angular2-material/input";
+import {MdToolbarModule} from "@angular2-material/toolbar";
 
 
 import {LayoutAlignDirective} from "./directives/layout-align-directive";
@@ -28,6 +29,7 @@ import {ProfileComponent} from "./components/profile/profile.component";
 import {HomeComponent} from "./components/home/home";
 import {LoginComponent} from "./components/login/login";
 import {NotFoundComponent} from "./components/404/404";
+import {LogoComponent} from "./components/logo/logo";
 //import {ParagraphComponent} from "./paragraph/paragraph.home";
 //import {ParagraphMarkdownComponent} from "./paragraph-markdown/paragraph-markdown.home";
 //import {ParagraphFormComponent} from "./paragraph-form/paragraph-form.home";
@@ -49,6 +51,7 @@ if (environment.production) {
     MdIconModule.forRoot(),
     MdCardModule,
     MdInputModule,
+    MdToolbarModule,
     APP_ROUTES_PROVIDER
   ],
   declarations: [
@@ -58,6 +61,7 @@ if (environment.production) {
     HomeComponent,
     LoginComponent,
     NotFoundComponent,
+    LogoComponent,
     // ParagraphComponent,
     // ParagraphMarkdownComponent,
     // ParagraphFormComponent,
