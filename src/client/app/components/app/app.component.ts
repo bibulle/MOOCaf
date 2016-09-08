@@ -5,8 +5,8 @@ import {NotificationsService} from "angular2-notifications";
 @Component({
   moduleId: module.id,
   selector: 'app-root',
-  templateUrl: 'app.home.html',
-  styleUrls: ['app.home.css'],
+  templateUrl: 'app.component.html',
+  styleUrls: ['app.component.css'],
 })
 export class AppComponent {
   constructor(private _logger: Logger,
