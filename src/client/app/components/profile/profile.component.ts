@@ -14,21 +14,27 @@ export class ProfileComponent {
   user: {};
 
 
-  constructor(private userService: UserService,
+  constructor(private _userService: UserService,
               private _logger: Logger,
-              private router: Router) {
+              private _router: Router) {
   }
 
   ngOnInit() {
-    this.userService.checkAuthent();
-    this.user = this.userService.getUser();
-
-    //console.log(this.user);
+    this._userService.checkAuthent();
+    this._userService.userObservable().subscribe(
+      user => {
+        //console.log(user);
+        this.user = user;
+      });
   }
 
   login() {
-    this._logger.debug("login()");
-    this.router.navigate([ '/login' ])
+    this._router.navigate(['/login'])
+  }
+
+  logout() {
+    this._userService.logout();
+    this._router.navigate(['/home'])
   }
 
 }

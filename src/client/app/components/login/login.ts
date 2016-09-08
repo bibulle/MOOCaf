@@ -2,6 +2,10 @@ import {Component} from "@angular/core";
 import {Router} from "@angular/router";
 import {Http, Headers} from "@angular/http";
 import {contentHeaders} from "../../common/headers";
+import {Logger} from "angular2-logger/core";
+import {NotificationsService} from "angular2-notifications";
+import {environment} from "../../environment";
+import {UserService} from "../../services/user.service";
 
 @Component({
   moduleId: module.id,
@@ -10,24 +14,24 @@ import {contentHeaders} from "../../common/headers";
   styleUrls: [ 'login.css' ]
 })
 export class LoginComponent {
-  constructor(public router: Router, public http: Http) {
+  constructor(public router: Router,
+              public http: Http,
+              private _logger: Logger,
+              private _notifService: NotificationsService,
+              private _userService: UserService) {
   }
 
   login(event, username, password) {
-    console.log(username+" "+password);
+    //console.log(username+" "+password);
     event.preventDefault();
-    let body = JSON.stringify({ username, password });
-    this.http.post('http://10.70.148.51:4000/users/create', body, { headers: contentHeaders })
-      .subscribe(
-        response => {
-          localStorage.setItem('id_token', response.json().id_token);
-          this.router.navigate(['home']);
-        },
-        error => {
-          alert(error.text());
-          console.log(error.text());
-        }
-      );
+
+    this._userService.login(username, password)
+      .then(() => {
+        this.router.navigate(['home']);
+      })
+      .catch( () => {
+        this._logger.warn("Error during login process");
+      });
   }
 
   signup(event) {

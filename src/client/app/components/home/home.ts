@@ -2,6 +2,7 @@ import {Component} from "@angular/core";
 import {Http, Headers} from "@angular/http";
 import {Router} from "@angular/router";
 import {AuthHttp, JwtHelper} from "angular2-jwt";
+import {UserService} from "../../services/user.service";
 
 @Component({
   moduleId: module.id,
@@ -17,20 +18,21 @@ export class HomeComponent {
 
   jwtHelper: JwtHelper = new JwtHelper();
 
-  constructor(public router: Router,
-              public http: Http,
-              public authHttp: AuthHttp) {
+  constructor(private _router: Router,
+              private _http: Http,
+              private _authHttp: AuthHttp,
+              private _userService: UserService) {
     this.jwt = localStorage.getItem('id_token');
     this.decodedJwt = this.jwt && this.jwtHelper.decodeToken(this.jwt);
   }
 
   logout() {
-    localStorage.removeItem('id_token');
-    this.router.navigate(['/login']);
+    this._userService.logout();
+    this._router.navigate(['/login']);
   }
 
   page() {
-    this.router.navigate(['/page']);
+    this._router.navigate(['/page']);
   }
 
   callAnonymousApi() {
@@ -45,7 +47,7 @@ export class HomeComponent {
     this.response = null;
     if (type === 'Anonymous') {
       // For non-protected routes, just use Http
-      this.http.get(url)
+      this._http.get(url)
         .subscribe(
           response => this.response = response.text(),
           error => this.response = error
@@ -53,7 +55,7 @@ export class HomeComponent {
     }
     if (type === 'Secured') {
       // For protected routes, use AuthHttp
-      this.authHttp.get(url)
+      this._authHttp.get(url)
         .subscribe(
           response => this.response = response.text(),
           error => {

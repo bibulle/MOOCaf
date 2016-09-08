@@ -97,9 +97,9 @@ gulp.task('copy_vendor', function () {
 
 // Rerun the task when a file changes
 gulp.task('watch', function() {
-  gulp.watch(src1+'**/*.*', ['copy_js']);
-  gulp.watch(src2+'**/*.*', ['copy_static']);
-  gulp.watch(src3+'**/*.*', ['copy_vendor']);
+  gulp.watch(src1+'/**/*', ['copy_js']);
+  gulp.watch(src2+'/**/*', ['copy_static']);
+  gulp.watch(src3+'/*/*', ['copy_vendor']);
 });
 
 
