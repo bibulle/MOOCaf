@@ -37,4 +37,8 @@ export class ProfileComponent {
     this._router.navigate(['/home'])
   }
 
+  openProfile() {
+    alert('Not yet implemented');
+  }
+
 }

@@ -17,4 +17,7 @@ export class AboutComponent {
   ngOnInit() {
   }
 
+  openAbout() {
+    alert('Not yet implemented');
+  }
 }
