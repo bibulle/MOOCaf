@@ -18,6 +18,19 @@ body {
 
 }
 
+h1 {
+  color: #00897B
+}
+
+md-content {
+  padding: 8px 8px;
+  min-height: 640px;
+  margin-left: auto;
+  margin-right: auto;
+  display: block;
+}
+
+
 button, input, select, textarea, form#wiki_revision .CodeMirror {
   font-size: 100%;
   margin: 0;
