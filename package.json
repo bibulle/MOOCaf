@@ -34,6 +34,7 @@
     "@angular2-material/icon": "latest",
     "@angular2-material/input": "latest",
     "@angular2-material/toolbar": "^2.0.0-alpha.8-1",
+    "@angular2-material/tooltip": "^2.0.0-alpha.8-1",
     "angular2-in-memory-web-api": "0.0.18",
     "angular2-jwt": "latest",
     "angular2-logger": "latest",

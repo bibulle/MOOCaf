@@ -30,9 +30,10 @@ simple-notifications >>> div.simple-notification-wrapper {
 }
 
 md-icon {
-  padding-top: 15px;
+  /*padding-top: 15px;*/
 }
 
 main-layout md-icon {
   color: white;
+  vertical-align: text-bottom;
 }

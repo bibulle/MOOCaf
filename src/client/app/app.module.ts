@@ -7,11 +7,13 @@ import {LOG_LOGGER_PROVIDERS, INFO_LOGGER_PROVIDERS} from "angular2-logger/core"
 import {AUTH_PROVIDERS} from "angular2-jwt";
 
 import {MdCoreModule} from "@angular2-material/core";
+//import {OVERLAY_PROVIDERS} from "@angular2-material/core/overlay/overlay";
 import {MdButtonModule} from "@angular2-material/button";
 import {MdIconModule} from "@angular2-material/icon";
 import {MdCardModule} from "@angular2-material/card";
 import {MdInputModule} from "@angular2-material/input";
 import {MdToolbarModule} from "@angular2-material/toolbar";
+//import {MdTooltipModule} from "@angular2-material/tooltip";
 
 
 import {LayoutAlignDirective} from "./directives/layout-align-directive";
@@ -52,7 +54,9 @@ if (environment.production) {
     MdCardModule,
     MdInputModule,
     MdToolbarModule,
-    APP_ROUTES_PROVIDER
+//    MdTooltipModule,
+    APP_ROUTES_PROVIDER,
+//    OVERLAY_PROVIDERS
   ],
   declarations: [
     AppComponent,
