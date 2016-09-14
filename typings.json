@@ -12,6 +12,7 @@
     "express-jwt": "registry:dt/express-jwt#0.0.0+20160629014920",
     "express-serve-static-core": "registry:dt/express-serve-static-core#4.0.0+20160819131900",
     "express-unless": "registry:dt/express-unless#0.0.0+20160317120654",
+    "hammerjs": "registry:dt/hammerjs#2.0.8+20160724063812",
     "highlightjs": "registry:dt/highlightjs#9.1.0+20160317120654",
     "jsonwebtoken": "registry:dt/jsonwebtoken#0.0.0+20160720062725",
     "lodash": "registry:dt/lodash#4.14.0+20160817155621",
