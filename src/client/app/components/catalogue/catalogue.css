@@ -1,0 +1,33 @@
+.menu {
+  max-height: 4em;
+  min-height: 2em;
+}
+
+.menu button {
+  padding-top: 6px;
+  background-color: #EEEEEE;
+  font-size: 0.8em;
+}
+
+.menu button md-icon {
+  font-size: 20px;
+}
+
+.menu button span {
+  vertical-align: super;
+}
+.menu button span, .menu button .asc, .menu button .desc {
+  display: none;
+}
+
+.menu .followed-none .followed-none, .menu .followed-already .followed-already, .menu .followed-not-already .followed-not-already,
+.menu .favorite-none .favorite-none, .menu .favorite-mine .favorite-mine, .menu .favorite-not-mine .favorite-not-mine,
+.menu .asc .asc, .menu .desc .desc,
+.menu .sort-date .sort-date, .menu .sort-note .sort-note, .menu .sort-my-interest .sort-my-interest {
+  display: inherit;
+}
+
+.menu .followed-none, .menu .favorite-none {
+  color: #757575;
+}
+

@@ -20,7 +20,7 @@ import {LayoutAlignDirective} from "./directives/layout-align-directive";
 import {LayoutDirective} from "./directives/layout-directive";
 import {FlexDirective} from "./directives/flex-directive";
 import {UserService} from "./services/user.service";
-//import {AuthGuard} from "./common/auth.guard";
+import {AuthGuard} from "./common/auth.guard";
 
 import {AppComponent} from "./components/app/app.component";
 import {environment} from "./environment";
@@ -32,6 +32,7 @@ import {HomeComponent} from "./components/home/home";
 import {LoginComponent} from "./components/login/login";
 import {NotFoundComponent} from "./components/404/404";
 import {LogoComponent} from "./components/logo/logo";
+import {CatalogueComponent} from "./components/catalogue/catalogue";
 //import {ParagraphComponent} from "./paragraph/paragraph.home";
 //import {ParagraphMarkdownComponent} from "./paragraph-markdown/paragraph-markdown.home";
 //import {ParagraphFormComponent} from "./paragraph-form/paragraph-form.home";
@@ -66,6 +67,7 @@ if (environment.production) {
     LoginComponent,
     NotFoundComponent,
     LogoComponent,
+    CatalogueComponent,
     // ParagraphComponent,
     // ParagraphMarkdownComponent,
     // ParagraphFormComponent,
@@ -78,7 +80,7 @@ if (environment.production) {
   providers: [
     loggerProvider,
     UserService,
-    // AuthGuard,
+    AuthGuard,
     AUTH_PROVIDERS,
     appRoutingProviders
   ],

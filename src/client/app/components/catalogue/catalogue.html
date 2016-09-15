@@ -1,0 +1,34 @@
+<md-content class="catalogue" flex="100" layout="column" layout-align="start stretch">
+  <div class="menu" flex="100" layout="row" layout-align="start center">
+    <div flex="100" layout="row" layout-align="start center">
+      <div flex="50" layout="row" layout-align="center center">
+        <span class="filter">Filter : </span>
+        &nbsp;
+        <button  md-button class="md-icon-button" aria-label="Followed" (click)="toggleFollowed()" [class.followed-none]="(followed == 0)" [class.followed-already]="(followed == 1)" [class.followed-not-already]="(followed == 2)">
+          <md-icon>assignment_turned_in</md-icon> <span class="followed-none">Followed or not</span><span class="followed-already">Already followed</span><span class="followed-not-already">Not already followed</span>
+        </button>
+        &nbsp;
+        <button  md-button class="md-icon-button" aria-label="Favorites" (click)="toggleFavorite()" [class.favorite-none]="(favorite == 0)" [class.favorite-mine]="(favorite == 1)" [class.favorite-not-mine]="(favorite == 2)">
+          <md-icon>favorite</md-icon> <span class="favorite-none">Favorites or not</span><span class="favorite-mine">My favorites</span><span class="favorite-not-mine">Not my favorites</span>
+        </button>
+        &nbsp;
+        <button  md-button class="md-icon-button" aria-label="Sort" (click)="toggleSort()" [class.sort-date]="(sortType == 0)" [class.sort-note]="(sortType == 1)" [class.sort-my-interest]="(sortType == 2)" [class.asc]="((sort%2) == 0)" [class.desc]="((sort%2) == 1)">
+          <md-icon class="desc">arrow_downward</md-icon><md-icon class="asc">arrow_upward</md-icon> <span class="sort-date">Sort by date</span><span class="sort-note">Sort by note</span><span class="sort-my-interest">Sort by my interest</span>
+        </button>
+      </div>
+      <div flex="50" layout="row" layout-align="end center">
+        <md-icon>search</md-icon>
+        &nbsp;
+        <md-input placeholder="Search" #cataloguesearch flex="75"></md-input>
+      </div>
+    </div>
+  </div>
+  <div class="catalogue-list">
+    <p>liste de formation...</p>
+    <p>liste de formation...</p>
+    <p>liste de formation...</p>
+    <p>liste de formation...</p>
+    <p>liste de formation...</p>
+    <p>liste de formation...</p>
+  </div>
+</md-content>

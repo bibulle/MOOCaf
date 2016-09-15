@@ -46,7 +46,7 @@ button, input, select, textarea {
   vertical-align: baseline;
 }
 
-home, login {
+home, login, catalogue {
   overflow: auto;
 
   -webkit-box-flex: 1;
