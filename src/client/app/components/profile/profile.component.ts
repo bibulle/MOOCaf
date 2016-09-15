@@ -1,7 +1,7 @@
 import {Component} from "@angular/core";
 import {UserService} from "../../services/user.service";
 import {Logger} from "angular2-logger/core";
-import {Router} from "@angular/router";
+import {Router, __router_private__} from "@angular/router";
 
 @Component({
   moduleId: module.id,
@@ -13,10 +13,14 @@ export class ProfileComponent {
 
   user: {};
 
+  router: Router;
+
 
   constructor(private _userService: UserService,
               private _logger: Logger,
               private _router: Router) {
+    this.router = _router;
+
   }
 
   ngOnInit() {
@@ -28,9 +32,9 @@ export class ProfileComponent {
       });
   }
 
-  login() {
-    this._router.navigate(['/login'])
-  }
+  // login() {
+  //   this._router.navigate(['/login'])
+  // }
 
   logout() {
     this._userService.logout();

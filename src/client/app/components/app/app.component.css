@@ -1,6 +1,5 @@
 
 .header {
-  color: #009688;
   min-height: 70px;
   height: 100px;
 }
@@ -38,3 +37,7 @@ about-button md-icon {
 md-toolbar span {
   vertical-align: super;
 }
+md-toolbar button {
+  padding-top: 6px;
+}
+

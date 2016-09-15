@@ -20,9 +20,17 @@ body {
 
 }
 
-h1 {
-  color: #009688
+h1, .header {
+  color: #009688;
 }
+
+md-toolbar button.active {
+  background-color: #00796B;
+}
+button.active {
+  background-color: #B2DFDB;
+}
+
 
 md-content {
   padding: 8px 8px;
