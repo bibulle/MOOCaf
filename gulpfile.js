@@ -59,7 +59,7 @@ gulp.task('copy_js', function () {
     .pipe(changed(trg1))
     //.pipe(debug({title: 'copy js     : '}))
     .pipe(gulp.dest(trg1))
-    .pipe(count('copy js     : ##'));
+    .pipe(count("         'copy_js' : ##"));
 
 });
 
@@ -75,7 +75,7 @@ gulp.task('copy_static', function () {
     .pipe(changed(trg2))
     //.pipe(debug({title: 'copy static : '}))
     .pipe(gulp.dest(trg2))
-    .pipe(count('copy static : ##'));
+    .pipe(count("         'copy_static' : ##"));
 
 });
 
@@ -91,7 +91,7 @@ gulp.task('copy_vendor', function () {
     .pipe(changed(trg3))
     //.pipe(debug({title: 'copy vendor : '}))
     .pipe(gulp.dest(trg3))
-    .pipe(count('copy vendor : ##'));
+    .pipe(count("         'copy_vendor' : ##"));
 
 });
 
