@@ -24,7 +24,7 @@ import {UserService} from "./services/user.service";
 
 import {AppComponent} from "./components/app/app.component";
 import {environment} from "./environment";
-import {APP_ROUTES_PROVIDER} from "./app.routes";
+import {appRoutingProviders, routing} from "./app.routes";
 
 import {AboutComponent} from "./components/about/about.component";
 import {ProfileComponent} from "./components/profile/profile.component";
@@ -55,7 +55,7 @@ if (environment.production) {
     MdInputModule,
     MdToolbarModule,
 //    MdTooltipModule,
-    APP_ROUTES_PROVIDER,
+    routing,
 //    OVERLAY_PROVIDERS
   ],
   declarations: [
@@ -79,7 +79,8 @@ if (environment.production) {
     loggerProvider,
     UserService,
     // AuthGuard,
-    AUTH_PROVIDERS
+    AUTH_PROVIDERS,
+    appRoutingProviders
   ],
   schemas: [
     CUSTOM_ELEMENTS_SCHEMA

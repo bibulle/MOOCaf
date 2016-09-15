@@ -6,6 +6,7 @@ var bodyParser = require('body-parser');
 
 import {json, urlencoded} from "body-parser";
 var debug = require('debug')('server:server');
+var warn = require('debug')('server:warn');
 
 import mongoose from './models/db';
 import {loginRouter} from "./routes/login";
@@ -33,10 +34,10 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
 // api routes
-app.use("/api/random-quote", anonymousRouter);
-app.use("/api/protected", protectedRouter);
-app.use("/api/paragraph", paragraphRouter);
-app.use("/users", loginRouter);
+app.use("/1api/random-quote", anonymousRouter);
+app.use("/1api/protected", protectedRouter);
+app.use("/1api/paragraph", paragraphRouter);
+app.use("/1users", loginRouter);
 
 //app.use('/client', express.static(join(__dirname, '../client')));
 
@@ -58,7 +59,33 @@ if (app.get("env") === "development") {
 
 // wrong /api => 404
 app.use('/api',function (req: express.Request, res: express.Response, next) {
-  res.status(404).json({error: 404, message: "Api not found : "+req.url});
+  //warn("Error 404 Not found : "+req.baseUrl+" "+req.url);
+  res.redirect('/404'+req.originalUrl)
+});
+app.use('/users',function (req: express.Request, res: express.Response, next) {
+  //warn("Error 404 Not found : "+req.baseUrl+" "+req.originalUrl);
+  res.redirect('/404'+req.originalUrl)
+});
+app.use('/404',function (req: express.Request, res: express.Response, next) {
+
+  res.status(404)
+
+  warn("Error 404 Not found : "+req.url);
+
+  // respond with html page
+  if (req.accepts('html')) {
+    res.render('404', { url: req.url });
+    return;
+  }
+
+  // respond with json
+  if (req.accepts('json')) {
+    res.send({ error: 'Not found : '+req.url });
+    return;
+  }
+
+  // default to plain-text. send()
+  res.type('txt').send('Not found : '+req.url);
 });
 
 
