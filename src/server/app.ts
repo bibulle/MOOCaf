@@ -34,10 +34,10 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
 // api routes
-app.use("/1api/random-quote", anonymousRouter);
-app.use("/1api/protected", protectedRouter);
-app.use("/1api/paragraph", paragraphRouter);
-app.use("/1users", loginRouter);
+app.use("/api/random-quote", anonymousRouter);
+app.use("/api/protected", protectedRouter);
+app.use("/api/paragraph", paragraphRouter);
+app.use("/users", loginRouter);
 
 //app.use('/client', express.static(join(__dirname, '../client')));
 
