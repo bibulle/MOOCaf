@@ -5,6 +5,9 @@ export class Formation {
   createdDate: Date;
   description: string;
   note: number;
-  isFavory: boolean;
+  isFavorite: boolean;
   interest: number;
+  dateFollowed: Date;
+  percentFollowed: number;
+
 }

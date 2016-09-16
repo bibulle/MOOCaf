@@ -6,6 +6,9 @@ import {Directive, Input, HostBinding} from "@angular/core";
 })
 export class LayoutDirective{
   @Input() layout:string;
+  @Input('layout-fill') layoutFill:string = null;
+  @Input('layout-margin') layoutMargin:string = null;
+  @Input('layout-wrap') layoutWrap:string = null;
 
 
   //@HostBinding('style.display') display = 'flex';
@@ -16,7 +19,10 @@ export class LayoutDirective{
   // }
 
   @HostBinding('class.layout-column') get layoutcolumn() {return this.layout == 'column'}
-  @HostBinding('class.layout-row') get layoutrow() {return this.layout == 'row'}
+  @HostBinding('class.layout-row')    get layoutrow()    {return this.layout == 'row'}
+  @HostBinding('class.layout-fill')   get layoutfill()   {return this.layoutFill !== null}
+  @HostBinding('class.layout-margin') get layoutmargin() {return this.layoutMargin !== null}
+  @HostBinding('class.layout-wrap')   get layoutwrap()   {return this.layoutWrap !== null}
 
   //@HostBinding('class') get layoutDirection() {return 'layout-'+this.layout}
 
