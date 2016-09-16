@@ -9,10 +9,15 @@ import {Component} from "@angular/core";
 
 export class CatalogueComponent {
 
-  followed: number = 0;
-  favorite: number = 0;
-  sort: number = 0;
-  sortType: number = 0;
+  filter = {
+    followed: 0,
+    favorite: 0,
+    sort: 0,
+    sortType: 0,
+    search: ""
+  };
+
+
 
   constructor() {
   }
@@ -22,14 +27,22 @@ export class CatalogueComponent {
 
 
   toggleFollowed() {
-    this.followed = (this.followed+1) % 3;
-  }
-  toggleFavorite() {
-    this.favorite = (this.favorite+1) % 3;
-  }
-  toggleSort() {
-    this.sort = (this.sort+1) % 6;
-    this.sortType = Math.floor(this.sort/2);
+    this.filter.followed = (this.filter.followed + 1) % 3;
+    this.filterList();
   }
 
+  toggleFavorite() {
+    this.filter.favorite = (this.filter.favorite + 1) % 3;
+    this.filterList()
+  }
+
+  toggleSort() {
+    this.filter.sort = (this.filter.sort + 1) % 6;
+    this.filter.sortType = Math.floor(this.filter.sort / 2);
+    this.filterList();
+  }
+
+  filterList() {
+
+  }
 }
