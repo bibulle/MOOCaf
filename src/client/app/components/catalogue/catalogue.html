@@ -12,7 +12,7 @@
           <md-icon>favorite</md-icon> <span class="favorite-none">Favorites or not</span><span class="favorite-mine">My favorites</span><span class="favorite-not-mine">Not my favorites</span>
         </button>
         &nbsp;
-        <button  md-button class="md-icon-button" aria-label="Sort" (click)="toggleSort()" [class.sort-date]="(filter.sortType == 0)" [class.sort-note]="(filter.sortType == 1)" [class.sort-my-interest]="(filter.sortType == 2)" [class.asc]="((filter.sort%2) == 0)" [class.desc]="((filter.sort%2) == 1)">
+        <button  md-button class="md-icon-button" aria-label="Sort" (click)="toggleSort()" [class.sort-date]="(filter.sortType == 0)" [class.sort-note]="(filter.sortType == 1)" [class.sort-my-interest]="(filter.sortType == 2)" [class.desc]="((filter.sort%2) == 0)" [class.asc]="((filter.sort%2) == 1)">
           <md-icon class="desc">arrow_downward</md-icon><md-icon class="asc">arrow_upward</md-icon> <span class="sort-date">Sort by date</span><span class="sort-note">Sort by note</span><span class="sort-my-interest">Sort by my interest</span>
         </button>
       </div>
@@ -23,12 +23,28 @@
       </div>
     </div>
   </div>
-  <div class="catalogue-list">
-    <p>liste de formation...</p>
-    <p>liste de formation...</p>
-    <p>liste de formation...</p>
-    <p>liste de formation...</p>
-    <p>liste de formation...</p>
-    <p>liste de formation...</p>
+  <div class="catalogue-list" layout="row" layout-wrap layout-align="space-around" layout-margin>
+    <md-card class="formation" flex="30" *ngFor="let formation of sortedFormations">
+      <md-card-subtitle >{{formation.createdDate | date}}</md-card-subtitle>
+      <md-card-title>{{formation.name}}</md-card-title>
+      <md-card-content>
+        {{formation.description}}
+      </md-card-content>
+      <md-card-footer layout="row" layout-align="space-around center">
+        <span class="note">
+          <div>
+            <div class="note_1" [style.width.em]="7.5*formation.note/5"><md-icon>star_rate</md-icon><md-icon>star_rate</md-icon><md-icon>star_rate</md-icon><md-icon>star_rate</md-icon><md-icon>star_rate</md-icon></div>
+            <div class="note_2"><md-icon>star_rate</md-icon><md-icon>star_rate</md-icon><md-icon>star_rate</md-icon><md-icon>star_rate</md-icon><md-icon>star_rate</md-icon></div>
+          </div>
+        </span>
+        <span>
+          {{formation.note}}
+          {{formation.percentFollowed}}</span>
+        <span class="favorite">
+          <md-icon *ngIf="!formation.isFavorite" aria-label="Not favorite" title="Not favorite">favorite_border</md-icon>
+          <md-icon *ngIf="formation.isFavorite"  aria-label="Favorite"     title="Favorite"    >favorite</md-icon>
+        </span>
+      </md-card-footer>
+    </md-card>
   </div>
 </md-content>

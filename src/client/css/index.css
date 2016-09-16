@@ -47,7 +47,7 @@ button, input, select, textarea {
 }
 
 home, login, catalogue {
-  overflow: auto;
+  /*overflow: auto;*/
 
   -webkit-box-flex: 1;
   -webkit-flex: 1 1 100%;
@@ -2011,4 +2011,20 @@ not-found {
   -webkit-box-direction: normal;
   -webkit-flex-direction: row;
   flex-direction: row;
+}
+
+.layout-fill {
+  margin: 0;
+  width: 100%;
+  min-height: 100%;
+  height: 100%;
+}
+
+.layout-wrap {
+  -webkit-flex-wrap: wrap;
+  flex-wrap: wrap;
+}
+
+.layout-margin, .layout-margin-gt-sm, .layout-margin-gt-sm>*, .layout-margin-md, .layout-margin-md>*, .layout-margin>*, .layout-margin>.flex, .layout-margin>.flex-gt-sm, .layout-margin>.flex-md {
+  margin: 8px;
 }

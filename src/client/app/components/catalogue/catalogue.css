@@ -31,3 +31,32 @@
   color: #757575;
 }
 
+.catalogue-list {
+  overflow: auto;
+  width: 100%;
+}
+
+.formation md-card-subtitle {
+  text-align: right;
+  font-size: 0.7em;
+  margin-top: -11px;
+}
+.formation md-card-footer {
+  width: 100%;
+  padding-right: 48px;
+  margin-bottom: 8px;
+}
+
+.formation .note > div {
+  width: 7.5em;
+}
+.formation .note .note_1 {
+  position: absolute;
+  /*width: 3em;*/
+  color: gold;
+  height: 1.5em;
+  overflow: hidden;
+}
+.formation .note .note_2 {
+  color: #AAAAAA;
+}
