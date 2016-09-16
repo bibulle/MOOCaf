@@ -30,7 +30,7 @@
       <md-card-content>
         {{formation.description}}
       </md-card-content>
-      <md-card-footer layout="row" layout-align="space-around center">
+      <md-card-footer layout="row" layout-align="space-between center">
         <span class="note">
           <div>
             <div class="note_1" [style.width.em]="7.5*formation.note/5">
@@ -39,12 +39,18 @@
             <div class="note_2"  ><md-icon>star_rate</md-icon><md-icon>star_rate</md-icon><md-icon>star_rate</md-icon><md-icon>star_rate</md-icon><md-icon>star_rate</md-icon></div>
           </div>
         </span>
-        <span>
-          {{formation.note}}
-          {{formation.percentFollowed}}</span>
+        <div class="followed">
+          <div>
+            <div class="followed_1" [style.width.em]="7*formation.percentFollowed">
+              <div class="followed_1_1">{{formation.percentFollowed | percent}} done</div>
+            </div>
+            <div class="followed_2"  >{{formation.percentFollowed | percent}} done</div>
+
+          </div>
+        </div>
         <span class="favorite">
-          <md-icon *ngIf="!formation.isFavorite" aria-label="Not favorite" title="Not favorite">favorite_border</md-icon>
-          <md-icon *ngIf="formation.isFavorite"  aria-label="Favorite"     title="Favorite"    >favorite</md-icon>
+          <md-icon *ngIf="!formation.isFavorite" aria-label="Not favorite" title="Not favorite" class="notFavorite">favorite_border</md-icon>
+          <md-icon *ngIf="formation.isFavorite"  aria-label="Favorite"     title="Favorite"     class="favorite"   >favorite</md-icon>
         </span>
       </md-card-footer>
     </md-card>

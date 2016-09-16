@@ -58,7 +58,7 @@ export class CatalogueComponent {
         isFavorite: true,
         interest: 0.8,
         dateFollowed: new Date('2016-08-14T00:00:00'),
-        percentFollowed: 0.8
+        percentFollowed: 0.5
       },
       {
         name: "What's new in JDK8",
