@@ -39,7 +39,7 @@
             <div class="note_2"  ><md-icon>star_rate</md-icon><md-icon>star_rate</md-icon><md-icon>star_rate</md-icon><md-icon>star_rate</md-icon><md-icon>star_rate</md-icon></div>
           </div>
         </span>
-        <div class="followed">
+        <div class="followed" *ngIf="(formation.dateFollowed != null)">
           <div>
             <div class="followed_1" [style.width.em]="7*formation.percentFollowed">
               <div class="followed_1_1">{{formation.percentFollowed | percent}} done</div>

@@ -51,6 +51,7 @@ export class CatalogueComponent {
 
     this.formations = [
       {
+        id: "09179863984",
         name: "Starting a project with Big Data",
         createdDate: new Date('2016-08-12T00:00:00'),
         description: "A simple MOOC to learn how to start a Big Data project",
@@ -58,9 +59,10 @@ export class CatalogueComponent {
         isFavorite: true,
         interest: 0.8,
         dateFollowed: new Date('2016-08-14T00:00:00'),
-        percentFollowed: 0.5
+        percentFollowed: 0.6
       },
       {
+        id: "3408230482",
         name: "What's new in JDK8",
         createdDate: new Date('2016-08-18T00:00:00'),
         description: "Just learn to use JDK8 new features",
@@ -71,6 +73,7 @@ export class CatalogueComponent {
         percentFollowed: 0.9
       },
       {
+        id: "1209490124",
         name: "Learning machine learning with Spark",
         createdDate: new Date('2016-09-01T00:00:00'),
         description: "A simple introduction to Machine Learning with Spark ML",
@@ -81,6 +84,7 @@ export class CatalogueComponent {
         percentFollowed: 1
       },
       {
+        id: "02470147",
         name: "Is JDK9 going to break my project",
         createdDate: new Date('2016-08-26T00:00:00'),
         description: "What's new in JDK9",
@@ -91,6 +95,7 @@ export class CatalogueComponent {
         percentFollowed: 0
       },
       {
+        id: "4947293847",
         name: "Using DevNet",
         createdDate: new Date('2016-08-12T00:00:00'),
         description: "A MOOC to learn using DevNet",
@@ -101,6 +106,7 @@ export class CatalogueComponent {
         percentFollowed: 0
       },
       {
+        id: "203472394",
         name: "MongoDb at a glance",
         createdDate: new Date('2016-07-14T00:00:00'),
         description: "What are the essentials to start with mongoDb",
@@ -111,6 +117,7 @@ export class CatalogueComponent {
         percentFollowed: 0.0
       },
       {
+        id: "94619846",
         name: "Spring Boot",
         createdDate: new Date('2016-10-28T00:00:00'),
         description: "WTF",
