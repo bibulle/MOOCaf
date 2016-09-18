@@ -1,5 +1,5 @@
 import {Injectable} from "@angular/core";
-import {Http, Response} from "@angular/http";
+import {Response} from "@angular/http";
 import "rxjs/add/operator/toPromise";
 import {Logger} from "angular2-logger/app/core/logger";
 import {AuthHttp} from "angular2-jwt";
@@ -13,8 +13,7 @@ export class FormationService {
 
   private formationsUrl = environment.serverUrl+'api/formation';
 
-  constructor(private http: Http,
-              private _logger: Logger,
+  constructor(private _logger: Logger,
               private authHttp: AuthHttp,
               private userService: UserService) {
   }
@@ -47,7 +46,6 @@ export class FormationService {
             err => {
               reject(err);
             },
-            () => console.log('done')
           )
       }
     )
@@ -127,21 +125,21 @@ export class FormationService {
       .then(() => {
         //this._service.success("Saved", "your change have been saved");
         return formation
-      })
+      });
 //.catch(error => this.handleError(error, this._logger));
   }
 
   /**
    * save paragraphs (user choice)
-   * @param fullUserChoice (UID and userchoice)
-   * @returns {Promise<void>|Promise<T>}
+   * @returns {Promise<void>|Promise<Formation>}
+   * @param formation Formation
    */
   saveUserChoice(formation: Formation): Promise < Formation > {
 
     var userChoice = {
       formationId: formation.id,
       isFavorite: formation.isFavorite
-    }
+    };
 
     this._logger.debug("saveUserChoice : " + JSON.stringify(userChoice));
 
