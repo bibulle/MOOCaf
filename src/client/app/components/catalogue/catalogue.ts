@@ -2,6 +2,8 @@ import {Component} from "@angular/core";
 import {Formation} from "../../models/formation";
 import {Subject} from "rxjs/Subject";
 import {Logger} from "angular2-logger/core";
+import {FormationService} from "../../services/formation.service";
+import {NotificationsService} from "angular2-notifications";
 
 @Component({
   moduleId: module.id,
@@ -28,7 +30,10 @@ export class CatalogueComponent {
   private subjectFilter: Subject<{}>;
   private previousFilterJson: string = "";
 
-  constructor(private _logger: Logger) {
+  constructor(
+    private _logger: Logger,
+    private _formationService: FormationService,
+    private _notificationService: NotificationsService) {
   }
 
   ngOnInit() {
@@ -48,87 +53,17 @@ export class CatalogueComponent {
         );
     }
 
+    this._formationService.getFormations()
+      .then(formations =>
+        {
+          this.formations = formations;
+          this.filterList();
+        })
+      .catch(err => {
+        this._notificationService.error("Error", err)
+      });
 
-    this.formations = [
-      {
-        id: "09179863984",
-        name: "Starting a project with Big Data",
-        createdDate: new Date('2016-08-12T00:00:00'),
-        description: "A simple MOOC to learn how to start a Big Data project",
-        note: 3.5,
-        isFavorite: true,
-        interest: 0.8,
-        dateFollowed: new Date('2016-08-14T00:00:00'),
-        percentFollowed: 0.6
-      },
-      {
-        id: "3408230482",
-        name: "What's new in JDK8",
-        createdDate: new Date('2016-08-18T00:00:00'),
-        description: "Just learn to use JDK8 new features",
-        note: 4.0,
-        isFavorite: false,
-        interest: 0.2,
-        dateFollowed: new Date('2016-08-22T00:00:00'),
-        percentFollowed: 0.9
-      },
-      {
-        id: "1209490124",
-        name: "Learning machine learning with Spark",
-        createdDate: new Date('2016-09-01T00:00:00'),
-        description: "A simple introduction to Machine Learning with Spark ML",
-        note: 2.0,
-        isFavorite: false,
-        interest: 0.8,
-        dateFollowed: new Date('2016-09-23T00:00:00'),
-        percentFollowed: 1
-      },
-      {
-        id: "02470147",
-        name: "Is JDK9 going to break my project",
-        createdDate: new Date('2016-08-26T00:00:00'),
-        description: "What's new in JDK9",
-        note: 4.5,
-        isFavorite: false,
-        interest: 0.3,
-        dateFollowed: null,
-        percentFollowed: 0
-      },
-      {
-        id: "4947293847",
-        name: "Using DevNet",
-        createdDate: new Date('2016-08-12T00:00:00'),
-        description: "A MOOC to learn using DevNet",
-        note: 5.0,
-        isFavorite: false,
-        interest: 0.4,
-        dateFollowed: null,
-        percentFollowed: 0
-      },
-      {
-        id: "203472394",
-        name: "MongoDb at a glance",
-        createdDate: new Date('2016-07-14T00:00:00'),
-        description: "What are the essentials to start with mongoDb",
-        note: 4.5,
-        isFavorite: false,
-        interest: 0.1,
-        dateFollowed: new Date('2016-08-12T00:00:00'),
-        percentFollowed: 0.0
-      },
-      {
-        id: "94619846",
-        name: "Spring Boot",
-        createdDate: new Date('2016-10-28T00:00:00'),
-        description: "WTF",
-        note: 2.5,
-        isFavorite: false,
-        interest: 0.1,
-        dateFollowed: new Date('2016-10-31T00:00:00'),
-        percentFollowed: 1
-      },
-    ];
-    this.filterList();
+
   }
 
 
@@ -183,11 +118,12 @@ export class CatalogueComponent {
         }
       )
       .sort((f1, f2) => {
+        //console.log(f1);
         switch (filter['sort']) {
           case 0:
-            return f2.createdDate.getTime() - f1.createdDate.getTime();
+            return f2.created.getTime() - f1.created.getTime();
           case 1 :
-            return f1.createdDate.getTime() - f2.createdDate.getTime();
+            return f1.created.getTime() - f2.created.getTime();
           case 2 :
             return f2.note - f1.note;
           case 3 :

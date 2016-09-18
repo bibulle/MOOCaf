@@ -20,6 +20,7 @@ import {LayoutAlignDirective} from "./directives/layout-align-directive";
 import {LayoutDirective} from "./directives/layout-directive";
 import {FlexDirective} from "./directives/flex-directive";
 import {UserService} from "./services/user.service";
+import {FormationService} from "./services/formation.service";
 import {AuthGuard} from "./common/auth.guard";
 
 import {AppComponent} from "./components/app/app.component";
@@ -80,6 +81,7 @@ if (environment.production) {
   providers: [
     loggerProvider,
     UserService,
+    FormationService,
     AuthGuard,
     AUTH_PROVIDERS,
     appRoutingProviders
