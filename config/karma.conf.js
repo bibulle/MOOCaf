@@ -17,7 +17,6 @@ module.exports = function (config) {
       }
     },
     files: [
-      { pattern: 'src/server/public/vendor/es6-shim/es6-shim.js', included: true, watched: false },
       { pattern: 'src/server/public/vendor/zone.js/dist/zone.js', included: true, watched: false },
       { pattern: 'src/server/public/vendor/reflect-metadata/Reflect.js', included: true, watched: false },
       { pattern: 'src/server/public/vendor/systemjs/dist/system-polyfills.js', included: true, watched: false },

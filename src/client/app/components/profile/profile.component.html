@@ -1,0 +1,11 @@
+<span *ngIf="user.username" >
+  Welcome <button md-button class="md-primary md-button" id="profile-button" aria-label="Your profile" (click)="openProfile($event, user)">{{user.firstname}} {{user.lastname}}</button>
+  |
+  <button md-button class="md-primary md-button" id="logout-button" aria-label="Logout" (click)="logout()">LOGOUT</button>
+  |
+</span>
+<!--<span *ngIf="!user.username && !router.urlTree.contains(router.createUrlTree(['/login']))">-->
+<span *ngIf="!user.username && !router.isActive('/login', true)">
+  <button md-button class="md-primary md-button" id="login-button"  aria-label="Login"  routerLinkActive="active" routerLink="/login">LOGIN</button>
+  |
+</span>

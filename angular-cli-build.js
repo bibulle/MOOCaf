@@ -12,7 +12,7 @@ module.exports = function(defaults) {
       'systemjs/dist/system-polyfills.js',
       'systemjs/dist/system.src.js',
       'zone.js/dist/**/*.+(js|js.map)',
-      'es6-shim/es6-shim.js',
+      'core-js/client/*.js',
       'reflect-metadata/**/*.+(ts|js|js.map)',
       'rxjs/**/*.+(js|js.map)',
       '@angular/**/*.+(js|js.map)',
@@ -23,7 +23,8 @@ module.exports = function(defaults) {
       'angular2-logger/app/core/*.+(js|js.map)',
       'angular2-notifications/components.js',
       'angular2-notifications/lib/*.+(js|js.map)',
-      'angular2-jwt/*.+(js|js.map)'
+      'angular2-jwt/*.+(js|js.map)',
+      '@angular2-material/**/*'
     ]
   });
 };

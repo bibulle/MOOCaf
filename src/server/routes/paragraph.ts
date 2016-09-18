@@ -26,6 +26,7 @@ paragraphRouter.route('/')
     //debug("connected user : " + JSON.stringify(request['user']));
     Paragraph.find()
       .then(paragraphs => {
+        debug("find then");
         // fill each paragraph with users values
         var promises = _.map(paragraphs,
           p => _fillParagraphForUser(p, request['user']));
@@ -39,6 +40,7 @@ paragraphRouter.route('/')
           });
       })
       .catch(err => {
+        debug("find catch");
         console.log(err);
         response.status(500).send("System error " + err);
       });
@@ -233,7 +235,7 @@ function isUserChoiceAllowed(userChoice: UserChoice): Promise<{ err: string, use
  * @private
  */
 function _fillParagraphForUser(paragraph: Paragraph, user: User): Promise < Paragraph > {
-  debug("_fillParagraphForUser : " + paragraph["id"] + ", " + user["id"]);
+  //debug("_fillParagraphForUser : " + paragraph["id"] + ", " + user["id"]);
   return new Promise < Paragraph >((resolve, reject) => {
     var p = paragraph['_doc'];
     var answer = p.answer;

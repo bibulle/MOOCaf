@@ -1,0 +1,58 @@
+<md-content class="catalogue" flex="100" layout="column" layout-align="start stretch">
+  <div class="menu" flex="100" layout="row" layout-align="start center">
+    <div flex="100" layout="row" layout-align="start center">
+      <div flex="50" layout="row" layout-align="center center">
+        <span class="filter">Filter : </span>
+        &nbsp;
+        <button  md-button class="md-icon-button" aria-label="Followed" (click)="toggleFollowed()" [class.followed-none]="(filter.followed == 0)" [class.followed-already]="(filter.followed == 1)" [class.followed-not-already]="(filter.followed == 2)">
+          <md-icon>assignment_turned_in</md-icon> <span class="followed-none">Followed or not</span><span class="followed-already">Already followed</span><span class="followed-not-already">Not already followed</span>
+        </button>
+        &nbsp;
+        <button  md-button class="md-icon-button" aria-label="Favorites" (click)="toggleFavorite()" [class.favorite-none]="(filter.favorite == 0)" [class.favorite-mine]="(filter.favorite == 1)" [class.favorite-not-mine]="(filter.favorite == 2)">
+          <md-icon>favorite</md-icon> <span class="favorite-none">Favorites or not</span><span class="favorite-mine">My favorites</span><span class="favorite-not-mine">Not my favorites</span>
+        </button>
+        &nbsp;
+        <button  md-button class="md-icon-button" aria-label="Sort" (click)="toggleSort()" [class.sort-date]="(filter.sortType == 0)" [class.sort-note]="(filter.sortType == 1)" [class.sort-my-interest]="(filter.sortType == 2)" [class.desc]="((filter.sort%2) == 0)" [class.asc]="((filter.sort%2) == 1)">
+          <md-icon class="desc">arrow_downward</md-icon><md-icon class="asc">arrow_upward</md-icon> <span class="sort-date">Sort by date</span><span class="sort-note">Sort by note</span><span class="sort-my-interest">Sort by my interest</span>
+        </button>
+      </div>
+      <div flex="50" layout="row" layout-align="end center">
+        <md-icon>search</md-icon>
+        &nbsp;
+        <md-input placeholder="Search" #cataloguesearch flex="75" [(ngModel)]="filter.search" (ngModelChange)="filterList()"></md-input>
+      </div>
+    </div>
+  </div>
+  <div class="catalogue-list" layout="row" layout-wrap layout-align="space-around" layout-margin>
+    <md-card class="formation" flex="30" *ngFor="let formation of sortedFormations">
+      <md-card-subtitle >{{formation.created | date}}</md-card-subtitle>
+      <md-card-title>{{formation.name}}</md-card-title>
+      <md-card-content>
+        {{formation.description}}
+      </md-card-content>
+      <md-card-footer layout="row" layout-align="space-between center">
+        <span class="note">
+          <div>
+            <div class="note_1" [style.width.em]="7.5*formation.note/5">
+              <div class="note_1_1"><md-icon>star_rate</md-icon><md-icon>star_rate</md-icon><md-icon>star_rate</md-icon><md-icon>star_rate</md-icon><md-icon>star_rate</md-icon></div>
+            </div>
+            <div class="note_2"  ><md-icon>star_rate</md-icon><md-icon>star_rate</md-icon><md-icon>star_rate</md-icon><md-icon>star_rate</md-icon><md-icon>star_rate</md-icon></div>
+          </div>
+        </span>
+        <div class="followed" *ngIf="(formation.dateFollowed != null)">
+          <div>
+            <div class="followed_1" [style.width.em]="7*formation.percentFollowed">
+              <div class="followed_1_1">{{formation.percentFollowed | percent}} done</div>
+            </div>
+            <div class="followed_2"  >{{formation.percentFollowed | percent}} done</div>
+
+          </div>
+        </div>
+        <span class="favorite">
+          <md-icon *ngIf="!formation.isFavorite" aria-label="Not favorite" title="Not favorite" class="notFavorite">favorite_border</md-icon>
+          <md-icon *ngIf="formation.isFavorite"  aria-label="Favorite"     title="Favorite"     class="favorite"   >favorite</md-icon>
+        </span>
+      </md-card-footer>
+    </md-card>
+  </div>
+</md-content>

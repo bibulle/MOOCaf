@@ -1,26 +1,31 @@
 {
+  // tsc will compile to /dist... then, a gulp file will deploy correctly to server/public...
   "compileOnSave": false,
   "compilerOptions": {
-    "declaration": false,
-    "emitDecoratorMetadata": true,
-    "experimentalDecorators": true,
-    "mapRoot": "/",
+    "target": "es5",
     "module": "commonjs",
     "moduleResolution": "node",
-    "noEmitOnError": true,
+    "sourceMap": false,
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "removeComments": false,
     "noImplicitAny": false,
-    "outDir": "../server/public",
-    "rootDir": ".",
-    "sourceMap": true,
-    "target": "es5",
-    "inlineSources": true
+    "declaration": false,
+    //"mapRoot": "/",
+    "noEmitOnError": true,
+    "outDir": "../../dist",
+    "inlineSources": false
   },
 
   "files": [
-    "main.ts",
-    "typings.d.ts"
+    "app/main.ts",
+    "typings.d.ts",
+    "system-config.ts"
   ],
   "exclude": [
     "../../node_modules"
-  ]
+  ],
+  "angularCompilerOptions": {
+    "genDir": "./ngfactory"
+  }
 }

@@ -2,10 +2,11 @@ import {Injectable} from '@angular/core';
 import {Http, Headers, Response} from '@angular/http';
 import 'rxjs/add/operator/toPromise';
 
-import {Paragraph} from "../model/paragraph";
+import {Paragraph} from "../models/paragraph";
 import {Logger} from "angular2-logger/app/core/logger";
 import {AuthHttp} from 'angular2-jwt';
 import {contentHeaders} from "../common/headers";
+import {UserService} from "./user.service";
 
 @Injectable()
 export class ParagraphService {
@@ -14,7 +15,8 @@ export class ParagraphService {
 
   constructor(private http: Http,
               private _logger: Logger,
-              public authHttp: AuthHttp) {
+              private authHttp: AuthHttp,
+              private userService: UserService) {
   }
 
 
@@ -122,7 +124,7 @@ export class ParagraphService {
         //this._service.success("Saved", "your change have been saved");
         return paragraph
       })
-      //.catch(error => this.handleError(error, this._logger));
+    //.catch(error => this.handleError(error, this._logger));
   }
 
   /**
@@ -170,6 +172,8 @@ export class ParagraphService {
   }
 
   private handleError(error: any, logger) {
+
+    this.userService.checkAuthent();
 
     if (typeof error.json === "function") {
       error = error.json()

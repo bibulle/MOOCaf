@@ -1,0 +1,51 @@
+<main-layout layout="row" flex="100">
+  <div layout="column" flex="100">
+
+    <!-- Header -->
+    <div layout="row" class="header">
+      <div layout="row" flex="100">
+        <div flex="50" layout="row" layout-align="start center">
+          <!--<logo-svg></logo-svg>-->
+
+          <md-icon svgSrc="img/logo.svg" class="logo"></md-icon>
+
+          <!--<span class="logo"></span>-->
+          <div class="text-logo">MOOCer</div>
+        </div>
+
+        <div flex="50" layout="row" layout-align="end center">
+          <profile-button></profile-button>
+          <about-button></about-button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Toolbar -->
+    <md-toolbar color="primary">
+      <button  md-button class="md-icon-button" aria-label="Home"            title="Home"            routerLinkActive="active" routerLink="/home"     >
+        <md-icon>home</md-icon> <span>Home</span>
+      </button>
+      <button  md-button class="md-icon-button" aria-label="Class catalogue" title="Class catalogue" routerLinkActive="active" routerLink="/catalogue">
+        <md-icon>store</md-icon> <span>Catalogue</span>
+      </button>
+      <button  md-button class="md-icon-button" aria-label="Classes"         title="Classes"         routerLinkActive="active" routerLink="/classes">
+        <md-icon>class</md-icon> <span>Class</span>
+      </button>
+
+      <span class="fill-remaining-space"></span>
+
+      <button  md-button class="md-icon-button" aria-label="Progression"     title="Progression"     routerLinkActive="active" routerLink="/progression">
+        <md-icon>dashboard</md-icon> <span>Progression</span>
+      </button>
+      <button  md-button class="md-icon-button" aria-label="Awards"          title="Awards"          routerLinkActive="active" routerLink="/awards">
+        <md-icon>cake</md-icon> <span>Awards</span>
+      </button>
+    </md-toolbar>
+
+    <!-- Main content -->
+    <router-outlet></router-outlet>
+  </div>
+</main-layout>
+
+<simple-notifications [options]="notificationsOptions"></simple-notifications>
+

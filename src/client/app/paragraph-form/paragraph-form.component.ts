@@ -11,9 +11,9 @@ import {Logger} from "angular2-logger/app/core/logger";
 import {NotificationsService} from "angular2-notifications";
 
 import {ParagraphAbstract} from "../paragraph-abstract.component";
-import {Paragraph} from "../model/paragraph";
+import {Paragraph} from "../models/paragraph";
 import {ParagraphService} from "../services/paragraph.service";
-import {ParagraphContentType} from "../model/paragraph-content-type.enum";
+import {ParagraphContentType} from "../models/paragraph-content-type.enum";
 
 @Component({
   moduleId: module.id,

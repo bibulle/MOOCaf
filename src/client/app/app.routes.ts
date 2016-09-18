@@ -1,18 +1,33 @@
-import { provideRouter } from '@angular/router';
+import { ModuleWithProviders } from '@angular/core';
+import { Routes, RouterModule }   from '@angular/router';
 
-import { HomeComponent } from './home.component/home';
-import { LoginComponent } from './login.component/login';
-import { PageComponent } from './page.component/page';
+import { HomeComponent } from './components/home/home';
+import { LoginComponent } from './components/login/login';
+import {NotFoundComponent} from "./components/404/404";
+import {CatalogueComponent} from "./components/catalogue/catalogue";
+import {AuthGuard} from "./common/auth.guard";
 
-import {AuthGuard} from "./auth.guard";
-import {SignupComponent} from "./signup.component/signup";
+//import { PageComponent } from './page.home/page';
+
+//import {AuthGuard} from "./common/auth.guard";
+//import {SignupComponent} from "./signup.home/signup";
 
 export const routes = [
-  { path: '',        component: HomeComponent, terminal: true },
-  { path: 'home',        component: HomeComponent, terminal: true },
-  { path: 'login',   component: LoginComponent },
-  { path: 'signup', component: SignupComponent },
-  { path: 'page', component: PageComponent, canActivate: [AuthGuard] }
+  { path: '',             redirectTo: '/home', pathMatch: 'full' },
+  { path: 'home',         component: HomeComponent,     terminal: true },
+  { path: 'login',        component: LoginComponent },
+  { path: 'catalogue',    component: CatalogueComponent, canActivate: [AuthGuard] },
+  // Show the 404 page for any routes that don't exist.
+  { path: '**',            component: NotFoundComponent }
+//  { path: 'signup',       home: SignupComponent },
+//  { path: 'page',         home: PageComponent, canActivate: [AuthGuard] }
 ];
 
-export const APP_ROUTES_PROVIDER = provideRouter(routes);
+
+export const appRoutingProviders: any[] = [
+  //authProviders,
+  //CanDeactivateGuard
+];
+
+export const routing: ModuleWithProviders = RouterModule.forRoot(routes);
+

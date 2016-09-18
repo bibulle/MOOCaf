@@ -5,7 +5,7 @@ import { CORE_DIRECTIVES } from '@angular/common';
 import {ParagraphService} from "../services/paragraph.service";
 import {Logger} from "angular2-logger/app/core/logger";
 import {NotificationsService} from "angular2-notifications";
-import {Paragraph} from "../model/paragraph";
+import {Paragraph} from "../models/paragraph";
 import {FORM_DIRECTIVES} from "@angular/forms";
 
 @Component({

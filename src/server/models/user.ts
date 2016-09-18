@@ -1,4 +1,5 @@
 import Mongoose = require("mongoose");
+var Schema = Mongoose.Schema;
 import * as _ from 'lodash';
 
 var debug = require('debug')('server:model:user');
@@ -11,6 +12,15 @@ class IUser {
   isAdmin: boolean;
   created: Date;
   updated: Date;
+
+  formations: { [id: string] : {
+      isFavorite: boolean,
+      interest: number,
+      dateFollowed: Date,
+      dateFollowedEnd: Date,
+      percentFollowed: number
+    }
+  };
 
   /**
    * Constructor
@@ -53,6 +63,10 @@ var _schema: Mongoose.Schema = new Mongoose.Schema({
   updated: {
     type: Date,
     default: Date.now
+  },
+  formations: {
+    type: Schema.Types.Mixed,
+    require: false
   }
 
 })
@@ -92,9 +106,13 @@ class User extends IUser {
     return new Promise < IUser >((resolve, reject) => {
       _model.findById(id)
         .exec()
-        .onResolve((err, user) => {
-          err ? reject(err) : resolve(user);
-        });
+        .then(
+          user => {
+            resolve(user);
+          },
+          err => {
+            reject(err);
+          });
     })
   }
 
@@ -123,11 +141,11 @@ class User extends IUser {
           _model.create(user)
             .then(
               user => {
-                debug("findOrCreate : after create " + user.username);
+                //debug("findOrCreate : after create " + user.username);
                 resolve(user);
               },
               err => {
-                debug("findOrCreate : after create " + err);
+                //debug("findOrCreate : after create " + err);
                 reject(err);
               });
         });
@@ -146,7 +164,44 @@ User.count()
         username: 'eric',
         salt: '6MulWcxSt3p0BC4Xa59Xz9O8TUCu3VJE/cTwT2WOjws5XOnZhPfmj5Rku5EY8xzAgUDAgc5Z/6r1y6JLHtknmGINveNFJhadsAkFE+TS4EqI0Nzm8brPpZ3KZLHVLfF2tDBZtp9K5Z/l5WNOQkCFwEKaSzvbhnP+/i4hCZg2kyk=',
         hashedPassword: 'b80776ef82727b04f57f314a655a31e926d3ea664e7295445409ef113c04c55984082a076ffbff9df377e19d96667026d498ad9bbd4f6211d6da39d7bb0fae331ad08709928513618174bc5a216ca6b74c5fd8e21cbbae0e7e44e24b6ae1d71a24f4088f10ca3533e144df1d66b9300ace3196097cf933b0a5f234b283b0fce3',
-        isAdmin: true
+        isAdmin: true,
+        formations: {
+          "57ddbb4864ba23188576d940": {
+            isFavorite: true,
+            interest: 0.8,
+            dateFollowed: new Date('2016-08-14T01:00:00'),
+            dateFollowedEnd: null,
+            percentFollowed: 0.6,
+          },
+          "57ddbb4864ba23188576d941": {
+            isFavorite: false,
+            interest: 0.2,
+            dateFollowed: new Date('2016-08-22T00:00:00'),
+            dateFollowedEnd: null,
+            percentFollowed: 0.9,
+          },
+          "57ddbb4864ba23188576d942": {
+            isFavorite: false,
+            interest: 0.8,
+            dateFollowed: new Date('2016-09-23T00:00:00'),
+            dateFollowedEnd: new Date('2016-10-01T00:00:00'),
+            percentFollowed: 1,
+          },
+          "57ddbb4864ba23188576d945": {
+            isFavorite: false,
+            interest: 0.1,
+            dateFollowed: new Date('2016-08-12T00:00:00'),
+            dateFollowedEnd: null,
+            percentFollowed: 0.0,
+          },
+          "57ddbb4864ba23188576d946": {
+            isFavorite: false,
+            interest: 0.1,
+            dateFollowed: new Date('2016-10-31T00:00:00'),
+            dateFollowedEnd: new Date('2016-11-10T00:00:00'),
+            percentFollowed: 1,
+          },
+        }
       }];
       _.forEach(users,
         o => {
