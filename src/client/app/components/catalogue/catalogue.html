@@ -24,35 +24,6 @@
     </div>
   </div>
   <div class="catalogue-list" layout="row" layout-wrap layout-align="space-around" layout-margin>
-    <md-card class="formation" flex="30" *ngFor="let formation of sortedFormations">
-      <md-card-subtitle >{{formation.created | date}}</md-card-subtitle>
-      <md-card-title>{{formation.name}}</md-card-title>
-      <md-card-content>
-        {{formation.description}}
-      </md-card-content>
-      <md-card-footer layout="row" layout-align="space-between center">
-        <span class="note">
-          <div>
-            <div class="note_1" [style.width.em]="7.5*formation.note/5">
-              <div class="note_1_1"><md-icon>star_rate</md-icon><md-icon>star_rate</md-icon><md-icon>star_rate</md-icon><md-icon>star_rate</md-icon><md-icon>star_rate</md-icon></div>
-            </div>
-            <div class="note_2"  ><md-icon>star_rate</md-icon><md-icon>star_rate</md-icon><md-icon>star_rate</md-icon><md-icon>star_rate</md-icon><md-icon>star_rate</md-icon></div>
-          </div>
-        </span>
-        <div class="followed" *ngIf="(formation.dateFollowed != null)">
-          <div>
-            <div class="followed_1" [style.width.em]="7*formation.percentFollowed">
-              <div class="followed_1_1">{{formation.percentFollowed | percent}} done</div>
-            </div>
-            <div class="followed_2"  >{{formation.percentFollowed | percent}} done</div>
-
-          </div>
-        </div>
-        <span class="favorite">
-          <md-icon *ngIf="!formation.isFavorite" aria-label="Not favorite" title="Not favorite" class="notFavorite">favorite_border</md-icon>
-          <md-icon *ngIf="formation.isFavorite"  aria-label="Favorite"     title="Favorite"     class="favorite"   >favorite</md-icon>
-        </span>
-      </md-card-footer>
-    </md-card>
+    <formation-card class="formation" flex="30" *ngFor="let formation of sortedFormations"  [formation]="formation"></formation-card>
   </div>
 </md-content>

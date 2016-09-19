@@ -34,6 +34,7 @@ import {LoginComponent} from "./components/login/login";
 import {NotFoundComponent} from "./components/404/404";
 import {LogoComponent} from "./components/logo/logo";
 import {CatalogueComponent} from "./components/catalogue/catalogue";
+import {FormationCardComponent} from "./components/formation-card/formation-card";
 //import {ParagraphComponent} from "./paragraph/paragraph.home";
 //import {ParagraphMarkdownComponent} from "./paragraph-markdown/paragraph-markdown.home";
 //import {ParagraphFormComponent} from "./paragraph-form/paragraph-form.home";
@@ -69,6 +70,7 @@ if (environment.production) {
     NotFoundComponent,
     LogoComponent,
     CatalogueComponent,
+    FormationCardComponent,
     // ParagraphComponent,
     // ParagraphMarkdownComponent,
     // ParagraphFormComponent,
