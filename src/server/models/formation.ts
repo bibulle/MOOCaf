@@ -143,17 +143,17 @@ class Formation extends IFormation {
   };
 
   static find(): Promise < Formation[] > {
-    debug("find");
+    // debug("find");
     return new Promise < IFormation[] >((resolve, reject) => {
       _model.find({})
         .exec()
         .then(
           formations => {
-            debug("find then");
+            // debug("find then");
             resolve(formations);
           },
           err => {
-            debug("find " + err);
+            // debug("find " + err);
             db.init();
             this.find()
               .then(result => resolve(result))
@@ -180,7 +180,7 @@ class Formation extends IFormation {
   static updateOrCreate(formation: Formation): Promise < Formation > {
     return new Promise < IFormation >((resolve, reject) => {
 
-      debug("updateOrCreate id:" + formation["_id"]);
+      // debug("updateOrCreate id:" + formation["_id"]);
       if (formation["_id"]) {
         formation.updated = new Date();
         _model.findByIdAndUpdate(formation["_id"], formation)
