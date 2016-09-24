@@ -67,7 +67,7 @@ export class UserService {
     return new Promise<void>((resolve, reject) => {
       this.http
         .post(
-          environment.serverUrl + 'users/create',
+          environment.serverUrl + 'users/login',
           body,
           {headers: contentHeaders}
         )

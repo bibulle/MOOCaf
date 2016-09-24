@@ -16,7 +16,9 @@ function createToken(user) {
   return sign(_.pick(user, ['username', 'isAdmin', 'id']), secret, {expiresIn: "7d"});
 }
 
-// Try to create a new user (Signup)
+// ====================================
+// route to signup (create a new user)
+// ====================================
 loginRouter.post('/', function (request: Request, response: Response, next: NextFunction) {
 
   if (!request.body.username || !request.body.password) {
@@ -65,8 +67,10 @@ loginRouter.post('/', function (request: Request, response: Response, next: Next
     });
 });
 
-// Try to login
-loginRouter.post('/create', function (request: Request, response: Response, next: NextFunction) {
+// ====================================
+// route to login (retrieve a JWT token)
+// ====================================
+loginRouter.post('/login', function (request: Request, response: Response, next: NextFunction) {
   debug("login : " + request.body.username + " " + request.body.password);
 
   if (!request.body.username || !request.body.password) {
