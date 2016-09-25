@@ -1,7 +1,7 @@
 import {Component} from "@angular/core";
 import {Http, Headers} from "@angular/http";
 import {Router} from "@angular/router";
-import {contentHeaders} from "../common/headers";
+import {contentHeaders} from "../../common/headers";
 
 @Component({
   moduleId: module.id,
@@ -10,7 +10,8 @@ import {contentHeaders} from "../common/headers";
   styleUrls: [ 'signup.css' ]
 })
 export class SignupComponent {
-  constructor(public router: Router, public http: Http) {
+  constructor(public router: Router,
+              public http: Http) {
   }
 
   signup(event, username, password, firstname, lastname, email) {

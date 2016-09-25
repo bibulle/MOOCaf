@@ -1,10 +1,7 @@
 import {Component} from "@angular/core";
 import {Router} from "@angular/router";
-import {Http, Headers} from "@angular/http";
-import {contentHeaders} from "../../common/headers";
+import {Http} from "@angular/http";
 import {Logger} from "angular2-logger/core";
-import {NotificationsService} from "angular2-notifications";
-import {environment} from "../../environment";
 import {UserService} from "../../services/user.service";
 
 @Component({
@@ -17,7 +14,6 @@ export class LoginComponent {
   constructor(public router: Router,
               public http: Http,
               private _logger: Logger,
-              private _notifService: NotificationsService,
               private _userService: UserService) {
   }
 

@@ -52,6 +52,8 @@ export class UserService {
       this.user = new User(this.jwtHelper.decodeToken(jwt));
     }
 
+    //this._logger.info(this.user);
+
     // if only username add to lastname
     if (!this.user.lastname && !this.user.firstname) {
       this.user.lastname = this.user.username;
