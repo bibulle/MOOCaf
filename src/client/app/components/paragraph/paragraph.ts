@@ -1,15 +1,13 @@
 import { Component, OnInit , Input} from '@angular/core';
 
-import {Paragraph} from "../models/paragraph";
-import {ParagraphType} from "../models/paragraph-type.enum";
-import {ParagraphMarkdownComponent} from "../paragraph-markdown/paragraph-markdown.component";
-import {ParagraphFormComponent} from "../paragraph-form/paragraph-form.component";
+import {Paragraph} from "../../models/paragraph";
+import {ParagraphType} from "../../models/paragraph-type.enum";
 
 @Component({
   moduleId: module.id,
-  selector: 'app-paragraph',
-  templateUrl: 'paragraph.component.html',
-  styleUrls: ['paragraph.component.css']
+  selector: 'paragraph',
+  templateUrl: 'paragraph.html',
+  styleUrls: ['paragraph.css']
 })
 export class ParagraphComponent implements OnInit {
 
@@ -29,6 +27,8 @@ export class ParagraphComponent implements OnInit {
   }
 
   ngOnInit() {
+
+    console.log(this.data);
 
     if (this.rawContent) {
       this.data = new Paragraph({

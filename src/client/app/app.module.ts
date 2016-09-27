@@ -38,9 +38,9 @@ import {CatalogueComponent} from "./components/catalogue/catalogue";
 import {FormationCardComponent} from "./components/formation-card/formation-card";
 import {ClassComponent} from "./components/classe/class";
 import {ClassScheduleComponent} from "./components/class-schedule/class-schedule";
-//import {ParagraphComponent} from "./paragraph/paragraph.home";
-//import {ParagraphMarkdownComponent} from "./paragraph-markdown/paragraph-markdown.home";
-//import {ParagraphFormComponent} from "./paragraph-form/paragraph-form.home";
+import {ParagraphComponent} from "./components/paragraph/paragraph";
+import {ParagraphMarkdownComponent} from "./components/paragraph-markdown/paragraph-markdown";
+import {ParagraphFormComponent} from "./components/paragraph-form/paragraph-form";
 
 let loggerProvider = LOG_LOGGER_PROVIDERS;
 if (environment.production) {
@@ -77,10 +77,9 @@ if (environment.production) {
     FormationCardComponent,
     ClassComponent,
     ClassScheduleComponent,
-    // ParagraphComponent,
-    // ParagraphMarkdownComponent,
-    // ParagraphFormComponent,
-    // SimpleNotificationsComponent,
+    ParagraphComponent,
+    ParagraphMarkdownComponent,
+    ParagraphFormComponent,
     FlexDirective,
     LayoutDirective,
     LayoutAlignDirective

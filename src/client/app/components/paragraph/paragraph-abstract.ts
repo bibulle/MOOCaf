@@ -15,7 +15,7 @@ export abstract class ParagraphAbstract {
   }
 
 
-  marktownToHTML(markdown: any) {
+  static markdownToHTML(markdown: any) {
 
     if (typeof markdown === "string") {
       return marked(markdown);

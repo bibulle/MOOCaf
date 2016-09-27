@@ -32,18 +32,19 @@ export class ClassScheduleComponent {
 
   selectPart(event, level1, level2) {
     event.stopPropagation();
-    this._logger.info("selectPart "+level1+" "+level2);
 
     this.selectedPart = level1 + (level2 != null ? "."+level2 : "");
     this.notifySelectedPart.emit([level1, level2]);
 
-    this.openPart(event, level1, level2);
+    // Open it (but do not close it)
+    if (!this.isOpened(level1, level2)) {
+      this.openPart(event, level1, level2);
+    }
 
   }
 
   openPart(event, level1, level2) {
     event.stopPropagation();
-    this._logger.info("openedPart "+level1+" "+level2);
 
     if (this.isOpened(level1, level2)) {
       this.openedPart = "";

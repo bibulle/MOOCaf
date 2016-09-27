@@ -10,17 +10,17 @@ import {Subject} from "rxjs/Subject";
 import {Logger} from "angular2-logger/app/core/logger";
 import {NotificationsService} from "angular2-notifications";
 
-import {ParagraphAbstract} from "../paragraph-abstract.component";
-import {Paragraph} from "../models/paragraph";
-import {ParagraphService} from "../services/paragraph.service";
-import {ParagraphContentType} from "../models/paragraph-content-type.enum";
+import {ParagraphAbstract} from "../paragraph/paragraph-abstract";
+import {Paragraph} from "../../models/paragraph";
+import {ParagraphService} from "../../services/paragraph.service";
+import {ParagraphContentType} from "../../models/paragraph-content-type.enum";
 
 @Component({
   moduleId: module.id,
-  selector: 'app-paragraph-form',
+  selector: 'paragraph-form',
   //inputs: ['data'],
-  templateUrl: 'paragraph-form.component.html',
-  styleUrls: ['../paragraph/paragraph.component.css', 'paragraph-form.component.css'],
+  templateUrl: 'paragraph-form.html',
+  styleUrls: ['../paragraph/paragraph.css', 'paragraph-form.css'],
   providers: [ParagraphService],
 })
 
@@ -52,7 +52,7 @@ export class ParagraphFormComponent extends ParagraphAbstract implements OnInit 
     if (this.data.content) {
       for (let c of this.data.content) {
         if (c['label']) {
-          c['label'] = this.marktownToHTML(c['label']).replace(/^<p>(.*)<\/p>[\r\n]*$/, "$1");
+          c['label'] = ParagraphAbstract.markdownToHTML(c['label']).replace(/^<p>(.*)<\/p>[\r\n]*$/, "$1");
         }
       }
     }

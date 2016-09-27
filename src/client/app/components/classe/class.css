@@ -14,3 +14,24 @@
 .part_header h3 {
   text-align: center;
 }
+
+class-schedule {
+  transform: translate3d(-0%,0,0);
+  -webkit-transition: transform .5s ease-in-out;
+    transition: transform .5s ease-in-out;
+  /*
+  display: inherit;
+  */
+}
+.scheduleClosed class-schedule {
+  transform: translate3d(-150%,0,0);
+  -webkit-transition: transform .5s ease-in-out;
+  transition: transform .5s ease-in-out;
+  /*
+  display:none;
+  */
+}
+
+button.toggleSchedule {
+  position: absolute;
+}
