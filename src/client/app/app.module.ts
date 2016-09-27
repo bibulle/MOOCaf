@@ -36,7 +36,7 @@ import {NotFoundComponent} from "./components/404/404";
 import {LogoComponent} from "./components/logo/logo";
 import {CatalogueComponent} from "./components/catalogue/catalogue";
 import {FormationCardComponent} from "./components/formation-card/formation-card";
-import {ClassComponent} from "./components/classe/class";
+import {ClassComponent} from "./components/class/class";
 import {ClassScheduleComponent} from "./components/class-schedule/class-schedule";
 import {ParagraphComponent} from "./components/paragraph/paragraph";
 import {ParagraphMarkdownComponent} from "./components/paragraph-markdown/paragraph-markdown";

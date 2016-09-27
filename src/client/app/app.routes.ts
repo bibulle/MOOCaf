@@ -6,7 +6,7 @@ import { LoginComponent } from './components/login/login';
 import {NotFoundComponent} from "./components/404/404";
 import {CatalogueComponent} from "./components/catalogue/catalogue";
 import {AuthGuard} from "./common/auth.guard";
-import {ClassComponent} from "./components/classe/class";
+import {ClassComponent} from "./components/class/class";
 
 //import { PageComponent } from './page.home/page';
 
