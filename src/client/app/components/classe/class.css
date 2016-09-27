@@ -1,0 +1,16 @@
+.formation-list {
+  overflow: auto;
+  width: 100%;
+}
+
+.formation {
+  display: flex;
+}
+
+.content {
+  overflow: auto;
+}
+
+.part_header h3 {
+  text-align: center;
+}

@@ -1,13 +1,12 @@
 // user.service.ts
 import {Injectable} from '@angular/core';
-import {Http, Headers, Response} from '@angular/http';
+import {Http} from '@angular/http';
 import {contentHeaders} from "../common/headers";
 import {JwtHelper, tokenNotExpired} from "angular2-jwt";
-import {Observable, Subject, BehaviorSubject} from 'rxjs/Rx';
+import {Observable, BehaviorSubject} from 'rxjs/Rx';
 import {Logger} from "angular2-logger/app/core/logger";
 import {User} from "../models/user";
 import {environment} from "../environment";
-import {timeout} from "rxjs/operator/timeout";
 import {NotificationsService} from "angular2-notifications";
 
 @Injectable()
@@ -100,12 +99,12 @@ export class UserService {
   }
 
 
-  isLoggedIn() {
-    this.checkAuthent();
-    return this.loggedIn;
-  }
-
-  getUser() {
-    return this.user;
-  }
+  // isLoggedIn() {
+  //   this.checkAuthent();
+  //   return this.loggedIn;
+  // }
+  //
+  // getUser() {
+  //   return this.user;
+  // }
 }

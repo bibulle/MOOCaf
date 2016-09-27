@@ -1,9 +1,9 @@
 import Mongoose = require("mongoose");
-var Schema = Mongoose.Schema;
 import * as _ from 'lodash';
+import UserFormation = require("./user-formation");
+var Schema = Mongoose.Schema;
 
 var debug = require('debug')('server:model:user');
-
 
 class IUser {
   username: string;
@@ -13,14 +13,7 @@ class IUser {
   created: Date;
   updated: Date;
 
-  formations: { [id: string] : {
-      isFavorite: boolean,
-      interest: number,
-      dateFollowed: Date,
-      dateFollowedEnd: Date,
-      percentFollowed: number
-    }
-  };
+  formations: { [id: string] : UserFormation };
 
   /**
    * Constructor
@@ -130,24 +123,41 @@ class User extends IUser {
     })
   }
 
-  static findOrCreate(user: User): Promise < User > {
-    return new Promise < IUser >((resolve, reject) => {
-      _model.findOne({id: user["_id"] || 'fakeone'})
-        .exec()
-        .then(foundUser => {
-          if (foundUser) {
-            return resolve(foundUser);
+  static updateOrCreate(user: User): Promise < User > {
+    return new Promise < User >((resolve, reject) => {
+      _model.findById(
+        user["_id"] || 'fakeone',
+        '_id',
+        (err, userId) => {
+          if (err) {
+            console.log(err);
+            return reject(err);
           }
-          _model.create(user)
-            .then(
-              user => {
-                //debug("findOrCreate : after create " + user.username);
-                resolve(user);
-              },
-              err => {
-                //debug("findOrCreate : after create " + err);
-                reject(err);
-              });
+
+          if (userId) {
+            _model.update(
+              userId,
+              user,
+              {},
+              function(err, affectedRows, user: User) {
+                if (err) {
+                  console.log(err);
+                  reject(err);
+                } else {
+                  resolve(user);
+                }
+              }
+            );
+          } else {
+            _model.create(user,
+              (err, user) => {
+                if (err) {
+                  console.log(err);
+                  return reject(err);
+                }
+                  resolve(user);
+                });
+          }
         });
     });
   }
@@ -206,7 +216,7 @@ User.count()
       _.forEach(users,
         o => {
           var user = new User(o);
-          User.findOrCreate(user)
+          User.updateOrCreate(user)
             .then(user => debug("User created : " + user.username))
             .catch(err => debug("Error creating user : " + err))
         });

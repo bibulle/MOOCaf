@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { Logger } from 'angular2-logger/core';
 import {NotificationsService} from "angular2-notifications";
+import {FormationService} from "../../services/formation.service";
 
 @Component({
   moduleId: module.id,
@@ -9,8 +10,11 @@ import {NotificationsService} from "angular2-notifications";
   styleUrls: ['app.component.css'],
 })
 export class AppComponent {
+
+  countCurrentFormations = 0;
+
   constructor(private _logger: Logger,
-              private _service: NotificationsService) {
+              private _formationService: FormationService) {
   }
 
   // notification options
@@ -30,6 +34,12 @@ export class AppComponent {
   };
 
   ngOnInit() {
+    // Has the user some "current formation"
+    this._formationService.currentFormationObservable().subscribe(
+      count => {
+        this.countCurrentFormations = count;
+      }
+    );
   }
 
 

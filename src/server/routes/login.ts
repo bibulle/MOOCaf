@@ -44,7 +44,7 @@ loginRouter.post('/', function (request: Request, response: Response, next: Next
         }
         user.hashedPassword = hash.toString("hex");
 
-        User.findOrCreate(user)
+        User.updateOrCreate(user)
           .then(user => {
             debug("201 : user created(" + user.username + ")");
 

@@ -36,6 +36,12 @@
 .formation .favorite .favorite {
   color: #cccccc;
 }
+.formation .favorite button {
+  min-width: inherit;
+  padding: 0px;
+  line-height: inherit;
+}
+
 .formation .followed {
   padding-bottom: 2px;
   font-size: 0.8em;
@@ -59,4 +65,11 @@
   background-color: #CCCCCC;
   color: #999999;
   height: 1.3em;
+}
+
+.formation {
+  cursor: pointer;
+}
+.formation:hover {
+  background-color: rgba(0,0,0,0.12);
 }

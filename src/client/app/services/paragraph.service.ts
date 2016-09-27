@@ -69,7 +69,7 @@ export class ParagraphService {
   _saveUserChoice(userChoice): Promise<Paragraph> {
     let url = `${this.paragraphsUrl}/${userChoice.paragraphId}/userchoice`;
     return this.authHttp
-      .put(url, userChoice, contentHeaders)
+      .put(url, userChoice, { headers: contentHeaders})
       .toPromise()
       .then(res => {
         //console.log(res.json().data);
@@ -87,7 +87,7 @@ export class ParagraphService {
   _checkUserChoice(userChoice): Promise<Paragraph> {
     let url = `${this.paragraphsUrl}/${userChoice.paragraphId}/userchoice/check`;
     return this.authHttp
-      .put(url, userChoice, contentHeaders)
+      .put(url, userChoice, { headers: contentHeaders})
       .toPromise()
       .then(res => {
         //console.log(res.json().data);
@@ -105,7 +105,7 @@ export class ParagraphService {
   // Add new Paragraph
   private post(paragraph: Paragraph): Promise<Paragraph> {
     return this.authHttp
-      .post(this.paragraphsUrl, JSON.stringify(paragraph), contentHeaders)
+      .post(this.paragraphsUrl, JSON.stringify(paragraph), { headers: contentHeaders})
       .toPromise()
       .then(res => {
         //this._service.success("Saved", "your change have been saved");
@@ -118,7 +118,7 @@ export class ParagraphService {
   private put(paragraph: Paragraph): Promise<Paragraph> {
     let url = `${this.paragraphsUrl}/${paragraph.id}`;
     return this.authHttp
-      .put(url, JSON.stringify(paragraph), contentHeaders)
+      .put(url, JSON.stringify(paragraph), { headers: contentHeaders})
       .toPromise()
       .then(() => {
         //this._service.success("Saved", "your change have been saved");

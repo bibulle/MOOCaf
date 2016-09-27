@@ -84,21 +84,21 @@ var _schema: Mongoose.Schema = new Mongoose.Schema({
       this.updated = new Date();
       next();
     })
-    // .post('init', function (doc) {
-    //   console.log('%s has been initialized from the db', doc['_id']);
-    // })
-    // .post('count', function (doc) {
-    //   console.log('%s has been initialized from the db', doc['_id']);
-    // })
-    // .post('validate', function (doc) {
-    //   console.log('%s has been validated (but not saved yet)', doc['_id']);
-    // })
-    // .post('save', function (doc) {
-    //   console.log('%s has been saved', doc['_id']);
-    // })
-    // .post('remove', function (doc) {
-    //   console.log('%s has been removed', doc['_id']);
-    // })
+  // .post('init', function (doc) {
+  //   console.log('%s has been initialized from the db', doc['_id']);
+  // })
+  // .post('count', function (doc) {
+  //   console.log('%s has been initialized from the db', doc['_id']);
+  // })
+  // .post('validate', function (doc) {
+  //   console.log('%s has been validated (but not saved yet)', doc['_id']);
+  // })
+  // .post('save', function (doc) {
+  //   console.log('%s has been saved', doc['_id']);
+  // })
+  // .post('remove', function (doc) {
+  //   console.log('%s has been removed', doc['_id']);
+  // })
   ;
 
 
@@ -117,8 +117,8 @@ class Formation extends IFormation {
    */
   constructor(document: {}) {
     super(document);
-    _model.on('error', function(err) {
-      debug("Error : "+err);
+    _model.on('error', function (err) {
+      debug("Error : " + err);
     });
   }
 
@@ -142,9 +142,15 @@ class Formation extends IFormation {
     })
   };
 
+  /**
+   * Find the list of formations
+   * @returns {Promise<IFormation[]>}
+   */
   static find(): Promise < Formation[] > {
     // debug("find");
     return new Promise < IFormation[] >((resolve, reject) => {
+
+      // Do the search
       _model.find({})
         .exec()
         .then(
@@ -159,7 +165,7 @@ class Formation extends IFormation {
               .then(result => resolve(result))
               .catch(err => reject(err))
           })
-        ;
+      ;
     })
   }
 
@@ -218,63 +224,63 @@ Formation.count()
     //debug("init then");
     if (count === 0) {
       var formations: {}[] = [
-          {
-            name: "Starting a project with Big Data",
-            description: "A simple MOOC to learn how to start a Big Data project",
-            note: 3.5,
-            noteCount: 4,
-            created: new Date('2016-08-12T00:00:00'),
-            updated: new Date('2016-08-12T00:10:00'),
-          },
-          {
-            name: "What's new in JDK8",
-            description: "Just learn to use JDK8 new features",
-            note: 4.0,
-            noteCount: 2,
-            created: new Date('2016-08-18T00:00:00'),
-            updated: new Date('2016-08-18T00:00:00'),
-          },
-          {
-            name: "Learning machine learning with Spark",
-            description: "A simple introduction to Machine Learning with Spark ML",
-            note: 2.0,
-            noteCount: 2,
-            created: new Date('2016-09-01T00:00:00'),
-            updated: new Date('2016-09-01T00:00:00'),
-          },
-          {
-            name: "Is JDK9 going to break my project",
-            description: "What's new in JDK9",
-            note: 4.5,
-            noteCount: 2,
-            created: new Date('2016-08-26T00:00:00'),
-            updated: new Date('2016-08-26T00:00:00'),
-          },
-          {
-            name: "Using DevNet",
-            description: "A MOOC to learn using DevNet",
-            note: 5.0,
-            noteCount: 2,
-            created: new Date('2016-08-12T00:00:00'),
-            updated: new Date('2016-08-12T00:00:00'),
-          },
-          {
-            name: "MongoDb at a glance",
-            description: "What are the essentials to start with mongoDb",
-            note: 4.5,
-            noteCount: 2,
-            created: new Date('2016-07-14T00:00:00'),
-            updated: new Date('2016-07-14T00:00:00'),
-          },
-          {
-            name: "Spring Boot",
-            description: "WTF",
-            note: 2.5,
-            noteCount: 2,
-            created: new Date('2016-10-28T00:00:00'),
-            updated: new Date('2016-10-28T00:00:00'),
-          },
-        ];
+        {
+          name: "Starting a project with Big Data",
+          description: "A simple MOOC to learn how to start a Big Data project",
+          note: 3.5,
+          noteCount: 4,
+          created: new Date('2016-08-12T00:00:00'),
+          updated: new Date('2016-08-12T00:10:00'),
+        },
+        {
+          name: "What's new in JDK8",
+          description: "Just learn to use JDK8 new features",
+          note: 4.0,
+          noteCount: 2,
+          created: new Date('2016-08-18T00:00:00'),
+          updated: new Date('2016-08-18T00:00:00'),
+        },
+        {
+          name: "Learning machine learning with Spark",
+          description: "A simple introduction to Machine Learning with Spark ML",
+          note: 2.0,
+          noteCount: 2,
+          created: new Date('2016-09-01T00:00:00'),
+          updated: new Date('2016-09-01T00:00:00'),
+        },
+        {
+          name: "Is JDK9 going to break my project",
+          description: "What's new in JDK9",
+          note: 4.5,
+          noteCount: 2,
+          created: new Date('2016-08-26T00:00:00'),
+          updated: new Date('2016-08-26T00:00:00'),
+        },
+        {
+          name: "Using DevNet",
+          description: "A MOOC to learn using DevNet",
+          note: 5.0,
+          noteCount: 2,
+          created: new Date('2016-08-12T00:00:00'),
+          updated: new Date('2016-08-12T00:00:00'),
+        },
+        {
+          name: "MongoDb at a glance",
+          description: "What are the essentials to start with mongoDb",
+          note: 4.5,
+          noteCount: 2,
+          created: new Date('2016-07-14T00:00:00'),
+          updated: new Date('2016-07-14T00:00:00'),
+        },
+        {
+          name: "Spring Boot",
+          description: "WTF",
+          note: 2.5,
+          noteCount: 2,
+          created: new Date('2016-10-28T00:00:00'),
+          updated: new Date('2016-10-28T00:00:00'),
+        },
+      ];
 
       _.forEach(formations,
         o => {

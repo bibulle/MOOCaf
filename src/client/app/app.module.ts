@@ -13,6 +13,7 @@ import {MdIconModule} from "@angular2-material/icon";
 import {MdCardModule} from "@angular2-material/card";
 import {MdInputModule} from "@angular2-material/input";
 import {MdToolbarModule} from "@angular2-material/toolbar";
+import {MdSidenavModule} from "@angular2-material/sidenav";
 //import {MdTooltipModule} from "@angular2-material/tooltip";
 
 
@@ -35,6 +36,8 @@ import {NotFoundComponent} from "./components/404/404";
 import {LogoComponent} from "./components/logo/logo";
 import {CatalogueComponent} from "./components/catalogue/catalogue";
 import {FormationCardComponent} from "./components/formation-card/formation-card";
+import {ClassComponent} from "./components/classe/class";
+import {ClassScheduleComponent} from "./components/class-schedule/class-schedule";
 //import {ParagraphComponent} from "./paragraph/paragraph.home";
 //import {ParagraphMarkdownComponent} from "./paragraph-markdown/paragraph-markdown.home";
 //import {ParagraphFormComponent} from "./paragraph-form/paragraph-form.home";
@@ -58,6 +61,7 @@ if (environment.production) {
     MdInputModule,
     MdToolbarModule,
 //    MdTooltipModule,
+    MdSidenavModule,
     routing,
 //    OVERLAY_PROVIDERS
   ],
@@ -71,6 +75,8 @@ if (environment.production) {
     LogoComponent,
     CatalogueComponent,
     FormationCardComponent,
+    ClassComponent,
+    ClassScheduleComponent,
     // ParagraphComponent,
     // ParagraphMarkdownComponent,
     // ParagraphFormComponent,
