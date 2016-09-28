@@ -40,6 +40,10 @@ md-content {
   display: block;
 }
 
+.class .md-sidenav-content {
+  overflow: inherit;
+}
+
 button, input, select, textarea {
   font-size: 100%;
   margin: 0;

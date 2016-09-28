@@ -1,6 +1,7 @@
 import Mongoose = require("mongoose");
 import * as _ from 'lodash';
-import UserFormation = require("./user-formation");
+import UserFormation = require("./iUserFormation");
+import Formation from "./formation";
 var Schema = Mongoose.Schema;
 
 var debug = require('debug')('server:model:user');
@@ -13,7 +14,7 @@ class IUser {
   created: Date;
   updated: Date;
 
-  formations: { [id: string] : UserFormation };
+  formations: { [id: string]: UserFormation };
 
   /**
    * Constructor
@@ -126,7 +127,7 @@ class User extends IUser {
   static updateOrCreate(user: User): Promise < User > {
     return new Promise < User >((resolve, reject) => {
       _model.findById(
-        user["_id"] || 'fakeone',
+        user["_id"] || undefined,
         '_id',
         (err, userId) => {
           if (err) {
@@ -139,7 +140,7 @@ class User extends IUser {
               userId,
               user,
               {},
-              function(err, affectedRows, user: User) {
+              function (err, affectedRows, user: User) {
                 if (err) {
                   console.log(err);
                   reject(err);
@@ -155,8 +156,8 @@ class User extends IUser {
                   console.log(err);
                   return reject(err);
                 }
-                  resolve(user);
-                });
+                resolve(user);
+              });
           }
         });
     });
@@ -170,55 +171,65 @@ export = User
 User.count()
   .then(count => {
     if (count === 0) {
-      var users: {}[] = [{
-        username: 'eric',
-        salt: '6MulWcxSt3p0BC4Xa59Xz9O8TUCu3VJE/cTwT2WOjws5XOnZhPfmj5Rku5EY8xzAgUDAgc5Z/6r1y6JLHtknmGINveNFJhadsAkFE+TS4EqI0Nzm8brPpZ3KZLHVLfF2tDBZtp9K5Z/l5WNOQkCFwEKaSzvbhnP+/i4hCZg2kyk=',
-        hashedPassword: 'b80776ef82727b04f57f314a655a31e926d3ea664e7295445409ef113c04c55984082a076ffbff9df377e19d96667026d498ad9bbd4f6211d6da39d7bb0fae331ad08709928513618174bc5a216ca6b74c5fd8e21cbbae0e7e44e24b6ae1d71a24f4088f10ca3533e144df1d66b9300ace3196097cf933b0a5f234b283b0fce3',
-        isAdmin: true,
-        formations: {
-          "57ddbb4864ba23188576d940": {
+
+      // get formation ids
+      Formation.find()
+        .then(formations => {
+
+          let fIds = _.shuffle(_.map(formations, f => f['id']))
+
+          let idNum = 0;
+          var users: {}[] = [{
+            username: 'eric',
+            salt: '6MulWcxSt3p0BC4Xa59Xz9O8TUCu3VJE/cTwT2WOjws5XOnZhPfmj5Rku5EY8xzAgUDAgc5Z/6r1y6JLHtknmGINveNFJhadsAkFE+TS4EqI0Nzm8brPpZ3KZLHVLfF2tDBZtp9K5Z/l5WNOQkCFwEKaSzvbhnP+/i4hCZg2kyk=',
+            hashedPassword: 'b80776ef82727b04f57f314a655a31e926d3ea664e7295445409ef113c04c55984082a076ffbff9df377e19d96667026d498ad9bbd4f6211d6da39d7bb0fae331ad08709928513618174bc5a216ca6b74c5fd8e21cbbae0e7e44e24b6ae1d71a24f4088f10ca3533e144df1d66b9300ace3196097cf933b0a5f234b283b0fce3',
+            isAdmin: true,
+            formations: {}
+          }];
+          users[0]['formations'][fIds[(idNum++) % fIds.length]] = {
             isFavorite: true,
             interest: 0.8,
-            dateFollowed: new Date('2016-08-14T01:00:00'),
+            dateFollowed: new Date('2016-08-14T00:00:00'),
             dateFollowedEnd: null,
             percentFollowed: 0.6,
-          },
-          "57ddbb4864ba23188576d941": {
+          };
+          users[0]['formations'][fIds[(idNum++) % fIds.length]] = {
             isFavorite: false,
             interest: 0.2,
             dateFollowed: new Date('2016-08-22T00:00:00'),
             dateFollowedEnd: null,
             percentFollowed: 0.9,
-          },
-          "57ddbb4864ba23188576d942": {
+          };
+          users[0]['formations'][fIds[(idNum++) % fIds.length]] = {
             isFavorite: false,
             interest: 0.8,
             dateFollowed: new Date('2016-09-23T00:00:00'),
             dateFollowedEnd: new Date('2016-10-01T00:00:00'),
             percentFollowed: 1,
-          },
-          "57ddbb4864ba23188576d945": {
+          };
+          users[0]['formations'][fIds[(idNum++) % fIds.length]] = {
             isFavorite: false,
             interest: 0.1,
             dateFollowed: new Date('2016-08-12T00:00:00'),
             dateFollowedEnd: null,
             percentFollowed: 0.0,
-          },
-          "57ddbb4864ba23188576d946": {
+          };
+          users[0]['formations'][fIds[(idNum++) % fIds.length]] = {
             isFavorite: false,
             interest: 0.1,
             dateFollowed: new Date('2016-10-31T00:00:00'),
-            dateFollowedEnd: new Date('2016-11-10T00:00:00'),
+            dateFollowedEnd: new Date('2016-11-11T00:00:00'),
             percentFollowed: 1,
-          },
-        }
-      }];
-      _.forEach(users,
-        o => {
-          var user = new User(o);
-          User.updateOrCreate(user)
-            .then(user => debug("User created : " + user.username))
-            .catch(err => debug("Error creating user : " + err))
+          };
+
+          _.forEach(users,
+            o => {
+              var user = new User(o);
+              //console.log(user);
+              User.updateOrCreate(user)
+                .then(user => debug("User created : " + user.username))
+                .catch(err => debug("Error creating user : " + err))
+            });
         });
     }
   })

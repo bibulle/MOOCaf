@@ -1,3 +1,4 @@
+import UserChoices = require("./iUserChoices");
 
 class UserFormation {
   isFavorite: boolean;
@@ -5,6 +6,8 @@ class UserFormation {
   dateFollowed: Date;
   dateFollowedEnd: Date;
   percentFollowed: number;
+
+  userChoices: { [id: string]: UserChoices };
 
   constructor() {
 

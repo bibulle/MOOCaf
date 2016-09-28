@@ -7,6 +7,15 @@
   display: flex;
 }
 
+.formationTitle {
+  text-align: center;
+  margin-bottom: 0;
+}
+
+.sidenavContent {
+  height: 100%;
+}
+
 .content {
   overflow: auto;
 }
@@ -17,10 +26,15 @@
 
 md-sidenav-layout md-sidenav {
   box-shadow: none;
-  background-color: inherit;
+  background-color: #E0F2F1;
 }
 
 .toggleSchedule {
   position: absolute;
+  left: -5px;
+  background-color: #E0F2F1;
 }
 
+md-content.class {
+  padding-left: 0;
+}

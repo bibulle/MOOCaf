@@ -11,24 +11,27 @@
   <div class="content" layout="row" layout-wrap layout-align="space-around" layout-margin>
   </div>
 </md-content>
-<md-content class="class" [class.scheduleClosed]="scheduleClosed" flex="100" layout="row" layout-align="start stretch"
+<md-content class="class" flex="100" layout="column" layout-align="start stretch"
             *ngIf="formation">
+  <H1 class="formationTitle">{{formation.name}}</H1>
   <md-sidenav-layout flex="100">
 
-    <md-sidenav #schedule (open)="scheduleButton.focus()" [opened]="scheduleClosed" mode="side" align="start">
+    <md-sidenav #schedule (open)="scheduleButton.focus()" [opened]="true" mode="side" align="start">
       <class-schedule [formation]="formation" (notifySelectedPart)='onNotifySelectedPart($event)' layout="row"
                       layout-align="start stretch"></class-schedule>
     </md-sidenav>
-    <div layout-padding class="content" layout="column" layout-align="start stretch" >
+    <div layout="column" layout-align="start stretch" class="sidenavContent">
       <button #scheduleButton class="toggleSchedule md-primary" md-icon-button (click)="schedule.toggle()">
         <md-icon>menu</md-icon>
       </button>
       <div class="part_header">
         <h3>{{selectedPart.title}}</h3>
       </div>
-      <div class="page-navigation" *ngIf="selectedPartLevel > 1">Pages navigation....</div>
-      <div class="page">
-        <paragraph *ngFor="let paragraph of selectedPart.contents" [data]="paragraph"></paragraph>
+      <div class="content" layout="column" layout-align="start stretch">
+        <div class="page-navigation" *ngIf="selectedPartLevel > 1" >Pages navigation....</div>
+        <div class="page" layout="column" layout-align="start stretch">
+          <paragraph *ngFor="let paragraph of selectedPart.contents" [data]="paragraph"></paragraph>
+        </div>
       </div>
 
     </div>

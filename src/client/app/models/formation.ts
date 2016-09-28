@@ -1,5 +1,6 @@
 
 import {Paragraph} from "./paragraph";
+
 export class Formation {
 
   id: string;

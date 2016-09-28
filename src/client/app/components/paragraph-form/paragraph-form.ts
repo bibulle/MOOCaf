@@ -46,7 +46,20 @@ export class ParagraphFormComponent extends ParagraphAbstract implements OnInit 
     // Used to get access of the enum in the template (won't be in the model)
     this.data.paragraphContentType = ParagraphContentType;
 
+    // if no user choice for checkbox type, init with empty array
+    if (this.data.userChoice == null) {
+      for (let paragraph of this.data.content) {
+        //if (paragraph.type == ParagraphContentType[ParagraphContentType.Checkbox]) {
+        if (paragraph.type == ParagraphContentType.Checkbox) {
+          this.data.userChoice = [];
+        }
+      }
+    }
 
+    // if no user check count... init to zero
+    if (this.data.userCheckCount == null) {
+      this.data.userCheckCount = 0;
+    }
 
     // Change Markdown to HTM in each label
     if (this.data.content) {

@@ -28,7 +28,9 @@ export class ParagraphComponent implements OnInit {
 
   ngOnInit() {
 
-    console.log(this.data);
+
+
+    //console.log(this.data);
 
     if (this.rawContent) {
       this.data = new Paragraph({

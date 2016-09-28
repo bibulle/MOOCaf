@@ -22,8 +22,6 @@ export const routes = [
   { path: 'classes/:id',  component: ClassComponent, canActivate: [AuthGuard] },
   // Show the 404 page for any routes that don't exist.
   { path: '**',            component: NotFoundComponent }
-//  { path: 'signup',       home: SignupComponent },
-//  { path: 'page',         home: PageComponent, canActivate: [AuthGuard] }
 ];
 
 

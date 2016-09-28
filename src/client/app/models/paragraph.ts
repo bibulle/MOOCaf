@@ -1,13 +1,11 @@
 import {ParagraphType} from "./paragraph-type.enum";
 import {ParagraphContent} from "./paragraph-content";
-import {ParagraphContentText} from "./paragraph-content-text";
-import {ParagraphContentQuestion} from "./paragraph-content-question";
 import {ParagraphContentType} from "./paragraph-content-type.enum";
 
 
 export class Paragraph {
 
-  // Pragraph Unique Id
+  // Paragraph Unique Id
   id: string;
 
   // The type
@@ -35,7 +33,7 @@ export class Paragraph {
 
     // Init attributes
     this.id = options.id;
-    this.type = options.type;
+    //this.type = options.type;
     this.userChoice = options.userChoice;
     this.userCheckOK = options.userCheckOK;
     this.userCheckCount = options.userCheckCount;
@@ -44,12 +42,12 @@ export class Paragraph {
 
     // push contents
     for (let c of options.content) {
-      this.content.push(c);
-      if (!this.userChoice && (c.type === ParagraphContentType.Checkbox)) {
-        this.userChoice = [];
-      } else if (!this.userChoice && (c.type === ParagraphContentType.Text)) {
-        this.userChoice = "";
-      }
+     //this.content.push(c);
+     if (!this.userChoice && (c.type === ParagraphContentType.Checkbox)) {
+       this.userChoice = [];
+     } else if (!this.userChoice && (c.type === ParagraphContentType.Text)) {
+       this.userChoice = "";
+     }
     }
 
     /*if (this.type == ParagraphType.MarkDown) {

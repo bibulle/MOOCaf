@@ -1,6 +1,6 @@
-import {ParagraphContentType} from "./paragraphContentType";
-import {ParagraphType} from "./paragraphType";
-import {ParagraphContent} from "./paragraphContent";
+import {ParagraphContentType} from "./eParagraphContentType";
+import {ParagraphType} from "./eParagraphType";
+import {IParagraphContent} from "./iParagraphContent";
 import * as _ from 'lodash';
 import Mongoose = require("mongoose");
 import db from "./db";
@@ -11,7 +11,7 @@ class IParagraph {
   type: ParagraphType;
 
   // The markdown rawContent
-  public content: ParagraphContent[] = new Array<ParagraphContent>();
+  public content: IParagraphContent[] = new Array<IParagraphContent>();
 
   // if it's form... the correct answer
   answer: any;
@@ -38,7 +38,7 @@ class IParagraph {
     _.merge(this, document);
 
     if (!this.content) {
-      this.content = new Array<ParagraphContent>();
+      this.content = new Array<IParagraphContent>();
     }
 
   }
@@ -60,7 +60,7 @@ var _schema: Mongoose.Schema = new Mongoose.Schema({
     },
     content: {
       type: [],
-      default: new Array<ParagraphContent>()
+      default: new Array<IParagraphContent>()
     },
     answer: {
       type: Mongoose.Schema.Types.Mixed,

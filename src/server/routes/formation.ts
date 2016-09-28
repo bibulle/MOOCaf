@@ -3,11 +3,11 @@ import * as jwt from "express-jwt";
 import * as _ from "lodash";
 import {secret} from "../config";
 var debug = require('debug')('server:paragraph');
-import Formation = require("../models/formation");
+import Formation from "../models/formation";
 import User = require("../models/user");
 import UserChoice = require("../models/userChoice");
 import isUndefined = require("lodash/isUndefined");
-import UserFormation = require("../models/user-formation");
+import UserFormation = require("../models/iUserFormation");
 
 
 const formationRouter: Router = Router();

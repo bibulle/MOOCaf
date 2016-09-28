@@ -55,9 +55,11 @@ export class ParagraphService {
    * @returns {any}
    */
   save(paragraph: Paragraph): Promise<Paragraph> {
+/*
     if (paragraph.id) {
       return this.put(paragraph);
     }
+*/
     return this.post(paragraph);
   }
 
@@ -136,7 +138,7 @@ export class ParagraphService {
 
     var userChoice = {
       paragraphId: paragraph.id,
-      userChoice: paragraph.userChoice
+      // userChoice: paragraph.userChoice
     }
 
     this._logger.debug("saveUserChoice : " + JSON.stringify(userChoice));
@@ -148,7 +150,7 @@ export class ParagraphService {
 
     var userChoice = {
       paragraphId: paragraph.id,
-      userChoice: paragraph.userChoice
+      // userChoice: paragraph.userChoice
     }
 
     this._logger.debug("checkUserChoice : " + JSON.stringify(userChoice));
@@ -156,6 +158,7 @@ export class ParagraphService {
     return this._checkUserChoice(userChoice)
       .then(paragraph => {
         //this._logger.debug(paragraph);
+/*
         if (paragraph.userCheckOK === true) {
           //this._service.success("Correct !!", "Your answer is correct");
         } else {
@@ -165,6 +168,7 @@ export class ParagraphService {
             //this._service.alert("Wrong answer !!", "Your answer is not correct (" + (paragraph.maxCheckCount - paragraph.userCheckCount) + " try remaining)");
           }
         }
+*/
         return paragraph;
       })
       .catch(error => this.handleError(error, this._logger));
