@@ -26,7 +26,7 @@ export class ClassComponent {
   private selectedPart: FormationPart;
   private selectedPartLevel: number;
 
-  //private scheduleClosed = false;
+  private scheduleClosed = true;
 
   constructor(private route: ActivatedRoute,
               public router: Router,
@@ -84,6 +84,7 @@ export class ClassComponent {
           .then(formation =>
           {
             // TODO : Will be in services and database... for now, hard coded
+/*
             formation.parts = [
               {
                 title: "Week 1 : Big Data, how it works ?",
@@ -354,11 +355,13 @@ export class ClassComponent {
                 contents: null
               },
             ];
+*/
 
             // TODO : END
 
 
             this.formation = formation;
+            console.log(formation);
 
           })
           .catch(err => {
@@ -402,8 +405,8 @@ export class ClassComponent {
   /**
    * The schedule must be shown (or not)
    */
-  //toggleSchedule() {
-  //  this.scheduleClosed = !this.scheduleClosed;
-  //}
+  toggleSchedule() {
+   this.scheduleClosed = !this.scheduleClosed;
+  }
 
 }

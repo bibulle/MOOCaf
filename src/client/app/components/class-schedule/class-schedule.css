@@ -1,9 +1,12 @@
 .schedule {
-  padding-right: 8px;
+  /*padding-right: 8px;*/
 }
 
 .level1 {
-  padding: 0.6em;
+  padding-top: 0.6em;
+  padding-bottom: 0.6em;
+  padding-right: 0;
+  padding-left: 0;
   /*margin: 0.2em;*/
 }
 .level1 button {
@@ -14,7 +17,7 @@
   border-radius: 3px;
 
   background-color: inherit;
-  border: solid 1px #DDDDDD;
+  border: none;
   text-align: left ;
   padding: 10px 0;
 }
@@ -26,18 +29,19 @@
   border-radius: 3px;
 
   background-color: inherit;
-  border: solid 1px #DDDDDD;
+  border: none;
   text-align: left ;
   font-size: 0.9em;
 
-  margin-left: 10px;
+  margin-left: 30px;
   margin-top: 3px;
 
   padding: 10px 5px;
 }
 
 .level1 button.selected, .level2 button.selected {
-  background-color: #DDDDDD;
+  /*background-color: #DDDDDD;*/
+  font-weight: bold;
 }
 
 .level1 button:hover, .level2 button:hover {
