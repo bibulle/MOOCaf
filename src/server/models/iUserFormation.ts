@@ -1,18 +1,17 @@
-import UserChoices = require("./iUserChoices");
+import IUserChoices = require("./iUserChoices");
 
-class UserFormation {
+class IUserFormation {
   isFavorite: boolean;
   interest: number;
   dateFollowed: Date;
   dateFollowedEnd: Date;
   percentFollowed: number;
 
-  userChoices: { [id: string]: UserChoices };
+  userChoices: { [id: string]: IUserChoices };
 
   constructor() {
-
   }
 }
 
 
-export = UserFormation;
+export = IUserFormation;

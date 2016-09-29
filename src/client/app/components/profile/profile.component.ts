@@ -27,7 +27,6 @@ export class ProfileComponent {
     this._userService.checkAuthent();
     this._userService.userObservable().subscribe(
       user => {
-        //console.log(user);
         this.user = user;
       });
   }

@@ -141,8 +141,6 @@ export class ParagraphService {
       // userChoice: paragraph.userChoice
     }
 
-    this._logger.debug("saveUserChoice : " + JSON.stringify(userChoice));
-
     return this._saveUserChoice(userChoice);
   }
 
@@ -153,11 +151,8 @@ export class ParagraphService {
       // userChoice: paragraph.userChoice
     }
 
-    this._logger.debug("checkUserChoice : " + JSON.stringify(userChoice));
-
     return this._checkUserChoice(userChoice)
       .then(paragraph => {
-        //this._logger.debug(paragraph);
 /*
         if (paragraph.userCheckOK === true) {
           //this._service.success("Correct !!", "Your answer is correct");

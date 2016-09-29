@@ -51,11 +51,14 @@ export default class Formation extends IFormation {
 
       // Do the search
       modelIFormation.find({})
+        .lean()
         .exec()
         .then(
           formations => {
-            // debug("find then");
-            resolve(formations);
+            resolve(formations.map(f => {
+              f.id = f._id.toString();
+              return f;
+            }));
           },
           err => {
             // debug("find " + err);
@@ -71,10 +74,12 @@ export default class Formation extends IFormation {
   static findById(id: string): Promise < Formation > {
     return new Promise < IFormation >((resolve, reject) => {
       modelIFormation.findById(id)
+        .lean()
         .exec()
         .then(
           formation => {
-            debug(formation);
+            //debug(formation);
+            formation.id = formation._id.toString();
             resolve(formation);
           },
           err => {
@@ -90,10 +95,12 @@ export default class Formation extends IFormation {
       if (formation["_id"]) {
         formation.updated = new Date();
         modelIFormation.findByIdAndUpdate(formation["_id"], formation)
+          .lean()
           .exec()
           .then(
-            paragraph => {
-              resolve(paragraph);
+            formation => {
+              formation.id = formation._id.toString();
+              resolve(formation);
             },
             err => {
               reject(err);
@@ -101,8 +108,10 @@ export default class Formation extends IFormation {
       } else {
         modelIFormation.create(formation)
           .then(
-            paragraph => {
-              resolve(paragraph);
+            formation => {
+              formation = formation['_doc'];
+              formation.id = formation._id.toString();
+              resolve(formation);
             },
             err => {
               reject(err);
@@ -119,7 +128,6 @@ export default class Formation extends IFormation {
 // Init database if it's empty
 Formation.count()
   .then(count => {
-    debug("init then");
     if (count === 0) {
       var formations: {}[] = [
         {

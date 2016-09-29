@@ -27,7 +27,6 @@ export class FormationCardComponent {
 
   toggleFavorite(event) {
     event.stopPropagation();
-    //this._logger.debug("toogleFavorite()");
 
     this.formation.isFavorite = !this.formation.isFavorite;
 

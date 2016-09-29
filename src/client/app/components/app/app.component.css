@@ -50,11 +50,10 @@ md-toolbar button {
 }
 .notificationMessage.hide {
   color: rgba(0,0,0,0.0);
-  animation: notif-anim 4s ease;
+  animation: notif-anim 2s ease;
 }
 .notificationMessage.show {
   color: rgba(0,0,0,0.6);
-  animation: notif-anim 4s ease reverse;
 }
 @keyframes notif-anim {
   0%   {color: rgba(0,0,0,0.6);}
