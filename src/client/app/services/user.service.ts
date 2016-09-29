@@ -110,4 +110,29 @@ export class UserService {
   getUser() {
     return this.user;
   }
+
+  signup(username, password, firstname, lastname, email): Promise<void> {
+    let body = JSON.stringify({username, password, firstname, lastname, email});
+
+    return new Promise<void>((resolve, reject) => {
+      this.http
+        .post(
+          environment.serverUrl + 'users',
+          body,
+          {headers: contentHeaders}
+        )
+        .timeout(3000, new Error('Connection timeout exceeded'))
+        .toPromise()
+        .then(res => {
+          this._notifService.success("User created", "the user "+firstname+" "+lastname+' has been created');
+          resolve();
+        })
+        .catch(error => {
+          var msg = error._body || error.statusText || error.message || 'Connection error';
+          this._logger.error('Signup', msg);
+          this._notifService.error('Signup', msg);
+          reject();
+        })
+    });
+  }
 }

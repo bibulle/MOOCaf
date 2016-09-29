@@ -1,26 +1,19 @@
-<div class="signup center-block jumbotron">
-  <h1>Signup</h1>
-  <form role="form" (submit)="signup($event, username.value, password.value)">
-    <div class="form-group">
-      <label for="username">Username</label>
-      <input type="text" #username class="form-control" id="username" placeholder="Username">
-    </div>
-    <div class="form-group">
-      <label for="password">Password</label>
-      <input type="password" #password class="form-control" id="password" placeholder="Password">
-    </div>
-    <div class="form-group">
-      <label for="Firstname">Firstname</label>
-      <input type="text" #firstname class="form-control" id="firstname" placeholder="Firstname">
-    </div>
-    <div class="form-group">
-      <label for="Lastname">Lastname</label>
-      <input type="text" #lastname class="form-control" id="lastname" placeholder="Lastname">
-    </div>
-    <div class="form-group">
-      <label for="Email">Email</label>
-      <input type="text" #lastname class="form-control" id="email" placeholder="Email">
-    </div>
-    <button type="submit" class="btn btn-default">Submit</button>
+<md-content flex="100" layout-align="center center" layout="row" class="signup">
+  <md-card flex="50">
+    <md-card-title>
+      Signup
+    </md-card-title>
+  <form role="form" (submit)="signup($event, username.value, password.value, firstname.value, lastname.value, email.value)">
+    <md-card-content>
+      <md-input placeholder="Username"  required                 #username></md-input>
+      <md-input placeholder="Password"  required type="password" #password></md-input>
+      <md-input placeholder="Firstname" required                 #firstname></md-input>
+      <md-input placeholder="Lastname"  required                 #lastname></md-input>
+      <md-input placeholder="Email"     required type="email"    #email></md-input>
+    </md-card-content>
+    <md-card-actions align="end">
+      <button md-raised-button color="primary" type="submit">Submit</button>
+    </md-card-actions>
   </form>
-</div>
+  </md-card>
+</md-content>

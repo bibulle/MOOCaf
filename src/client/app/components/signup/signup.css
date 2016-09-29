@@ -1,4 +1,8 @@
+d-content md-card {
+  max-height: initial;
+}
 
-.signup {
-  width: 40%;
+
+md-input {
+  width: 100%;
 }
