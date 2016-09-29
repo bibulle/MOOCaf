@@ -13,7 +13,7 @@ var debug = require('debug')('server:route:login');
 const loginRouter: Router = Router();
 
 function createToken(user) {
-  return sign(_.pick(user, ['username', 'isAdmin', 'id']), secret, {expiresIn: "7d"});
+  return sign(_.pick(user, ['username', 'firstname', 'lastname', 'email', 'isAdmin', 'id']), secret, {expiresIn: "7d"});
 }
 
 // ====================================
@@ -34,7 +34,7 @@ loginRouter.post('/', function (request: Request, response: Response, next: Next
         return response.status(400).send("A user with that username already exists");
       }
 
-      var user = new User(_.pick(request.body, 'username', 'extra'));
+      var user = new User(_.pick(request.body, 'username', 'firstname', 'lastname', 'email'));
 
       // Hash password
       user.salt = randomBytes(128).toString("base64");
@@ -48,15 +48,13 @@ loginRouter.post('/', function (request: Request, response: Response, next: Next
 
         User.findOrCreate(user)
           .then(user => {
-            debug("201 : user created(" + user.username + ")");
+            debug("200 : user created(" + user.username + ")");
 
-            response.status(201).send({
-              id_token: createToken(user)
-            })
+            response.status(200).send("User created");
           })
           .catch(err => {
             console.log(err);
-            response.status(500).send("Cannot create user " + err);
+            response.status(500).send("Cannot create user : " + err);
           })
       });
 

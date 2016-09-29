@@ -2,7 +2,7 @@ import {NgModule, enableProdMode, CUSTOM_ELEMENTS_SCHEMA} from "@angular/core";
 import {BrowserModule} from "@angular/platform-browser";
 import {HttpModule} from "@angular/http";
 import {FormsModule} from "@angular/forms";
-import {SimpleNotificationsModule, SimpleNotificationsComponent} from "angular2-notifications";
+import {SimpleNotificationsModule} from "angular2-notifications";
 import {LOG_LOGGER_PROVIDERS, INFO_LOGGER_PROVIDERS} from "angular2-logger/core";
 import {AUTH_PROVIDERS} from "angular2-jwt";
 
@@ -31,6 +31,7 @@ import {AboutComponent} from "./components/about/about.component";
 import {ProfileComponent} from "./components/profile/profile.component";
 import {HomeComponent} from "./components/home/home";
 import {LoginComponent} from "./components/login/login";
+import {SignupComponent} from "./components/signup/signup";
 import {NotFoundComponent} from "./components/404/404";
 import {LogoComponent} from "./components/logo/logo";
 import {CatalogueComponent} from "./components/catalogue/catalogue";
@@ -66,6 +67,7 @@ if (environment.production) {
     AboutComponent,
     HomeComponent,
     LoginComponent,
+    SignupComponent,
     NotFoundComponent,
     LogoComponent,
     CatalogueComponent,

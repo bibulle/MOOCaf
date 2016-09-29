@@ -1,0 +1,19 @@
+<md-content flex="100" layout-align="center center" layout="row" class="signup">
+  <md-card flex="50">
+    <md-card-title>
+      Signup
+    </md-card-title>
+  <form role="form" (submit)="signup($event, username.value, password.value, firstname.value, lastname.value, email.value)">
+    <md-card-content>
+      <md-input placeholder="Username"  required                 #username></md-input>
+      <md-input placeholder="Password"  required type="password" #password></md-input>
+      <md-input placeholder="Firstname" required                 #firstname></md-input>
+      <md-input placeholder="Lastname"  required                 #lastname></md-input>
+      <md-input placeholder="Email"     required type="email"    #email></md-input>
+    </md-card-content>
+    <md-card-actions align="end">
+      <button md-raised-button color="primary" type="submit">Submit</button>
+    </md-card-actions>
+  </form>
+  </md-card>
+</md-content>
