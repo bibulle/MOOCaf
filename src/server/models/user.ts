@@ -99,9 +99,11 @@ class User extends IUser {
   static findById(id: string): Promise < User > {
     return new Promise < IUser >((resolve, reject) => {
       _model.findById(id)
+        .lean()
         .exec()
         .then(
           user => {
+            user.id = user._id.toString();
             resolve(user);
           },
           err => {
@@ -113,9 +115,11 @@ class User extends IUser {
   static findByUsername(userName: string): Promise < User > {
     return new Promise < IUser >((resolve, reject) => {
       _model.findOne({username: userName})
+        .lean()
         .exec()
         .then(
           user => {
+            user.id = user._id.toString();
             resolve(user);
           },
           err => {
@@ -126,58 +130,51 @@ class User extends IUser {
 
   static updateOrCreate(user: User): Promise < User > {
     return new Promise < User >((resolve, reject) => {
-      _model.findById(
-        user["_id"] || undefined,
-        '_id',
-        (err, userId) => {
-          if (err) {
-            console.log(err);
-            return reject(err);
-          }
 
-          if (userId) {
-            _model.update(
-              userId,
-              user,
-              {},
-              function (err, affectedRows, user: User) {
-                if (err) {
-                  console.log(err);
-                  reject(err);
-                } else {
-                  resolve(user);
-                }
-              }
-            );
-          } else {
-            _model.create(user,
-              (err, user) => {
-                if (err) {
-                  console.log(err);
-                  return reject(err);
-                }
-                resolve(user);
-              });
-          }
-        });
+      //debug(user.formations['57eaa5673f918f13b01f2cac']);
+      if (user["_id"]) {
+        user.updated = new Date();
+        _model.findByIdAndUpdate(user["_id"], user)
+          .lean()
+          .exec()
+          .then(
+            user => {
+              user.id = user._id.toString();
+              //debug(user.formations['57eaa5673f918f13b01f2cac']);
+              resolve(user);
+            },
+            err => {
+              reject(err);
+            });
+      } else {
+        _model.create(user)
+          .then(
+            user => {
+              user = user['_doc'];
+              user.id = user._id.toString();
+              //debug(user.formations['57eaa5673f918f13b01f2cac']);
+              resolve(user);
+            },
+            err => {
+              reject(err);
+            });
+      }
     });
   }
-
 }
 
-export = User
+export = User;
 
 // Init database if it's empty
-User.count()
+User
+  .count()
   .then(count => {
     if (count === 0) {
-
       // get formation ids
-      Formation.find()
+      Formation
+        .find()
         .then(formations => {
-
           let fIds = _.shuffle(_.map(formations, f => f['id']))
-
           let idNum = 0;
           var users: {}[] = [{
             username: 'eric',
@@ -222,14 +219,14 @@ User.count()
             percentFollowed: 1,
           };
 
-          _.forEach(users,
-            o => {
-              var user = new User(o);
-              //console.log(user);
-              User.updateOrCreate(user)
-                .then(user => debug("User created : " + user.username))
-                .catch(err => debug("Error creating user : " + err))
-            });
+          _.forEach(users, o => {
+            var user = new User(o);
+            //console.log(user);
+            User
+              .updateOrCreate(user)
+              .then(user => debug("User created : " + user.username))
+              .catch(err => debug("Error creating user : " + err))
+          });
         });
     }
   })

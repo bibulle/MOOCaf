@@ -57,7 +57,7 @@ export class AppComponent {
         this.notificationTimeout = setTimeout(() => {
           this.showMessage = false;
         },
-        5000);
+        2000);
       })
 
   }

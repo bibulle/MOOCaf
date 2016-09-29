@@ -2,7 +2,7 @@ import {Component} from "@angular/core";
 import {Router, ActivatedRoute, Params} from "@angular/router";
 
 import {Logger} from "angular2-logger/core";
-import {NotificationsService} from "angular2-notifications";
+import {NotificationService} from "../../services/notification.service";
 
 import {FormationService} from "../../services/formation.service";
 import {Formation, FormationPart} from "../../models/formation";
@@ -32,7 +32,7 @@ export class ClassComponent {
               public router: Router,
               private _logger: Logger,
               private _formationService: FormationService,
-              private _notificationService: NotificationsService) {
+              private _notificationService: NotificationService) {
 
     /// Get current formation count
     this._formationService.currentFormationObservable().subscribe(
@@ -83,6 +83,10 @@ export class ClassComponent {
         this._formationService.getFormation(id)
           .then(formation =>
           {
+            // If no part... add an fake one
+            if (formation.parts.length == 0) {
+              formation.parts.push(new FormationPart({title: "Not yet defined"}));
+            }
 
             this.formation = formation;
             //console.log(formation);
@@ -100,8 +104,6 @@ export class ClassComponent {
 
 
     });
-
-
 
 
   }

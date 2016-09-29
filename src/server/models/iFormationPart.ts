@@ -6,7 +6,7 @@ var debug = require('debug')('server:model:formation');
 export class IFormationPart {
   title: String;
   parts: IFormationPart[];
-  contents: IParagraph
+  contents: IParagraph[]
 }
 
 /**

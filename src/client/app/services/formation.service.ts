@@ -7,6 +7,7 @@ import {UserService} from "./user.service";
 import {Formation} from "../models/formation";
 import {environment} from "../environment";
 import {Observable, BehaviorSubject} from 'rxjs/Rx';
+import {Paragraph} from "../models/paragraph";
 
 @Injectable()
 export class FormationService {
@@ -24,7 +25,11 @@ export class FormationService {
     // Subscribe to user changes to know if there is a current class
     this.userService.userObservable().subscribe(
       user => {
-        this.checkCurrentFormation();
+        if (user.username) {
+          this.checkCurrentFormation();
+        } else {
+          this.currentFormationCountSubject.next(0);
+        }
       });
 
 
@@ -179,10 +184,53 @@ export class FormationService {
       isFavorite: formation.isFavorite
     };
 
-    //this._logger.debug("saveUserChoice : " + JSON.stringify(userChoice));
-
     return this._saveUserValues(userChoice);
   }
+
+  /**
+   * save formation paragraphs (user choice)
+   * @param fullUserChoice (UID and userchoice)
+   * @returns {Promise<void>|Promise<T>}
+   */
+  saveUserChoice(formationId: string, paragraph: Paragraph): Promise<Paragraph> {
+
+    var userChoice = {
+      userChoice: paragraph.userChoice
+    }
+
+    let url = `${this.formationsUrl}/${formationId}/${paragraph['_id']}/userChoice`;
+    return this.authHttp
+      .put(url, userChoice, { headers: contentHeaders})
+      .toPromise()
+      .then(res => {
+        //console.log('======');
+        //console.log(res);
+        //console.log('======');
+        //this._service.success("Saved", "your change have been saved");
+        return res.json().data;
+      })
+      .catch(error => this.handleError(error, this._logger));
+  }
+
+  checkUserChoice(formationId: string, paragraph: Paragraph): Promise<Paragraph> {
+
+    var userChoice = {
+      userChoice: paragraph.userChoice
+    }
+
+    let url = `${this.formationsUrl}/${formationId}/${paragraph['_id']}/userchoice/check`;
+    return this.authHttp
+      .put(url, userChoice, { headers: contentHeaders})
+      .toPromise()
+      .then(res => {
+        //console.log(res.json().data);
+        //this._service.success("Saved", "your change have been saved");
+        return res.json().data;
+      })
+      .catch(error => this.handleError(error, this._logger));
+  }
+
+
 
   private handleError(error: any, logger) {
 

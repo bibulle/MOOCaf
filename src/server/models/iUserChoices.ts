@@ -1,5 +1,5 @@
 
-class UserChoices {
+class IUserChoices {
   userCheckCount: number;
   userCheckOK: boolean;
   userChoice: any;
@@ -12,4 +12,4 @@ class UserChoices {
 }
 
 
-export = UserChoices;
+export = IUserChoices;
