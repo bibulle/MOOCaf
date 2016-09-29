@@ -28,6 +28,11 @@ export class FormationPart {
 
   contents: Paragraph[];
 
+  constructor(option) {
+    this.title = option.title;
+    this.parts = option.parts;
+    this.contents = option.contents;
+  }
 }
 
 

@@ -25,7 +25,8 @@ export class FormationCardComponent {
   ngOnInit() {
   }
 
-  toggleFavorite() {
+  toggleFavorite(event) {
+    event.stopPropagation();
     //this._logger.debug("toogleFavorite()");
 
     this.formation.isFavorite = !this.formation.isFavorite;
@@ -42,7 +43,8 @@ export class FormationCardComponent {
 
   }
 
-  launchClass() {
+  launchClass(event) {
+    event.stopPropagation();
     this.router.navigate(['/classes', this.formation.id]);
   }
 

@@ -1,4 +1,4 @@
-<md-card class="formation" flex="100" (click)="launchClass()">
+<md-card class="formation" flex="100" (click)="launchClass($event)">
   <md-card-subtitle >{{formation.created | date}}</md-card-subtitle>
   <md-card-title>{{formation.name}}</md-card-title>
   <md-card-content>
@@ -22,7 +22,7 @@
       </div>
     </div>
     <span class="favorite">
-      <button md-button id="favorite-button" aria-label="Toggle this formation as your favorite or not" (click)="toggleFavorite()" class="md-icon-button">
+      <button md-button id="favorite-button" aria-label="Toggle this formation as your favorite or not" (click)="toggleFavorite($event)" class="md-icon-button">
         <md-icon *ngIf="!formation.isFavorite" aria-label="Not favorite" title="Not favorite" class="notFavorite">favorite_border</md-icon>
         <md-icon *ngIf="formation.isFavorite"  aria-label="Favorite"     title="Favorite"     class="favorite"   >favorite</md-icon>
       </button>
