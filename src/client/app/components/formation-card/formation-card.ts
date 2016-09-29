@@ -2,8 +2,8 @@ import {Component, Input} from "@angular/core";
 //import {Logger} from "angular2-logger/core";
 import {Formation} from "../../models/formation";
 import {FormationService} from "../../services/formation.service";
-import {NotificationsService} from "angular2-notifications";
 import {Router} from "@angular/router";
+import {NotificationService} from "../../services/notification.service";
 
 @Component({
   moduleId: module.id,
@@ -19,7 +19,7 @@ export class FormationCardComponent {
   constructor(public router: Router,
               //private _logger: Logger,
               private _formationService: FormationService,
-              private _notificationService: NotificationsService) {
+              private _notificationService: NotificationService) {
   }
 
   ngOnInit() {
@@ -34,6 +34,7 @@ export class FormationCardComponent {
     this._formationService.saveUserValues(this.formation)
       .then(formation => {
         //console.log(formation);
+        this._notificationService.message("Your changes have been saved");
         this.formation = formation;
       })
       .catch(err => {

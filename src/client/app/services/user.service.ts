@@ -7,7 +7,7 @@ import {Observable, BehaviorSubject} from 'rxjs/Rx';
 import {Logger} from "angular2-logger/app/core/logger";
 import {User} from "../models/user";
 import {environment} from "../environment";
-import {NotificationsService} from "angular2-notifications";
+import {NotificationService} from "./notification.service";
 
 @Injectable()
 export class UserService {
@@ -24,7 +24,7 @@ export class UserService {
 
   constructor(private http: Http,
               private _logger: Logger,
-              private _notifService: NotificationsService) {
+              private _notifService: NotificationService) {
 
 
     this.loggedIn = !!localStorage.getItem(this.keyTokenId);

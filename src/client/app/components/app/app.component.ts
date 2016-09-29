@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { Logger } from 'angular2-logger/core';
-import {NotificationsService} from "angular2-notifications";
 import {FormationService} from "../../services/formation.service";
+import {NotificationService} from "../../services/notification.service";
 
 @Component({
   moduleId: module.id,
@@ -13,8 +13,13 @@ export class AppComponent {
 
   countCurrentFormations = 0;
 
+  notificationMessage = "";
+  showMessage = false;
+  notificationTimeout = null;
+
   constructor(private _logger: Logger,
-              private _formationService: FormationService) {
+              private _formationService: FormationService,
+              private _notificationService: NotificationService) {
   }
 
   // notification options
@@ -40,6 +45,21 @@ export class AppComponent {
         this.countCurrentFormations = count;
       }
     );
+    this._notificationService.getMessageEmmiter()
+      .subscribe(message => {
+        this.notificationMessage = message;
+        this.showMessage = true;
+
+        if (this.notificationTimeout != null) {
+          clearTimeout(this.notificationTimeout);
+        }
+
+        this.notificationTimeout = setTimeout(() => {
+          this.showMessage = false;
+        },
+        5000);
+      })
+
   }
 
 

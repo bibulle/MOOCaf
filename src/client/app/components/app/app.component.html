@@ -3,8 +3,8 @@
 
     <!-- Header -->
     <div layout="row" class="header">
-      <div layout="row" flex="100">
-        <div flex="50" layout="row" layout-align="start center">
+      <div layout="row" flex="100" layout-align="start stretch">
+        <div layout="row" flex="50" layout-align="start center">
           <!--<logo-svg></logo-svg>-->
 
           <md-icon svgSrc="img/logo.svg" class="logo"></md-icon>
@@ -12,8 +12,8 @@
           <!--<span class="logo"></span>-->
           <div class="text-logo">MOOCer</div>
         </div>
-
-        <div flex="50" layout="row" layout-align="end center">
+        <div class="notificationMessage" [class.show]="showMessage" [class.hide]="!showMessage">{{notificationMessage}}</div>
+        <div layout="row" flex="50" layout-align="end center">
           <profile-button></profile-button>
           <about-button></about-button>
         </div>

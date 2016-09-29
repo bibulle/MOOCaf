@@ -2,7 +2,7 @@ import {NgModule, enableProdMode, CUSTOM_ELEMENTS_SCHEMA} from "@angular/core";
 import {BrowserModule} from "@angular/platform-browser";
 import {HttpModule} from "@angular/http";
 import {FormsModule} from "@angular/forms";
-import {SimpleNotificationsModule, SimpleNotificationsComponent} from "angular2-notifications";
+import {SimpleNotificationsModule} from "angular2-notifications";
 import {LOG_LOGGER_PROVIDERS, INFO_LOGGER_PROVIDERS} from "angular2-logger/core";
 import {AUTH_PROVIDERS} from "angular2-jwt";
 
@@ -22,6 +22,7 @@ import {LayoutDirective} from "./directives/layout-directive";
 import {FlexDirective} from "./directives/flex-directive";
 import {UserService} from "./services/user.service";
 import {FormationService} from "./services/formation.service";
+import {NotificationService} from "./services/notification.service";
 import {AuthGuard} from "./common/auth.guard";
 
 import {AppComponent} from "./components/app/app.component";
@@ -89,6 +90,7 @@ if (environment.production) {
     loggerProvider,
     UserService,
     FormationService,
+    NotificationService,
     AuthGuard,
     AUTH_PROVIDERS,
     appRoutingProviders
