@@ -1,3 +1,4 @@
+
 body, input {
   /*text-align: left;*/
   /*font-family: "Open Sans",Verdana,Geneva,sans-serif,sans-serif;*/
@@ -54,7 +55,7 @@ button:focus {
   outline: 0;
 }
 
-home, login, catalogue, class {
+home, login, catalogue, class, progression {
   /*overflow: auto;*/
 
   -webkit-box-flex: 1;

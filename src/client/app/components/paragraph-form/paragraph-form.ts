@@ -29,6 +29,9 @@ export class ParagraphFormComponent extends ParagraphAbstract implements OnInit 
   data: Paragraph;
 
   @Input()
+  test;
+
+  @Input()
   formationId: string;
 
   // The queue to manage user choices
@@ -46,6 +49,8 @@ export class ParagraphFormComponent extends ParagraphAbstract implements OnInit 
   ngOnInit() {
 
     this.data.id = this.data['_id'];
+
+    console.log(this.data);
 
     // Used to get access of the enum in the template (won't be in the model)
     this.data.paragraphContentType = ParagraphContentType;

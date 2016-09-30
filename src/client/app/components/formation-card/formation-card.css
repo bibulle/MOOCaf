@@ -4,7 +4,8 @@
 .formation md-card-subtitle {
   text-align: right;
   font-size: 0.7em;
-  margin-top: -11px;
+  margin-top: -1em;
+  margin-right: 6em;
 }
 .formation md-card-footer {
   width: 100%;
@@ -72,4 +73,52 @@
 }
 .formation:hover {
   background-color: rgba(0,0,0,0.12);
+}
+
+.clipping-banner {
+  overflow: hidden;
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+}
+.banner {
+  color:  white;
+  position: absolute;
+  top: 1em;
+  right: -5.5em;
+  transform: rotate(30deg);
+/ / background-color: red;
+  width: 15em;
+  text-align: center;
+  text-shadow: 1px 0px 2px rgba(0, 0, 0, 1);
+
+  background: #ff3019; /* Old browsers */
+  background: -moz-linear-gradient(left,  #ff3019 0%, #ff3019 32%, #ede9a6 49%, #ede9a6 49%, #ff3019 66%, #ff3019 100%); /* FF3.6-15 */
+  background: -webkit-linear-gradient(left,  #ff3019 0%,#ff3019 32%,#ede9a6 49%,#ede9a6 49%,#ff3019 66%,#ff3019 100%); /* Chrome10-25,Safari5.1-6 */
+  background: linear-gradient(to right,  #ff3019 0%,#ff3019 32%,#ede9a6 49%,#ede9a6 49%,#ff3019 66%,#ff3019 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ff3019', endColorstr='#ff3019',GradientType=1 ); /* IE6-9 */
+
+  background-size: 200% 200%;
+
+  -webkit-animation: AnimationName 4s linear infinite;
+  -moz-animation: AnimationName 4s linear infinite;
+  animation: AnimationName 4s linear infinite;
+}
+
+@-webkit-keyframes AnimationName {
+  0%{background-position:0% 50%}
+  15%{background-position:100% 50%}
+  100%{background-position:100% 50%}
+}
+@-moz-keyframes AnimationName {
+  0%{background-position:0% 50%}
+  15%{background-position:100% 50%}
+  100%{background-position:100% 50%}
+}
+@keyframes AnimationName {
+  0%{background-position:0% 50%}
+  15%{background-position:100% 50%}
+  100%{background-position:100% 50%}
 }

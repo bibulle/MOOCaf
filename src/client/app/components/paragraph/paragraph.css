@@ -1,10 +1,10 @@
 .paragraph {
-  width: 100%;
+  /*width: 100%;*/
 }
 .paragraph .buttons {
-  width: 10%;
-  min-height: 10px;
-  float: left;
+  /*width: 10%;*/
+  /*min-height: 10px;*/
+  /*float: left;*/
 }
 .paragraph .content_box {
   width: 89%;

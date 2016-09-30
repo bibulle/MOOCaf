@@ -12,9 +12,12 @@ import {MdButtonModule} from "@angular2-material/button";
 import {MdIconModule} from "@angular2-material/icon";
 import {MdCardModule} from "@angular2-material/card";
 import {MdInputModule} from "@angular2-material/input";
+import {MdRadioModule} from "@angular2-material/radio";
+import {MdCheckboxModule} from "@angular2-material/checkbox";
 import {MdToolbarModule} from "@angular2-material/toolbar";
 import {MdSidenavModule} from "@angular2-material/sidenav";
 //import {MdTooltipModule} from "@angular2-material/tooltip";
+import { MdUniqueSelectionDispatcher } from '@angular2-material/core';
 
 
 import {LayoutAlignDirective} from "./directives/layout-align-directive";
@@ -60,6 +63,8 @@ if (environment.production) {
     MdIconModule.forRoot(),
     MdCardModule,
     MdInputModule,
+    MdRadioModule,
+    MdCheckboxModule,
     MdToolbarModule,
 //    MdTooltipModule,
     MdSidenavModule,
@@ -93,7 +98,8 @@ if (environment.production) {
     NotificationService,
     AuthGuard,
     AUTH_PROVIDERS,
-    appRoutingProviders
+    appRoutingProviders,
+    MdUniqueSelectionDispatcher
   ],
   schemas: [
     CUSTOM_ELEMENTS_SCHEMA

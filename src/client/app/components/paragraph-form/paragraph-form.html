@@ -1,11 +1,11 @@
-<div class="paragraph">
-  <div class="buttons">
-    <button [disabled]="isClosed(data)" (click)="checkUserChoice()">Check</button>
+<div class="paragraph" layout="row" layout-align="start stretch">
+  <div class="buttons" flex="20" layout="column" layout-align="start stretch">
+    <button md-raised-button color="accent" [disabled]="isClosed(data)" (click)="checkUserChoice()">Check</button>
     <span class="nb-check" *ngIf="data.userCheckCount >= data.maxCheckCount">No more check ({{data.maxCheckCount}} max)</span>
     <span class="nb-check" *ngIf="(data.userCheckCount <= 1 ) && (data.userCheckCount <  data.maxCheckCount)">{{data.userCheckCount}} check done ({{data.maxCheckCount}} max)</span>
     <span class="nb-check" *ngIf="(data.userCheckCount >  1 ) && (data.userCheckCount <  data.maxCheckCount)">{{data.userCheckCount}} checks done ({{data.maxCheckCount}} max)</span>
   </div>
-  <div class="content_box">
+  <div class="content_box" flex="80">
     <div class="content">
       <label *ngFor="let content of data.content" [class]="'content_type_'+content.type" [class.check_ok]="data.userCheckOK" [class.check_ko]="data.userCheckOK === false">
         <input *ngIf="content.type == data.paragraphContentType.Radio"    type="radio"    [name]="data.id" [disabled]="isClosed(data)" [value]="content.value" [checked]="data.userChoice == content.value" (click)="data.userChoice = content.value; saveUserChoice()">

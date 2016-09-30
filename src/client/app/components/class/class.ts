@@ -1,4 +1,4 @@
-import {Component} from "@angular/core";
+import {Component, OnChanges, SimpleChanges} from "@angular/core";
 import {Router, ActivatedRoute, Params} from "@angular/router";
 
 import {Logger} from "angular2-logger/core";
