@@ -1,14 +1,14 @@
 import {Component, OnInit, Input} from '@angular/core';
-import {Paragraph} from "../models/paragraph";
+import {Paragraph} from "../../models/paragraph";
 
-import {ParagraphAbstract} from "../paragraph-abstract.component";
+import {ParagraphAbstract} from "../paragraph/paragraph-abstract";
 
 @Component({
   moduleId: module.id,
-  selector: 'app-paragraph-markdown',
+  selector: 'paragraph-markdown',
   //inputs: [ 'data' ],
-  templateUrl: 'paragraph-markdown.component.html',
-  styleUrls: ['../paragraph/paragraph.component.css', 'paragraph-markdown.component.css']
+  templateUrl: 'paragraph-markdown.html',
+  styleUrls: ['../paragraph/paragraph.css', 'paragraph-markdown.css']
 })
 
 export class ParagraphMarkdownComponent extends ParagraphAbstract implements OnInit {
@@ -33,7 +33,7 @@ export class ParagraphMarkdownComponent extends ParagraphAbstract implements OnI
     }
 
     for (var c of contents) {
-      this.html += this.marktownToHTML(c);
+      this.html += ParagraphAbstract.markdownToHTML(c);
     }
 
   }

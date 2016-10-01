@@ -4,7 +4,7 @@ import { CORE_DIRECTIVES } from '@angular/common';
 
 import {ParagraphService} from "../services/paragraph.service";
 import {Logger} from "angular2-logger/app/core/logger";
-import {NotificationsService} from "angular2-notifications";
+import {NotificationService} from "../../services/notification.service";
 import {Paragraph} from "../models/paragraph";
 import {FORM_DIRECTIVES} from "@angular/forms";
 
@@ -19,7 +19,7 @@ export class PageComponent {
   constructor(
     private paragraphService: ParagraphService,
     private _logger: Logger,
-    private _service: NotificationsService
+    private _service: NotificationService
   ) { }
 
   ngOnInit() {

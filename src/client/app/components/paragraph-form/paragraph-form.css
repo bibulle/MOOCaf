@@ -57,20 +57,20 @@ input:disabled {
 }
 
 button {
-  text-transform: capitalize;
-  margin: 10px 10% 0px 7%;
-  width: 83%;
-  padding-top: 10px;
-  padding-bottom: 10px;
+  /*text-transform: capitalize;*/
+  /*margin: 10px 10% 0px 7%;*/
+  /*width: 83%;*/
+  /*padding-top: 10px;*/
+  /*padding-bottom: 10px;*/
 
-  border-radius: 5px;
-  border: none;
-  display: inline-block;
+  /*border-radius: 5px;*/
+  /*border: none;*/
+  /*display: inline-block;*/
 }
 
 button:disabled {
-  background-color: #f8f8f8;
-  color: #AAAAAA;
+  /*background-color: #f8f8f8;*/
+  /*color: #AAAAAA;*/
 }
 
 .nb-check {
@@ -78,6 +78,7 @@ button:disabled {
   width: 100%;
   display: block;
   text-align: center;
+  padding-top: 0.5em;
 }
 
 label div.answer {

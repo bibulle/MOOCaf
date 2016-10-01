@@ -1,4 +1,6 @@
 
+import {Paragraph} from "./paragraph";
+
 export class Formation {
 
   id: string;
@@ -14,4 +16,23 @@ export class Formation {
   created: Date;
   update: Date;
 
+  parts: FormationPart[];
+
 }
+
+export class FormationPart {
+
+  title: string;
+
+  parts: FormationPart[];
+
+  contents: Paragraph[];
+
+  constructor(option) {
+    this.title = option.title;
+    this.parts = option.parts;
+    this.contents = option.contents;
+  }
+}
+
+

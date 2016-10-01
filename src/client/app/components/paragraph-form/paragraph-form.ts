@@ -8,20 +8,19 @@ import "rxjs/add/operator/catch";
 
 import {Subject} from "rxjs/Subject";
 import {Logger} from "angular2-logger/app/core/logger";
-import {NotificationsService} from "angular2-notifications";
+import {NotificationService} from "../../services/notification.service";
 
-import {ParagraphAbstract} from "../paragraph-abstract.component";
-import {Paragraph} from "../models/paragraph";
-import {ParagraphService} from "../services/paragraph.service";
-import {ParagraphContentType} from "../models/paragraph-content-type.enum";
+import {ParagraphAbstract} from "../paragraph/paragraph-abstract";
+import {Paragraph} from "../../models/paragraph";
+import {ParagraphContentType} from "../../models/paragraph-content-type.enum";
+import {FormationService} from "../../services/formation.service";
 
 @Component({
   moduleId: module.id,
-  selector: 'app-paragraph-form',
+  selector: 'paragraph-form',
   //inputs: ['data'],
-  templateUrl: 'paragraph-form.component.html',
-  styleUrls: ['../paragraph/paragraph.component.css', 'paragraph-form.component.css'],
-  providers: [ParagraphService],
+  templateUrl: 'paragraph-form.html',
+  styleUrls: ['../paragraph/paragraph.css', 'paragraph-form.css'],
 })
 
 export class ParagraphFormComponent extends ParagraphAbstract implements OnInit {
@@ -29,13 +28,19 @@ export class ParagraphFormComponent extends ParagraphAbstract implements OnInit 
   @Input()
   data: Paragraph;
 
+  @Input()
+  test;
+
+  @Input()
+  formationId: string;
+
   // The queue to manage user choices
   private subjectParagraph: Subject<Paragraph>;
 
   // the constructor
-  constructor(private paragraphService: ParagraphService,
+  constructor(private _formationService: FormationService,
               private _logger: Logger,
-              private _service: NotificationsService) {
+              private _notificationService: NotificationService) {
     super();
 
   }
@@ -43,16 +48,33 @@ export class ParagraphFormComponent extends ParagraphAbstract implements OnInit 
 // Initialisation
   ngOnInit() {
 
+    this.data.id = this.data['_id'];
+
+    console.log(this.data);
+
     // Used to get access of the enum in the template (won't be in the model)
     this.data.paragraphContentType = ParagraphContentType;
 
+    // if no user choice for checkbox type, init with empty array
+    if (this.data.userChoice == null) {
+      for (let paragraph of this.data.content) {
+        //if (paragraph.type == ParagraphContentType[ParagraphContentType.Checkbox]) {
+        if (paragraph.type == ParagraphContentType.Checkbox) {
+          this.data.userChoice = [];
+        }
+      }
+    }
 
+    // if no user check count... init to zero
+    if (this.data.userCheckCount == null) {
+      this.data.userCheckCount = 0;
+    }
 
     // Change Markdown to HTM in each label
     if (this.data.content) {
       for (let c of this.data.content) {
         if (c['label']) {
-          c['label'] = this.marktownToHTML(c['label']).replace(/^<p>(.*)<\/p>[\r\n]*$/, "$1");
+          c['label'] = ParagraphAbstract.markdownToHTML(c['label']).replace(/^<p>(.*)<\/p>[\r\n]*$/, "$1");
         }
       }
     }
@@ -66,18 +88,17 @@ export class ParagraphFormComponent extends ParagraphAbstract implements OnInit 
         .debounceTime(500)
         .subscribe(
           paragraph => {
-            return this.paragraphService.saveUserChoice(paragraph)
+            //console.log(paragraph);
+            return this._formationService.saveUserChoice(this.formationId, paragraph)
               .then(paragraph => {
-                // TODO : Add a message at the top (All your modification have been saved..."
-                //console.log('========');
-                //console.log(paragraph.userCheckCount);
+                this._notificationService.message("All your modifications have been saved...")
                 this.data.userChoice = paragraph.userChoice;
                 this.data.userCheckCount = paragraph.userCheckCount;
                 this.data.userCheckOK = paragraph.userCheckOK;
               })
               .catch(error => {
                 this._logger.error(error);
-                this._service.error("System error !!", "Error saving you changes !!\n\t" +(error.message || error));
+                this._notificationService.error("System error !!", "Error saving you changes !!\n\t" +(error.message || error));
               });
           },
           error => {
@@ -91,7 +112,7 @@ export class ParagraphFormComponent extends ParagraphAbstract implements OnInit 
 
 // Is the paragraph closed (interface should then be disabled)
   isClosed(paragraph) {
-    return paragraph.userCheckOK || (paragraph.userCheckCount >= paragraph.maxCheckCount)
+    return (paragraph.userCheckOK === true) || (paragraph.userCheckCount >= paragraph.maxCheckCount)
   }
 
 // In case of chekbox, create the user choices as an array of selected items
@@ -120,17 +141,19 @@ export class ParagraphFormComponent extends ParagraphAbstract implements OnInit 
 // check user choice
   checkUserChoice() {
     // Send this to the backend
-    this.paragraphService
-      .checkUserChoice(this.data)
-      .then(modifiedParagraph => {
+     this._formationService
+       .checkUserChoice(this.formationId, this.data)
+       .then(modifiedParagraph => {
+         //this._logger.debug(modifiedParagraph);
         // Update the paragraph
-        this.data = modifiedParagraph;
-        this.ngOnInit();
-      })
-      .catch(error => {
-        this._logger.error(error);
-        this._service.error("System error !!", "Error saving you changes !!\n\t" +(error.message || error));
-      });
+         this.data.userChoice = modifiedParagraph.userChoice;
+         this.data.userCheckCount = modifiedParagraph.userCheckCount;
+         this.data.userCheckOK = modifiedParagraph.userCheckOK;
+       })
+       .catch(error => {
+         this._logger.error(error);
+         this._notificationService.error("Cannot check", (error.message || error));
+       });
 
   }
 

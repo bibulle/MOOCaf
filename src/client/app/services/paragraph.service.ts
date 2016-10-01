@@ -55,9 +55,11 @@ export class ParagraphService {
    * @returns {any}
    */
   save(paragraph: Paragraph): Promise<Paragraph> {
+/*
     if (paragraph.id) {
       return this.put(paragraph);
     }
+*/
     return this.post(paragraph);
   }
 
@@ -69,7 +71,7 @@ export class ParagraphService {
   _saveUserChoice(userChoice): Promise<Paragraph> {
     let url = `${this.paragraphsUrl}/${userChoice.paragraphId}/userchoice`;
     return this.authHttp
-      .put(url, userChoice, contentHeaders)
+      .put(url, userChoice, { headers: contentHeaders})
       .toPromise()
       .then(res => {
         //console.log(res.json().data);
@@ -87,7 +89,7 @@ export class ParagraphService {
   _checkUserChoice(userChoice): Promise<Paragraph> {
     let url = `${this.paragraphsUrl}/${userChoice.paragraphId}/userchoice/check`;
     return this.authHttp
-      .put(url, userChoice, contentHeaders)
+      .put(url, userChoice, { headers: contentHeaders})
       .toPromise()
       .then(res => {
         //console.log(res.json().data);
@@ -105,7 +107,7 @@ export class ParagraphService {
   // Add new Paragraph
   private post(paragraph: Paragraph): Promise<Paragraph> {
     return this.authHttp
-      .post(this.paragraphsUrl, JSON.stringify(paragraph), contentHeaders)
+      .post(this.paragraphsUrl, JSON.stringify(paragraph), { headers: contentHeaders})
       .toPromise()
       .then(res => {
         //this._service.success("Saved", "your change have been saved");
@@ -118,7 +120,7 @@ export class ParagraphService {
   private put(paragraph: Paragraph): Promise<Paragraph> {
     let url = `${this.paragraphsUrl}/${paragraph.id}`;
     return this.authHttp
-      .put(url, JSON.stringify(paragraph), contentHeaders)
+      .put(url, JSON.stringify(paragraph), { headers: contentHeaders})
       .toPromise()
       .then(() => {
         //this._service.success("Saved", "your change have been saved");
@@ -136,10 +138,8 @@ export class ParagraphService {
 
     var userChoice = {
       paragraphId: paragraph.id,
-      userChoice: paragraph.userChoice
+      // userChoice: paragraph.userChoice
     }
-
-    this._logger.debug("saveUserChoice : " + JSON.stringify(userChoice));
 
     return this._saveUserChoice(userChoice);
   }
@@ -148,14 +148,12 @@ export class ParagraphService {
 
     var userChoice = {
       paragraphId: paragraph.id,
-      userChoice: paragraph.userChoice
+      // userChoice: paragraph.userChoice
     }
-
-    this._logger.debug("checkUserChoice : " + JSON.stringify(userChoice));
 
     return this._checkUserChoice(userChoice)
       .then(paragraph => {
-        //this._logger.debug(paragraph);
+/*
         if (paragraph.userCheckOK === true) {
           //this._service.success("Correct !!", "Your answer is correct");
         } else {
@@ -165,6 +163,7 @@ export class ParagraphService {
             //this._service.alert("Wrong answer !!", "Your answer is not correct (" + (paragraph.maxCheckCount - paragraph.userCheckCount) + " try remaining)");
           }
         }
+*/
         return paragraph;
       })
       .catch(error => this.handleError(error, this._logger));

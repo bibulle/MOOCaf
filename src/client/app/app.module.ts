@@ -12,8 +12,12 @@ import {MdButtonModule} from "@angular2-material/button";
 import {MdIconModule} from "@angular2-material/icon";
 import {MdCardModule} from "@angular2-material/card";
 import {MdInputModule} from "@angular2-material/input";
+import {MdRadioModule} from "@angular2-material/radio";
+import {MdCheckboxModule} from "@angular2-material/checkbox";
 import {MdToolbarModule} from "@angular2-material/toolbar";
+import {MdSidenavModule} from "@angular2-material/sidenav";
 //import {MdTooltipModule} from "@angular2-material/tooltip";
+import { MdUniqueSelectionDispatcher } from '@angular2-material/core';
 
 
 import {LayoutAlignDirective} from "./directives/layout-align-directive";
@@ -21,6 +25,7 @@ import {LayoutDirective} from "./directives/layout-directive";
 import {FlexDirective} from "./directives/flex-directive";
 import {UserService} from "./services/user.service";
 import {FormationService} from "./services/formation.service";
+import {NotificationService} from "./services/notification.service";
 import {AuthGuard} from "./common/auth.guard";
 
 import {AppComponent} from "./components/app/app.component";
@@ -35,9 +40,12 @@ import {SignupComponent} from "./components/signup/signup";
 import {NotFoundComponent} from "./components/404/404";
 import {LogoComponent} from "./components/logo/logo";
 import {CatalogueComponent} from "./components/catalogue/catalogue";
-//import {ParagraphComponent} from "./paragraph/paragraph.home";
-//import {ParagraphMarkdownComponent} from "./paragraph-markdown/paragraph-markdown.home";
-//import {ParagraphFormComponent} from "./paragraph-form/paragraph-form.home";
+import {FormationCardComponent} from "./components/formation-card/formation-card";
+import {ClassComponent} from "./components/class/class";
+import {ClassScheduleComponent} from "./components/class-schedule/class-schedule";
+import {ParagraphComponent} from "./components/paragraph/paragraph";
+import {ParagraphMarkdownComponent} from "./components/paragraph-markdown/paragraph-markdown";
+import {ParagraphFormComponent} from "./components/paragraph-form/paragraph-form";
 
 let loggerProvider = LOG_LOGGER_PROVIDERS;
 if (environment.production) {
@@ -56,8 +64,11 @@ if (environment.production) {
     MdIconModule.forRoot(),
     MdCardModule,
     MdInputModule,
+    MdRadioModule,
+    MdCheckboxModule,
     MdToolbarModule,
 //    MdTooltipModule,
+    MdSidenavModule,
     routing,
 //    OVERLAY_PROVIDERS
   ],
@@ -71,10 +82,12 @@ if (environment.production) {
     NotFoundComponent,
     LogoComponent,
     CatalogueComponent,
-    // ParagraphComponent,
-    // ParagraphMarkdownComponent,
-    // ParagraphFormComponent,
-    // SimpleNotificationsComponent,
+    FormationCardComponent,
+    ClassComponent,
+    ClassScheduleComponent,
+    ParagraphComponent,
+    ParagraphMarkdownComponent,
+    ParagraphFormComponent,
     FlexDirective,
     LayoutDirective,
     LayoutAlignDirective
@@ -84,9 +97,11 @@ if (environment.production) {
     loggerProvider,
     UserService,
     FormationService,
+    NotificationService,
     AuthGuard,
     AUTH_PROVIDERS,
-    appRoutingProviders
+    appRoutingProviders,
+    MdUniqueSelectionDispatcher
   ],
   schemas: [
     CUSTOM_ELEMENTS_SCHEMA

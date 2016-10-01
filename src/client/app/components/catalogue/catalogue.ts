@@ -3,7 +3,7 @@ import {Formation} from "../../models/formation";
 import {Subject} from "rxjs/Subject";
 import {Logger} from "angular2-logger/core";
 import {FormationService} from "../../services/formation.service";
-import {NotificationsService} from "angular2-notifications";
+import {NotificationService} from "../../services/notification.service";
 
 @Component({
   moduleId: module.id,
@@ -33,7 +33,7 @@ export class CatalogueComponent {
   constructor(
     private _logger: Logger,
     private _formationService: FormationService,
-    private _notificationService: NotificationsService) {
+    private _notificationService: NotificationService) {
   }
 
   ngOnInit() {
