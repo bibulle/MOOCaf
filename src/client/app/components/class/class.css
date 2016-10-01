@@ -1,13 +1,13 @@
-.formation-list {
+.course-list {
   overflow: auto;
   width: 100%;
 }
 
-.formation {
+.course {
   display: flex;
 }
 
-.formationTitle {
+.courseTitle {
   text-align: center;
   margin-bottom: 0;
 }

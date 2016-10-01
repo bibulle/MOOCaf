@@ -13,7 +13,7 @@ import {loginRouter} from "./routes/login";
 import {protectedRouter} from "./routes/protected";
 import {anonymousRouter} from "./routes/anonymous";
 import {paragraphRouter} from "./routes/paragraph";
-import {formationRouter} from "./routes/formation";
+import {courseRouter} from "./routes/course";
 
 
 // Init Db access
@@ -46,7 +46,7 @@ app.use("/api/protected", protectedRouter);
 //noinspection TypeScriptValidateTypes
 app.use("/api/paragraph", paragraphRouter);
 //noinspection TypeScriptValidateTypes
-app.use("/api/formation", formationRouter);
+app.use("/api/course", courseRouter);
 //noinspection TypeScriptValidateTypes
 app.use("/users", loginRouter);
 

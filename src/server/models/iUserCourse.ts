@@ -1,6 +1,6 @@
 import IUserChoices = require("./iUserChoices");
 
-class IUserFormation {
+class IUserCourse {
   isFavorite: boolean;
   interest: number;
   dateFollowed: Date;
@@ -14,4 +14,4 @@ class IUserFormation {
 }
 
 
-export = IUserFormation;
+export = IUserCourse;

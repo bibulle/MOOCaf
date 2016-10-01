@@ -1,11 +1,11 @@
 import Mongoose = require("mongoose");
 import {IParagraph, schemaParagraph} from "./iParagraph";
 //var Schema = Mongoose.Schema;
-var debug = require('debug')('server:model:formation');
+var debug = require('debug')('server:model:course');
 
-export class IFormationPart {
+export class ICoursePart {
   title: String;
-  parts: IFormationPart[];
+  parts: ICoursePart[];
   contents: IParagraph[]
 }
 
@@ -14,13 +14,13 @@ export class IFormationPart {
  * @type {"mongoose".Schema}
  * @private
  */
-export var schemaFormationPart: Mongoose.Schema = new Mongoose.Schema();
-schemaFormationPart.add({
+export var schemaCoursePart: Mongoose.Schema = new Mongoose.Schema();
+schemaCoursePart.add({
   title: {
     type: String,
     require: true
   },
-  parts: [schemaFormationPart],
+  parts: [schemaCoursePart],
   contents: [schemaParagraph]
 });
 

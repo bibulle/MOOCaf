@@ -2,21 +2,21 @@ import * as _ from "lodash";
 import db from "./db";
 import {ParagraphType} from "./eParagraphType";
 import {ParagraphContentType} from "./eParagraphContentType";
-import {IFormation, modelIFormation} from "./iFormation";
+import {ICourse, modelICourse} from "./iCourse";
 import Mongoose = require("mongoose");
 import {IParagraph} from "./iParagraph";
 var Schema = Mongoose.Schema;
-var debug = require('debug')('server:model:formation');
+var debug = require('debug')('server:model:course');
 
-export default class Formation extends IFormation {
+export default class Course extends ICourse {
 
   /**
    * Constructor
-   * @param mongoose.Document<IFormation>
+   * @param mongoose.Document<ICourse>
    */
   constructor(document: {}) {
     super(document);
-    modelIFormation.on('error', function (err) {
+    modelICourse.on('error', function (err) {
       debug("Error : " + err);
     });
   }
@@ -25,7 +25,7 @@ export default class Formation extends IFormation {
   static count(): Promise<number> {
     debug("count");
     return new Promise<number>((resolve, reject) => {
-      modelIFormation.count(
+      modelICourse.count(
         {},
         (err, count) => {
           //debug("count " + err + " " + count);
@@ -42,20 +42,20 @@ export default class Formation extends IFormation {
   };
 
   /**
-   * Find the list of formations
-   * @returns {Promise<IFormation[]>}
+   * Find the list of courses
+   * @returns {Promise<ICourse[]>}
    */
-  static find(): Promise < Formation[] > {
+  static find(): Promise < Course[] > {
     // debug("find");
-    return new Promise < IFormation[] >((resolve, reject) => {
+    return new Promise < ICourse[] >((resolve, reject) => {
 
       // Do the search
-      modelIFormation.find({})
+      modelICourse.find({})
         .lean()
         .exec()
         .then(
-          formations => {
-            resolve(formations.map(f => {
+          courses => {
+            resolve(courses.map(f => {
               f.id = f._id.toString();
               return f;
             }));
@@ -71,16 +71,16 @@ export default class Formation extends IFormation {
     })
   }
 
-  static findById(id: string): Promise < Formation > {
-    return new Promise < IFormation >((resolve, reject) => {
-      modelIFormation.findById(id)
+  static findById(id: string): Promise < Course > {
+    return new Promise < ICourse >((resolve, reject) => {
+      modelICourse.findById(id)
         .lean()
         .exec()
         .then(
-          formation => {
-            //debug(formation);
-            formation.id = formation._id.toString();
-            resolve(formation);
+          course => {
+            //debug(course);
+            course.id = course._id.toString();
+            resolve(course);
           },
           err => {
             reject(err);
@@ -88,30 +88,30 @@ export default class Formation extends IFormation {
     })
   }
 
-  static updateOrCreate(formation: Formation): Promise < Formation > {
-    return new Promise < IFormation >((resolve, reject) => {
+  static updateOrCreate(course: Course): Promise < Course > {
+    return new Promise < ICourse >((resolve, reject) => {
 
-      // debug("updateOrCreate id:" + formation["_id"]);
-      if (formation["_id"]) {
-        formation.updated = new Date();
-        modelIFormation.findByIdAndUpdate(formation["_id"], formation)
+      // debug("updateOrCreate id:" + course["_id"]);
+      if (course["_id"]) {
+        course.updated = new Date();
+        modelICourse.findByIdAndUpdate(course["_id"], course)
           .lean()
           .exec()
           .then(
-            formation => {
-              formation.id = formation._id.toString();
-              resolve(formation);
+            course => {
+              course.id = course._id.toString();
+              resolve(course);
             },
             err => {
               reject(err);
             });
       } else {
-        modelIFormation.create(formation)
+        modelICourse.create(course)
           .then(
-            formation => {
-              formation = formation['_doc'];
-              formation.id = formation._id.toString();
-              resolve(formation);
+            course => {
+              course = course['_doc'];
+              course.id = course._id.toString();
+              resolve(course);
             },
             err => {
               reject(err);
@@ -126,10 +126,10 @@ export default class Formation extends IFormation {
 
 
 // Init database if it's empty
-Formation.count()
+Course.count()
   .then(count => {
     if (count === 0) {
-      var formations: {}[] = [
+      var courses: {}[] = [
         {
           name: "Starting a project with Big Data",
           description: "A simple MOOC to learn how to start a Big Data project",
@@ -458,12 +458,12 @@ Formation.count()
         },
       ];
 
-      _.forEach(formations,
+      _.forEach(courses,
         o => {
-          var formation = new Formation(o);
-          Formation.updateOrCreate(formation)
-            .then(formation => debug("Formation created : " + JSON.stringify(formation)))
-            .catch(err => debug("Error creating formation : " + err))
+          var course = new Course(o);
+          Course.updateOrCreate(course)
+            .then(course => debug("Course created : " + JSON.stringify(course)))
+            .catch(err => debug("Error creating course : " + err))
         });
     }
   })

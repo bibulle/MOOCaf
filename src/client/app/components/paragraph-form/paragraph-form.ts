@@ -13,7 +13,7 @@ import {NotificationService} from "../../services/notification.service";
 import {ParagraphAbstract} from "../paragraph/paragraph-abstract";
 import {Paragraph} from "../../models/paragraph";
 import {ParagraphContentType} from "../../models/paragraph-content-type.enum";
-import {FormationService} from "../../services/formation.service";
+import {CourseService} from "../../services/course.service";
 
 @Component({
   moduleId: module.id,
@@ -32,13 +32,13 @@ export class ParagraphFormComponent extends ParagraphAbstract implements OnInit 
   test;
 
   @Input()
-  formationId: string;
+  courseId: string;
 
   // The queue to manage user choices
   private subjectParagraph: Subject<Paragraph>;
 
   // the constructor
-  constructor(private _formationService: FormationService,
+  constructor(private _courseService: CourseService,
               private _logger: Logger,
               private _notificationService: NotificationService) {
     super();
@@ -89,7 +89,7 @@ export class ParagraphFormComponent extends ParagraphAbstract implements OnInit 
         .subscribe(
           paragraph => {
             //console.log(paragraph);
-            return this._formationService.saveUserChoice(this.formationId, paragraph)
+            return this._courseService.saveUserChoice(this.courseId, paragraph)
               .then(paragraph => {
                 this._notificationService.message("All your modifications have been saved...")
                 this.data.userChoice = paragraph.userChoice;
@@ -141,8 +141,8 @@ export class ParagraphFormComponent extends ParagraphAbstract implements OnInit 
 // check user choice
   checkUserChoice() {
     // Send this to the backend
-     this._formationService
-       .checkUserChoice(this.formationId, this.data)
+     this._courseService
+       .checkUserChoice(this.courseId, this.data)
        .then(modifiedParagraph => {
          //this._logger.debug(modifiedParagraph);
         // Update the paragraph

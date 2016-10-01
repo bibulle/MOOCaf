@@ -1,36 +1,36 @@
-<md-content class="class" flex="100" layout="column" layout-align="start stretch" *ngIf="formations">
+<md-content class="class" flex="100" layout="column" layout-align="start stretch" *ngIf="courses">
   <div class="list" layout="column" layout-align="start stretch">
     <div flex="100" layout="row" layout-align="start center">
-      <h3>Which formation do you want to continue ?</h3>
+      <h3>Which course do you want to continue ?</h3>
     </div>
-    <div class="formation-list" layout="row" layout-wrap layout-align="space-around" layout-margin>
-      <formation-card class="formation" flex="30" *ngFor="let formation of formations"
-                      [formation]="formation"></formation-card>
+    <div class="course-list" layout="row" layout-wrap layout-align="space-around" layout-margin>
+      <course-card class="course" flex="30" *ngFor="let course of courses"
+                      [course]="course"></course-card>
     </div>
   </div>
   <div class="content" layout="row" layout-wrap layout-align="space-around" layout-margin>
   </div>
 </md-content>
 <md-content class="class" flex="100" layout="column" layout-align="start stretch"
-            *ngIf="formation">
+            *ngIf="course">
   <md-sidenav-layout flex="100">
 
     <md-sidenav #schedule (open)="scheduleButton.focus()" [opened]="true" mode="side" align="start">
-      <class-schedule [formation]="formation" (notifySelectedPart)='onNotifySelectedPart($event)' layout="row"
+      <class-schedule [course]="course" (notifySelectedPart)='onNotifySelectedPart($event)' layout="row"
                       layout-align="start stretch"></class-schedule>
     </md-sidenav>
     <div layout="column" layout-align="start stretch" class="sidenavContent">
       <button #scheduleButton class="toggleSchedule md-primary" md-icon-button (click)="schedule.toggle()">
         <md-icon>menu</md-icon>
       </button>
-      <H1 class="formationTitle">{{formation.name}}</H1>
+      <H1 class="courseTitle">{{course.name}}</H1>
       <div class="part_header">
         <h3>{{selectedPart.title}}</h3>
       </div>
       <div class="content" layout="column" layout-align="start stretch">
         <div class="page-navigation" *ngIf="selectedPartLevel > 1" >Pages navigation....</div>
         <div class="page" layout="column" layout-align="start stretch">
-          <paragraph *ngFor="let paragraph of selectedPart.contents" [data]="paragraph" [formationId]="formation.id"></paragraph>
+          <paragraph *ngFor="let paragraph of selectedPart.contents" [data]="paragraph" [courseId]="course.id"></paragraph>
         </div>
       </div>
 
