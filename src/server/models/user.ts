@@ -137,7 +137,9 @@ class User extends IUser {
         .exec()
         .then(
           user => {
-            user.id = user._id.toString();
+            if (user) {
+              user.id = user._id.toString();
+            }
             resolve(user);
           },
           err => {
