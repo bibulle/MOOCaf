@@ -2,36 +2,36 @@ import {Router, Response, Request} from "express";
 import * as jwt from "express-jwt";
 import * as _ from "lodash";
 import {secret} from "../config";
-var debug = require('debug')('server:routes:formation');
-import Formation from "../models/formation";
+var debug = require('debug')('server:routes:course');
+import Course from "../models/course";
 import User = require("../models/user");
 import UserChoice = require("../models/userChoice");
 import isUndefined = require("lodash/isUndefined");
-import IUserFormation = require("../models/iUserFormation");
+import IUserCourse = require("../models/iUserCourse");
 import IUserChoices = require("../models/iUserChoices");
 import Paragraph = require("../models/paragraph");
-import {IFormationPart} from "../models/iFormationPart";
+import {ICoursePart} from "../models/iCoursePart";
 import {IParagraph} from "../models/iParagraph";
 
 
-const formationRouter: Router = Router();
+const courseRouter: Router = Router();
 
 // Add JWT management
 var jwtCheck = jwt({
   secret: secret
 });
 //noinspection TypeScriptValidateTypes
-formationRouter.use(jwtCheck);
+courseRouter.use(jwtCheck);
 
 // -----------------------------------
-// --     /api/formation routes     --
+// --     /api/course routes     --
 // -----------------------------------
 
 
 // ====================================
-// route getting for all formations
+// route getting for all courses
 // ====================================
-formationRouter.route('/')
+courseRouter.route('/')
   .get((request: Request, response: Response) => {
     //debug("GET /");
     //debug("connected user : " + JSON.stringify(request['user']));
@@ -41,27 +41,27 @@ formationRouter.route('/')
       currentOnly = (request.query['currentOnly'] === "true");
     }
 
-    Formation.find()
-      .then(formations => {
-        //debug(formations);
+    Course.find()
+      .then(courses => {
+        //debug(courses);
         // Search the user
         User.findById(request['user']["id"])
           .then(user => {
             // fill each paragraph with users values
-            var promises = _.map(formations,
-              p => _fillFormationForUser(p, user));
+            var promises = _.map(courses,
+              p => _fillCourseForUser(p, user));
             Promise.all(promises)
-              .then(completedFormations => {
+              .then(completedCourses => {
 
                 // filter if we only need the currents one
                 if (currentOnly) {
-                  completedFormations = completedFormations
+                  completedCourses = completedCourses
                     .filter(f => {
                       return (f.dateFollowed && !f.dateFollowedEnd)
                     })
                 }
 
-                response.json({data: completedFormations})
+                response.json({data: completedCourses})
               })
               .catch(err => {
                 console.log(err);
@@ -81,34 +81,34 @@ formationRouter.route('/')
       });
   });
 
-formationRouter.route('/:formation_id')
+courseRouter.route('/:course_id')
 // ====================================
-// route for getting one formation
+// route for getting one course
 // ====================================
   .get((request: Request, response: Response) => {
-    //debug("GET /" + request.params.formation_id);
-    let formationId = request.params['formation_id'];
+    //debug("GET /" + request.params.course_id);
+    let courseId = request.params['course_id'];
     //debug("connected user : " + JSON.stringify(request['user']));
 
-    _getFormation(formationId, request['user']["id"], response);
+    _getCourse(courseId, request['user']["id"], response);
 
   })
 
   // ====================================
-  // update a formation
+  // update a course
   // ====================================
   .put((request: Request, response: Response) => {
 
-    var formation = new Formation(request.body);
-    //debug(formation);
-    //debug("PUT /" + request.params.formation_id);
+    var course = new Course(request.body);
+    //debug(course);
+    //debug("PUT /" + request.params.course_id);
 
-    Formation.updateOrCreate(formation)
-      .then(formation => {
-        if (formation) {
-          response.json({data: formation});
+    Course.updateOrCreate(course)
+      .then(course => {
+        if (course) {
+          response.json({data: course});
         } else {
-          response.status(404).json({status: 404, message: "Formation not found"});
+          response.status(404).json({status: 404, message: "Course not found"});
         }
       })
       .catch(err => {
@@ -119,15 +119,15 @@ formationRouter.route('/:formation_id')
   });
 
 
-formationRouter.route('/:formation_id/userValues')
+courseRouter.route('/:course_id/userValues')
 // ====================================
-// update user values for a formation
+// update user values for a course
 // ====================================
   .put((request: Request, response: Response) => {
 
-    var formationId = request.params.formation_id;
+    var courseId = request.params.course_id;
 
-    debug("PUT /" + formationId + "/userValues");
+    debug("PUT /" + courseId + "/userValues");
     //debug(request.body);
 
     // Search the user
@@ -138,14 +138,14 @@ formationRouter.route('/:formation_id/userValues')
           return response.status(404).json({status: 404, message: "User not found"});
         }
 
-        if (!user.formations) {
-          user.formations = {};
+        if (!user.courses) {
+          user.courses = {};
         }
-        if (!user.formations[formationId]) {
-          user.formations[formationId] = new IUserFormation();
+        if (!user.courses[courseId]) {
+          user.courses[courseId] = new IUserCourse();
         }
 
-        user.formations[formationId].isFavorite = request.body.isFavorite;
+        user.courses[courseId].isFavorite = request.body.isFavorite;
         //console.log(user);
 
         // Save the user back to Db
@@ -153,7 +153,7 @@ formationRouter.route('/:formation_id/userValues')
           .then(user => {
             //console.log(user);
 
-            _getFormation(formationId, request['user']["id"], response);
+            _getCourse(courseId, request['user']["id"], response);
           })
           .catch(err => {
             console.log(err);
@@ -166,20 +166,20 @@ formationRouter.route('/:formation_id/userValues')
         response.status(500).json({status: 500, message: "System error " + err});
       });
 
-    //response.status(404).json({status: 404, message: "Formation not found"});
+    //response.status(404).json({status: 404, message: "Course not found"});
 
   });
 
-formationRouter.route('/:formation_id/:paragraph_id/userChoice')
+courseRouter.route('/:course_id/:paragraph_id/userChoice')
 // ============================================
-// update user choice for a formation paragraph
+// update user choice for a course paragraph
 // ============================================
   .put((request: Request, response: Response) => {
 
-    var formationId = request.params.formation_id;
+    var courseId = request.params.course_id;
     var paragraphId = request.params.paragraph_id;
 
-    debug("PUT /" + formationId + "/" + paragraphId + "/userChoice");
+    debug("PUT /" + courseId + "/" + paragraphId + "/userChoice");
     //debug(request.body);
 
     var userChoice = new UserChoice(request.body);
@@ -193,21 +193,21 @@ formationRouter.route('/:formation_id/:paragraph_id/userChoice')
           return response.status(404).json({status: 404, message: "User not found"});
         }
 
-        if (!user.formations) {
-          user.formations = {};
+        if (!user.courses) {
+          user.courses = {};
         }
-        if (!user.formations[formationId]) {
-          user.formations[formationId] = new IUserFormation();
+        if (!user.courses[courseId]) {
+          user.courses[courseId] = new IUserCourse();
         }
-        if (!user.formations[formationId].userChoices) {
-          user.formations[formationId].userChoices = {};
+        if (!user.courses[courseId].userChoices) {
+          user.courses[courseId].userChoices = {};
         }
-        if (!user.formations[formationId].userChoices[paragraphId]) {
-          user.formations[formationId].userChoices[paragraphId] = new IUserChoices();
+        if (!user.courses[courseId].userChoices[paragraphId]) {
+          user.courses[courseId].userChoices[paragraphId] = new IUserChoices();
         }
 
-        user.formations[formationId].userChoices[paragraphId].userChoice = userChoice.userChoice;
-        user.formations[formationId].userChoices[paragraphId].updated = new Date();
+        user.courses[courseId].userChoices[paragraphId].userChoice = userChoice.userChoice;
+        user.courses[courseId].userChoices[paragraphId].updated = new Date();
         //console.log(user);
 
         // Save the user back to Db
@@ -215,7 +215,7 @@ formationRouter.route('/:formation_id/:paragraph_id/userChoice')
           .then(user => {
             //debug(user);
 
-            _getFormationParagraph(formationId, paragraphId, request['user']["id"], response);
+            _getCourseParagraph(courseId, paragraphId, request['user']["id"], response);
           })
           .catch(err => {
             console.log(err);
@@ -230,16 +230,16 @@ formationRouter.route('/:formation_id/:paragraph_id/userChoice')
 
   });
 
-formationRouter.route('/:formation_id/:paragraph_id/userChoice/check')
+courseRouter.route('/:course_id/:paragraph_id/userChoice/check')
 // ============================================
-// check user choice for a formation paragraph
+// check user choice for a course paragraph
 // ============================================
   .put((request: Request, response: Response) => {
 
-    var formationId = request.params.formation_id;
+    var courseId = request.params.course_id;
     var paragraphId = request.params.paragraph_id;
 
-    debug("PUT /" + formationId + "/" + paragraphId + "/userChoice/check'");
+    debug("PUT /" + courseId + "/" + paragraphId + "/userChoice/check'");
     //debug(request.body);
 
     var userChoice = new UserChoice(request.body);
@@ -253,49 +253,49 @@ formationRouter.route('/:formation_id/:paragraph_id/userChoice/check')
           return response.status(404).json({status: 404, message: "User not found"});
         }
 
-        if (!user.formations) {
-          user.formations = {};
+        if (!user.courses) {
+          user.courses = {};
         }
-        if (!user.formations[formationId]) {
-          user.formations[formationId] = new IUserFormation();
+        if (!user.courses[courseId]) {
+          user.courses[courseId] = new IUserCourse();
         }
-        if (!user.formations[formationId].userChoices) {
-          user.formations[formationId].userChoices = {};
+        if (!user.courses[courseId].userChoices) {
+          user.courses[courseId].userChoices = {};
         }
-        if (!user.formations[formationId].userChoices[paragraphId]) {
-          user.formations[formationId].userChoices[paragraphId] = new IUserChoices();
+        if (!user.courses[courseId].userChoices[paragraphId]) {
+          user.courses[courseId].userChoices[paragraphId] = new IUserChoices();
         }
 
-        user.formations[formationId].userChoices[paragraphId].userChoice = userChoice.userChoice;
-        if (!user.formations[formationId].userChoices[paragraphId].userCheckCount) {
-          user.formations[formationId].userChoices[paragraphId].userCheckCount = 0;
+        user.courses[courseId].userChoices[paragraphId].userChoice = userChoice.userChoice;
+        if (!user.courses[courseId].userChoices[paragraphId].userCheckCount) {
+          user.courses[courseId].userChoices[paragraphId].userCheckCount = 0;
         }
 
 
         // get the paragraph
-        Formation.findById(formationId)
-          .then(formation => {
-            let paragraph = _searchParagraph(paragraphId, formation.parts);
+        Course.findById(courseId)
+          .then(course => {
+            let paragraph = _searchParagraph(paragraphId, course.parts);
             if (paragraph != null) {
               // check the user choice
-              if (paragraph.maxCheckCount <= user.formations[formationId].userChoices[paragraphId].userCheckCount) {
+              if (paragraph.maxCheckCount <= user.courses[courseId].userChoices[paragraphId].userCheckCount) {
                 // Too many try, won't be saved
                 response.status(401).json({status: 401, message: "To many try"});
-              } else if (user.formations[formationId].userChoices[paragraphId].userCheckOK === true) {
+              } else if (user.courses[courseId].userChoices[paragraphId].userCheckOK === true) {
                 // Answer already correct
                 response.status(401).json({status: 401, message: "Answer already correct"});
               } else {
                 // Do the check
-                user.formations[formationId].userChoices[paragraphId].userCheckOK = (""+user.formations[formationId].userChoices[paragraphId].userChoice == ""+paragraph.answer);
-                user.formations[formationId].userChoices[paragraphId].userCheckCount += 1;
-                user.formations[formationId].userChoices[paragraphId].updated = new Date();
+                user.courses[courseId].userChoices[paragraphId].userCheckOK = (""+user.courses[courseId].userChoices[paragraphId].userChoice == ""+paragraph.answer);
+                user.courses[courseId].userChoices[paragraphId].userCheckCount += 1;
+                user.courses[courseId].userChoices[paragraphId].updated = new Date();
 
                 // save it to Db
                 User.updateOrCreate(user)
                   .then(user => {
                     //debug(user);
 
-                    _getFormationParagraph(formationId, paragraphId, request['user']["id"], response);
+                    _getCourseParagraph(courseId, paragraphId, request['user']["id"], response);
                   })
                   .catch(err => {
                     console.log(err);
@@ -304,7 +304,7 @@ formationRouter.route('/:formation_id/:paragraph_id/userChoice/check')
               }
 
             } else {
-              response.status(404).json({status: 404, message: "Formation not found"});
+              response.status(404).json({status: 404, message: "Course not found"});
             }
           })
           .catch(err => {
@@ -321,16 +321,16 @@ formationRouter.route('/:formation_id/:paragraph_id/userChoice/check')
   });
 
 /**
- * fill formation with user data
- * @param formation
+ * fill course with user data
+ * @param course
  * @param user (from Db, not from token... should be full)
- * @returns {Promise<Formation>}
+ * @returns {Promise<Course>}
  * @private
  */
-function _fillFormationForUser(formation: Formation, user: User): Promise < Formation > {
-  //debug("_fillFormationForUser : " + formation["id"] + ", " + user["id"]);
-  return new Promise < Formation >((resolve) => {
-    var f = formation;
+function _fillCourseForUser(course: Course, user: User): Promise < Course > {
+  //debug("_fillCourseForUser : " + course["id"] + ", " + user["id"]);
+  return new Promise < Course >((resolve) => {
+    var f = course;
 
     // define the default values
     var isFavorite = false;
@@ -340,17 +340,17 @@ function _fillFormationForUser(formation: Formation, user: User): Promise < Form
     var percentFollowed = 0;
 
     // get values from the user
-    if (user && user.formations && user.formations[formation["id"]]) {
-      isFavorite = user.formations[formation["id"]].isFavorite;
-      interest = user.formations[formation["id"]].interest;
-      dateFollowed = user.formations[formation["id"]].dateFollowed;
-      dateFollowedEnd = user.formations[formation["id"]].dateFollowedEnd;
-      percentFollowed = user.formations[formation["id"]].percentFollowed;
+    if (user && user.courses && user.courses[course["id"]]) {
+      isFavorite = user.courses[course["id"]].isFavorite;
+      interest = user.courses[course["id"]].interest;
+      dateFollowed = user.courses[course["id"]].dateFollowed;
+      dateFollowedEnd = user.courses[course["id"]].dateFollowedEnd;
+      percentFollowed = user.courses[course["id"]].percentFollowed;
 
       // add user choices
-      if (user.formations[formation["id"]].userChoices) {
+      if (user.courses[course["id"]].userChoices) {
 
-        _.forIn(user.formations[formation["id"]].userChoices, (value, paragraphId) => {
+        _.forIn(user.courses[course["id"]].userChoices, (value, paragraphId) => {
           let p = _searchParagraph(paragraphId, f.parts);
           if (p) {
             //console.log(p);
@@ -367,7 +367,7 @@ function _fillFormationForUser(formation: Formation, user: User): Promise < Form
       }
     }
 
-    // assign the values into the formation
+    // assign the values into the course
     _.assign(f, {
       isFavorite: isFavorite,
       interest: interest,
@@ -381,31 +381,31 @@ function _fillFormationForUser(formation: Formation, user: User): Promise < Form
   })
 }
 /**
- * Get a formation (filled) by Id
- * @param formationId
+ * Get a course (filled) by Id
+ * @param courseId
  * @param userId
  * @param response
  * @private
  */
-function _getFormation(formationId: string, userId: string, response) {
-  //debug("_getFormation : " + formationId + ", " + userId);
-  Formation.findById(formationId)
-    .then(formation => {
+function _getCourse(courseId: string, userId: string, response) {
+  //debug("_getCourse : " + courseId + ", " + userId);
+  Course.findById(courseId)
+    .then(course => {
       // Search the user
       User.findById(userId)
         .then(user => {
-          if (formation) {
-            _fillFormationForUser(formation, user)
-              .then(form => {
-                //debug(form);
-                response.json({data: form})
+          if (course) {
+            _fillCourseForUser(course, user)
+              .then(cou => {
+                //debug(cou);
+                response.json({data: cou})
               })
               .catch(err => {
                 console.log(err);
                 response.status(500).send("System error " + err);
               });
           } else {
-            response.status(404).json({status: 404, message: "Formation not found"});
+            response.status(404).json({status: 404, message: "Course not found"});
           }
         })
         .catch(err => {
@@ -422,29 +422,29 @@ function _getFormation(formationId: string, userId: string, response) {
 
 /**
  * Get a paragraph (filled) by Id
- * @param formationId
+ * @param courseId
  * @param paragraphId
  * @param userId
  * @param response
  * @private
  */
-function _getFormationParagraph(formationId: string, paragraphId: string, userId: string, response) {
-  //debug("_getFormation : " + formationId + ", " + userId);
-  Formation.findById(formationId)
-    .then(formation => {
+function _getCourseParagraph(courseId: string, paragraphId: string, userId: string, response) {
+  //debug("_getCourse : " + courseId + ", " + userId);
+  Course.findById(courseId)
+    .then(course => {
 
       // Search the user
       User.findById(userId)
         .then(user => {
-          if (formation) {
-            _fillFormationForUser(formation, user)
-              .then(form => {
+          if (course) {
+            _fillCourseForUser(course, user)
+              .then(cou => {
                 // search for the paragraph
-                let para = _searchParagraph(paragraphId, form.parts);
+                let para = _searchParagraph(paragraphId, cou.parts);
                 if (para != null) {
                   response.json({data: para})
                 } else {
-                  response.status(404).json({status: 404, message: "Formation not found"});
+                  response.status(404).json({status: 404, message: "Course not found"});
                 }
               })
               .catch(err => {
@@ -452,7 +452,7 @@ function _getFormationParagraph(formationId: string, paragraphId: string, userId
                 response.status(500).send("System error " + err);
               });
           } else {
-            response.status(404).json({status: 404, message: "Formation not found"});
+            response.status(404).json({status: 404, message: "Course not found"});
           }
         })
         .catch(err => {
@@ -468,20 +468,20 @@ function _getFormationParagraph(formationId: string, paragraphId: string, userId
 }
 
 /**
- * Search for a paragraphe within formation parts
+ * Search for a paragraphe within course parts
  * @param paragraphId
- * @param formationParts
+ * @param courseParts
  * @returns  the earched paragraph
  */
-function _searchParagraph(paragraphId: string, formationParts: IFormationPart[]): IParagraph {
+function _searchParagraph(paragraphId: string, courseParts: ICoursePart[]): IParagraph {
 
   let returnedParagraph: IParagraph = null;
 
-  if (formationParts == null) {
+  if (courseParts == null) {
     return null;
   }
 
-  formationParts.forEach(part => {
+  courseParts.forEach(part => {
     if (part.contents != null) {
       part.contents.forEach(para => {
         if (paragraphId == para['_id']) {
@@ -499,7 +499,7 @@ function _searchParagraph(paragraphId: string, formationParts: IFormationPart[])
 }
 
 
-export {formationRouter}
+export {courseRouter}
 
 
 

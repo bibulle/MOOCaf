@@ -1,7 +1,7 @@
 import {Component, Input, EventEmitter, Output} from "@angular/core";
 import {Router} from "@angular/router";
 import {Logger} from "angular2-logger/core";
-import {Formation} from "../../models/formation";
+import {Course} from "../../models/course";
 
 @Component({
   moduleId: module.id,
@@ -13,7 +13,7 @@ import {Formation} from "../../models/formation";
 export class ClassScheduleComponent {
 
   @Input()
-  formation: Formation;
+  course: Course;
 
   @Output()
   notifySelectedPart: EventEmitter<number[]> = new EventEmitter<number[]>();

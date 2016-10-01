@@ -24,7 +24,7 @@ import {LayoutAlignDirective} from "./directives/layout-align-directive";
 import {LayoutDirective} from "./directives/layout-directive";
 import {FlexDirective} from "./directives/flex-directive";
 import {UserService} from "./services/user.service";
-import {FormationService} from "./services/formation.service";
+import {CourseService} from "./services/course.service";
 import {NotificationService} from "./services/notification.service";
 import {AuthGuard} from "./common/auth.guard";
 
@@ -40,7 +40,7 @@ import {SignupComponent} from "./components/signup/signup";
 import {NotFoundComponent} from "./components/404/404";
 import {LogoComponent} from "./components/logo/logo";
 import {CatalogueComponent} from "./components/catalogue/catalogue";
-import {FormationCardComponent} from "./components/formation-card/formation-card";
+import {CourseCardComponent} from "./components/course-card/course-card";
 import {ClassComponent} from "./components/class/class";
 import {ClassScheduleComponent} from "./components/class-schedule/class-schedule";
 import {ParagraphComponent} from "./components/paragraph/paragraph";
@@ -82,7 +82,7 @@ if (environment.production) {
     NotFoundComponent,
     LogoComponent,
     CatalogueComponent,
-    FormationCardComponent,
+    CourseCardComponent,
     ClassComponent,
     ClassScheduleComponent,
     ParagraphComponent,
@@ -96,7 +96,7 @@ if (environment.production) {
   providers: [
     loggerProvider,
     UserService,
-    FormationService,
+    CourseService,
     NotificationService,
     AuthGuard,
     AUTH_PROVIDERS,

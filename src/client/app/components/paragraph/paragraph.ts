@@ -12,7 +12,7 @@ import {ParagraphType} from "../../models/paragraph-type.enum";
 export class ParagraphComponent implements OnInit {
 
   @Input()
-  formationId: string;
+  courseId: string;
 
   @Input()
   src: string;
@@ -31,7 +31,7 @@ export class ParagraphComponent implements OnInit {
 
   ngOnInit() {
 
-    //console.log(this.formationId);
+    //console.log(this.courseId);
     //console.log(this.data);
 
     if (this.rawContent) {

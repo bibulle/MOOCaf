@@ -1,5 +1,5 @@
 <div class="schedule" flex="100" layout="column" layout-align="start stretch">
-  <div class="level1" [class.open]="isOpened(i)" layout="column" layout-align="start start" *ngFor="let part1 of formation.parts; let i = index">
+  <div class="level1" [class.open]="isOpened(i)" layout="column" layout-align="start start" *ngFor="let part1 of course.parts; let i = index">
     <button class="" [class.selected]="isSelected(i)" layout="row" layout-align="start stretch" (click)="selectPart($event, i)">
       <md-icon class="more" (click)="openPart($event, i)">chevron_right</md-icon>
       <md-icon class="less" (click)="openPart($event, i)">expand_more</md-icon>

@@ -1,0 +1,35 @@
+<md-card class="course" flex="100" (click)="launchClass($event)">
+  <md-card-subtitle>{{course.created | date}}</md-card-subtitle>
+  <md-card-title>{{course.name}}</md-card-title>
+  <md-card-content>
+    {{course.description}}
+  </md-card-content>
+  <md-card-footer layout="row" layout-align="space-between center">
+    <span class="note" [title]="course.note+' from '+course.noteCount+' notes'">
+      <div>
+        <div class="note_1" [style.width.em]="7.5*course.note/5">
+          <div class="note_1_1"><md-icon>star_rate</md-icon><md-icon>star_rate</md-icon><md-icon>star_rate</md-icon><md-icon>star_rate</md-icon><md-icon>star_rate</md-icon></div>
+        </div>
+        <div class="note_2"><md-icon>star_rate</md-icon><md-icon>star_rate</md-icon><md-icon>star_rate</md-icon><md-icon>star_rate</md-icon><md-icon>star_rate</md-icon></div>
+      </div>
+    </span>
+    <div class="followed" *ngIf="(course.dateFollowed != null)">
+      <div>
+        <div class="followed_1" [style.width.em]="7*course.percentFollowed">
+          <div class="followed_1_1">{{course.percentFollowed | percent}} done</div>
+        </div>
+        <div class="followed_2">{{course.percentFollowed | percent}} done</div>
+      </div>
+    </div>
+    <span class="favorite">
+      <button md-button id="favorite-button" aria-label="Toggle this course as your favorite or not"
+              (click)="toggleFavorite($event)" class="md-icon-button">
+        <md-icon *ngIf="!course.isFavorite" aria-label="Not favorite" title="Not favorite" class="notFavorite">favorite_border</md-icon>
+        <md-icon *ngIf="course.isFavorite" aria-label="Favorite" title="Favorite" class="favorite">favorite</md-icon>
+      </button>
+    </span>
+  </md-card-footer>
+  <div class="clipping-banner">
+    <div class="banner">new !!</div>
+  </div>
+</md-card>

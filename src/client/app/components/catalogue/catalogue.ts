@@ -1,8 +1,8 @@
 import {Component} from "@angular/core";
-import {Formation} from "../../models/formation";
+import {Course} from "../../models/course";
 import {Subject} from "rxjs/Subject";
 import {Logger} from "angular2-logger/core";
-import {FormationService} from "../../services/formation.service";
+import {CourseService} from "../../services/course.service";
 import {NotificationService} from "../../services/notification.service";
 
 @Component({
@@ -22,8 +22,8 @@ export class CatalogueComponent {
     search: ""
   };
 
-  private formations: Formation[];
-  sortedFormations: Formation[];
+  private courses: Course[];
+  sortedCourses: Course[];
 
 
   // The queue to manage user choices
@@ -32,7 +32,7 @@ export class CatalogueComponent {
 
   constructor(
     private _logger: Logger,
-    private _formationService: FormationService,
+    private _courseService: CourseService,
     private _notificationService: NotificationService) {
   }
 
@@ -53,10 +53,10 @@ export class CatalogueComponent {
         );
     }
 
-    this._formationService.getFormations()
-      .then(formations =>
+    this._courseService.getCourses()
+      .then(courses =>
         {
-          this.formations = formations;
+          this.courses = courses;
           this.filterList();
         })
       .catch(err => {
@@ -84,14 +84,14 @@ export class CatalogueComponent {
   }
 
   /**
-   * Add an event to sort/filter the formation list
+   * Add an event to sort/filter the course list
    */
   filterList() {
     this.subjectFilter.next(this.filter);
   }
 
   /**
-   * Really sort the formation list
+   * Really sort the course list
    * @param filter the filter to apply
    * @private
    */
@@ -103,7 +103,7 @@ export class CatalogueComponent {
 
     this.previousFilterJson = filterJson;
 
-    this.sortedFormations = this.formations
+    this.sortedCourses = this.courses
       .filter(f => {
           var ret = true;
           ret = ret && ((filter['favorite'] != 1) || (f.isFavorite));

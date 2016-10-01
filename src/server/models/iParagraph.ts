@@ -3,7 +3,7 @@ import * as _ from "lodash";
 
 import {ParagraphType} from "./eParagraphType";
 import {IParagraphContent} from "./iParagraphContent";
-var debug = require('debug')('server:model:formation');
+var debug = require('debug')('server:model:course');
 
 export class IParagraph {
 

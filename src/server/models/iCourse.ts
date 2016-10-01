@@ -1,12 +1,12 @@
 import * as _ from "lodash";
 import Mongoose = require("mongoose");
-import {IFormationPart, schemaFormationPart} from "./iFormationPart";
+import {ICoursePart, schemaCoursePart} from "./iCoursePart";
 //var Schema = Mongoose.Schema;
-var debug = require('debug')('server:model:formation');
+var debug = require('debug')('server:model:course');
 
-export class IFormation {
+export class ICourse {
 
-  // The name of the formation
+  // The name of the course
   name: string;
 
   // The description
@@ -33,19 +33,19 @@ export class IFormation {
   created: Date;
   updated: Date;
 
-  parts: IFormationPart[];
+  parts: ICoursePart[];
 
 
   /**
    * Constructor
-   * @param mongoose.Document<IFormation>
+   * @param mongoose.Document<ICourse>
    */
   constructor(document: {}) {
     _.merge(this, document);
   }
 }
 
-interface IFormationModel extends IFormation, Mongoose.Document {
+interface ICourseModel extends ICourse, Mongoose.Document {
 }
 
 
@@ -79,7 +79,7 @@ var _schema: Mongoose.Schema = new Mongoose.Schema({
       type: Date,
       default: Date.now
     },
-    parts: [schemaFormationPart]
+    parts: [schemaCoursePart]
 
   })
     .pre('save', function (next) {
@@ -110,6 +110,6 @@ var _schema: Mongoose.Schema = new Mongoose.Schema({
  * @type {Model<IParagraphModel>}
  * @private
  */
-export var modelIFormation = Mongoose.model < IFormationModel >('Formation', _schema);
+export var modelICourse = Mongoose.model < ICourseModel >('Course', _schema);
 
 

@@ -1,24 +1,24 @@
 import {Component, Input} from "@angular/core";
 //import {Logger} from "angular2-logger/core";
-import {Formation} from "../../models/formation";
-import {FormationService} from "../../services/formation.service";
+import {Course} from "../../models/course";
+import {CourseService} from "../../services/course.service";
 import {Router} from "@angular/router";
 import {NotificationService} from "../../services/notification.service";
 
 @Component({
   moduleId: module.id,
-  selector: 'formation-card',
-  templateUrl: 'formation-card.html',
-  styleUrls: ['formation-card.css']
+  selector: 'course-card',
+  templateUrl: 'course-card.html',
+  styleUrls: ['course-card.css']
 })
-export class FormationCardComponent {
+export class CourseCardComponent {
 
   @Input()
-  formation: Formation;
+  course: Course;
 
   constructor(public router: Router,
               //private _logger: Logger,
-              private _formationService: FormationService,
+              private _courseService: CourseService,
               private _notificationService: NotificationService) {
   }
 
@@ -28,13 +28,13 @@ export class FormationCardComponent {
   toggleFavorite(event) {
     event.stopPropagation();
 
-    this.formation.isFavorite = !this.formation.isFavorite;
+    this.course.isFavorite = !this.course.isFavorite;
 
-    this._formationService.saveUserValues(this.formation)
-      .then(formation => {
-        //console.log(formation);
+    this._courseService.saveUserValues(this.course)
+      .then(course => {
+        //console.log(course);
         this._notificationService.message("Your changes have been saved");
-        this.formation = formation;
+        this.course = course;
       })
       .catch(err => {
 
@@ -45,7 +45,7 @@ export class FormationCardComponent {
 
   launchClass(event) {
     event.stopPropagation();
-    this.router.navigate(['/classes', this.formation.id]);
+    this.router.navigate(['/classes', this.course.id]);
   }
 
 }

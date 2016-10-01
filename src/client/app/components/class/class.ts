@@ -4,8 +4,8 @@ import {Router, ActivatedRoute, Params} from "@angular/router";
 import {Logger} from "angular2-logger/core";
 import {NotificationService} from "../../services/notification.service";
 
-import {FormationService} from "../../services/formation.service";
-import {Formation, FormationPart} from "../../models/formation";
+import {CourseService} from "../../services/course.service";
+import {Course, CoursePart} from "../../models/course";
 import {ParagraphType} from "../../models/paragraph-type.enum";
 import {Paragraph} from "../../models/paragraph";
 import {ParagraphContentType} from "../../models/paragraph-content-type.enum";
@@ -19,11 +19,11 @@ import {ParagraphContentType} from "../../models/paragraph-content-type.enum";
 
 export class ClassComponent {
 
-  private currentFormationCount = 0;
-  private formations: Formation[];
+  private currentCourseCount = 0;
+  private courses: Course[];
 
-  private formation: Formation;
-  private selectedPart: FormationPart;
+  private course: Course;
+  private selectedPart: CoursePart;
   private selectedPartLevel: number;
 
   private scheduleClosed = true;
@@ -31,13 +31,13 @@ export class ClassComponent {
   constructor(private route: ActivatedRoute,
               public router: Router,
               private _logger: Logger,
-              private _formationService: FormationService,
+              private _courseService: CourseService,
               private _notificationService: NotificationService) {
 
-    /// Get current formation count
-    this._formationService.currentFormationObservable().subscribe(
+    /// Get current course count
+    this._courseService.currentCourseObservable().subscribe(
       count => {
-        this.currentFormationCount = count;
+        this.currentCourseCount = count;
       }
     );
 
@@ -45,8 +45,8 @@ export class ClassComponent {
 
   ngOnInit() {
 
-    this.formation = null;
-    this.formations = null;
+    this.course = null;
+    this.courses = null;
 
     this.route.params.forEach((params: Params) => {
       let id = params['id'];
@@ -55,10 +55,10 @@ export class ClassComponent {
         // -----------------------------------------------
         // id is undefined, it's general class page asked
         // -----------------------------------------------
-        this._formationService.getFormations(true)
-          .then(formations =>
+        this._courseService.getCourses(true)
+          .then(courses =>
           {
-            this.formations = formations
+            this.courses = courses
               .sort((f1, f2) => {
                 if (f1.dateFollowed && f2.dateFollowed) {
                   return f2.dateFollowed.getTime() - f1.dateFollowed.getTime();
@@ -66,10 +66,10 @@ export class ClassComponent {
                   return 0;
                 }
               });
-            if (this.formations.length == 0) {
+            if (this.courses.length == 0) {
               this.router.navigate(['/catalogue']);
-            } else if (this.formations.length == 1) {
-              this.router.navigate(['/classes', this.formations[0].id]);
+            } else if (this.courses.length == 1) {
+              this.router.navigate(['/classes', this.courses[0].id]);
             }
           })
           .catch(err => {
@@ -78,18 +78,18 @@ export class ClassComponent {
 
       } else {
         // ---------------------------------
-        // id is defined, only one formation
+        // id is defined, only one course
         // ---------------------------------
-        this._formationService.getFormation(id)
-          .then(formation =>
+        this._courseService.getCourse(id)
+          .then(course =>
           {
             // If no part... add an fake one
-            if (formation.parts.length == 0) {
-              formation.parts.push(new FormationPart({title: "Not yet defined"}));
+            if (course.parts.length == 0) {
+              course.parts.push(new CoursePart({title: "Not yet defined"}));
             }
 
-            this.formation = formation;
-            //console.log(formation);
+            this.course = course;
+            //console.log(course);
 
           })
           .catch(err => {
@@ -114,7 +114,7 @@ export class ClassComponent {
    */
   onNotifySelectedPart(selectedNums) {
 
-    var selectedPart = this.formation.parts[selectedNums[0]];
+    var selectedPart = this.course.parts[selectedNums[0]];
     var selectedPartLevel = 1;
 
     if ((selectedNums.length > 1) && (selectedNums[1] != null)) {

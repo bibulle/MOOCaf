@@ -4,31 +4,31 @@ import {Logger} from "angular2-logger/app/core/logger";
 import {AuthHttp} from "angular2-jwt";
 import {contentHeaders} from "../common/headers";
 import {UserService} from "./user.service";
-import {Formation} from "../models/formation";
+import {Course} from "../models/course";
 import {environment} from "../environment";
 import {Observable, BehaviorSubject} from 'rxjs/Rx';
 import {Paragraph} from "../models/paragraph";
 
 @Injectable()
-export class FormationService {
+export class CourseService {
 
-  private formationsUrl = environment.serverUrl+'api/formation';
+  private coursesUrl = environment.serverUrl+'api/course';
 
-  private currentFormationCountSubject: BehaviorSubject<number>;
+  private currentCourseCountSubject: BehaviorSubject<number>;
 
   constructor(private _logger: Logger,
               private authHttp: AuthHttp,
               private userService: UserService) {
 
-    this.currentFormationCountSubject = new BehaviorSubject<number>(0);
+    this.currentCourseCountSubject = new BehaviorSubject<number>(0);
 
     // Subscribe to user changes to know if there is a current class
     this.userService.userObservable().subscribe(
       user => {
         if (user.username) {
-          this.checkCurrentFormation();
+          this.checkCurrentCourse();
         } else {
-          this.currentFormationCountSubject.next(0);
+          this.currentCourseCountSubject.next(0);
         }
       });
 
@@ -36,36 +36,36 @@ export class FormationService {
   }
 
   /**
-   * Subscribe to know if current formation changes
+   * Subscribe to know if current course changes
    */
-  currentFormationObservable(): Observable<number> {
-    return this.currentFormationCountSubject;
+  currentCourseObservable(): Observable<number> {
+    return this.currentCourseCountSubject;
   }
 
   /**
-   * local method to check if the user have some current formations
+   * local method to check if the user have some current courses
    */
-  private checkCurrentFormation() {
-    this.getFormations(true)
+  private checkCurrentCourse() {
+    this.getCourses(true)
       .then(lst => {
-        this.currentFormationCountSubject.next(lst.length);
+        this.currentCourseCountSubject.next(lst.length);
       })
       .catch(err => {
-          this.currentFormationCountSubject.next(0);
+          this.currentCourseCountSubject.next(0);
         }
       )
   }
 
   /**
-   * get the formations for the connected user
-   *      The Formations, the progression, favorite and interest of the user
-   * @param currentOnly (should only return the "current" formation ... thestarted and not yet finished)
-   * @returns {Promise<Formation[]>}
+   * get the courses for the connected user
+   *      The Courses, the progression, favorite and interest of the user
+   * @param currentOnly (should only return the "current" course ... thestarted and not yet finished)
+   * @returns {Promise<Course[]>}
    */
-  getFormations(currentOnly = false): Promise<Formation[]> {
-    return new Promise<Formation[]>((resolve, reject) => {
-        this.authHttp.get(this.formationsUrl+"?currentOnly="+currentOnly)
-          .map((res: Response) => res.json().data as Formation[])
+  getCourses(currentOnly = false): Promise<Course[]> {
+    return new Promise<Course[]>((resolve, reject) => {
+        this.authHttp.get(this.coursesUrl+"?currentOnly="+currentOnly)
+          .map((res: Response) => res.json().data as Course[])
           .subscribe(
             data => {
               //console.log(data);
@@ -90,42 +90,42 @@ export class FormationService {
   }
 
   /**
-   * get A formation for the connected user
+   * get A course for the connected user
    *      The Paragraph, the progression, favorite and interest of the user
-   * @returns {Promise<Formation>}
+   * @returns {Promise<Course>}
    */
-  getFormation(uid: string): Promise < Formation > {
-    return this.authHttp.get(`${this.formationsUrl}/${uid}`)
+  getCourse(uid: string): Promise < Course > {
+    return this.authHttp.get(`${this.coursesUrl}/${uid}`)
       .toPromise()
       .then(response => {
-        var formation = response.json().data as Formation;
-        return formation;
+        var course = response.json().data as Course;
+        return course;
       })
       .catch(error => this.handleError(error, this._logger));
   }
 
   /**
-   * Save a formation
-   * @param formation
-   * @returns Promise<Formation>
+   * Save a course
+   * @param course
+   * @returns Promise<Course>
    */
-  save(formation: Formation): Promise < Formation > {
-    if (formation.id
+  save(course: Course): Promise < Course > {
+    if (course.id
     ) {
-      return this.put(formation);
+      return this.put(course);
     }
-    return this.post(formation);
+    return this.post(course);
   }
 
 
 
   /**
    * Save a favorite or not
-   * @param userChoice ({ formationId: string, isFavorite: boolean })
-   * @returns Promise<Formation>
+   * @param userChoice ({ courseId: string, isFavorite: boolean })
+   * @returns Promise<Course>
    */
-  _saveUserValues(userChoice): Promise < Formation > {
-    let url = `${this.formationsUrl}/${userChoice.formationId}/userValues`;
+  _saveUserValues(userChoice): Promise < Course > {
+    let url = `${this.coursesUrl}/${userChoice.courseId}/userValues`;
     return this.authHttp
       .put(url, userChoice, { headers: contentHeaders})
       .toPromise()
@@ -134,7 +134,7 @@ export class FormationService {
         //console.log(res);
         //console.log('======');
         //this._service.success("Saved", "your change have been saved");
-        this.checkCurrentFormation();
+        this.checkCurrentCourse();
 
         return res.json().data;
       })
@@ -142,15 +142,15 @@ export class FormationService {
   }
 
   /**
-   * Save a formation
-   * @param formation
-   * @returns Promise<Formation>
+   * Save a course
+   * @param course
+   * @returns Promise<Course>
    */
 // Add new Paragraph
   private
-  post(formation: Formation): Promise < Formation > {
+  post(course: Course): Promise < Course > {
     return this.authHttp
-      .post(this.formationsUrl, JSON.stringify(formation), { headers: contentHeaders})
+      .post(this.coursesUrl, JSON.stringify(course), { headers: contentHeaders})
       .toPromise()
       .then(res => {
         //this._service.success("Saved", "your change have been saved");
@@ -159,46 +159,46 @@ export class FormationService {
       .catch(error => this.handleError(error, this._logger));
   }
 
-// Update existing Formation
-  private put(formation: Formation): Promise < Formation > {
-    let url = `${this.formationsUrl}/${formation.id}`;
+// Update existing Course
+  private put(course: Course): Promise < Course > {
+    let url = `${this.coursesUrl}/${course.id}`;
     return this.authHttp
-      .put(url, JSON.stringify(formation), { headers: contentHeaders})
+      .put(url, JSON.stringify(course), { headers: contentHeaders})
       .toPromise()
       .then(() => {
         //this._service.success("Saved", "your change have been saved");
-        return formation
+        return course
       });
 //.catch(error => this.handleError(error, this._logger));
   }
 
   /**
    * save paragraphs (user choice)
-   * @returns {Promise<void>|Promise<Formation>}
-   * @param formation Formation
+   * @returns {Promise<void>|Promise<Course>}
+   * @param course Course
    */
-  saveUserValues(formation: Formation): Promise < Formation > {
+  saveUserValues(course: Course): Promise < Course > {
 
     var userChoice = {
-      formationId: formation.id,
-      isFavorite: formation.isFavorite
+      courseId: course.id,
+      isFavorite: course.isFavorite
     };
 
     return this._saveUserValues(userChoice);
   }
 
   /**
-   * save formation paragraphs (user choice)
+   * save course paragraphs (user choice)
    * @param fullUserChoice (UID and userchoice)
    * @returns {Promise<void>|Promise<T>}
    */
-  saveUserChoice(formationId: string, paragraph: Paragraph): Promise<Paragraph> {
+  saveUserChoice(courseId: string, paragraph: Paragraph): Promise<Paragraph> {
 
     var userChoice = {
       userChoice: paragraph.userChoice
     }
 
-    let url = `${this.formationsUrl}/${formationId}/${paragraph['_id']}/userChoice`;
+    let url = `${this.coursesUrl}/${courseId}/${paragraph['_id']}/userChoice`;
     return this.authHttp
       .put(url, userChoice, { headers: contentHeaders})
       .toPromise()
@@ -212,13 +212,13 @@ export class FormationService {
       .catch(error => this.handleError(error, this._logger));
   }
 
-  checkUserChoice(formationId: string, paragraph: Paragraph): Promise<Paragraph> {
+  checkUserChoice(courseId: string, paragraph: Paragraph): Promise<Paragraph> {
 
     var userChoice = {
       userChoice: paragraph.userChoice
     }
 
-    let url = `${this.formationsUrl}/${formationId}/${paragraph['_id']}/userchoice/check`;
+    let url = `${this.coursesUrl}/${courseId}/${paragraph['_id']}/userchoice/check`;
     return this.authHttp
       .put(url, userChoice, { headers: contentHeaders})
       .toPromise()

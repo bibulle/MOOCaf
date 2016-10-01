@@ -1,6 +1,6 @@
 import {Component, HostListener} from '@angular/core';
 import { Logger } from 'angular2-logger/core';
-import {FormationService} from "../../services/formation.service";
+import {CourseService} from "../../services/course.service";
 import {NotificationService} from "../../services/notification.service";
 
 @Component({
@@ -11,14 +11,14 @@ import {NotificationService} from "../../services/notification.service";
 })
 export class AppComponent {
 
-  countCurrentFormations = 0;
+  countCurrentCourses = 0;
 
   notificationMessage = "";
   showMessage = false;
   notificationTimeout = null;
 
   constructor(private _logger: Logger,
-              private _formationService: FormationService,
+              private _courseService: CourseService,
               private _notificationService: NotificationService) {
   }
 
@@ -39,10 +39,10 @@ export class AppComponent {
   };
 
   ngOnInit() {
-    // Has the user some "current formation"
-    this._formationService.currentFormationObservable().subscribe(
+    // Has the user some "current course"
+    this._courseService.currentCourseObservable().subscribe(
       count => {
-        this.countCurrentFormations = count;
+        this.countCurrentCourses = count;
       }
     );
     this._notificationService.getMessageEmmiter()

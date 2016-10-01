@@ -1,7 +1,7 @@
 
 import {Paragraph} from "./paragraph";
 
-export class Formation {
+export class Course {
 
   id: string;
   name: string;
@@ -16,15 +16,15 @@ export class Formation {
   created: Date;
   update: Date;
 
-  parts: FormationPart[];
+  parts: CoursePart[];
 
 }
 
-export class FormationPart {
+export class CoursePart {
 
   title: string;
 
-  parts: FormationPart[];
+  parts: CoursePart[];
 
   contents: Paragraph[];
 
