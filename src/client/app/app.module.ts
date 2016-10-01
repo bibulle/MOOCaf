@@ -36,6 +36,7 @@ import {AboutComponent} from "./components/about/about.component";
 import {ProfileComponent} from "./components/profile/profile.component";
 import {HomeComponent} from "./components/home/home";
 import {LoginComponent} from "./components/login/login";
+import {SignupComponent} from "./components/signup/signup";
 import {NotFoundComponent} from "./components/404/404";
 import {LogoComponent} from "./components/logo/logo";
 import {CatalogueComponent} from "./components/catalogue/catalogue";
@@ -77,6 +78,7 @@ if (environment.production) {
     AboutComponent,
     HomeComponent,
     LoginComponent,
+    SignupComponent,
     NotFoundComponent,
     LogoComponent,
     CatalogueComponent,

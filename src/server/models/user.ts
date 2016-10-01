@@ -8,9 +8,15 @@ var debug = require('debug')('server:model:user');
 
 class IUser {
   username: string;
+  firstname: string;
+  lastname: string;
+  email: string;
+
   hashedPassword: string;
   salt: string;
+
   isAdmin: boolean;
+
   created: Date;
   updated: Date;
 
@@ -35,6 +41,18 @@ interface IUserModel extends IUser, Mongoose.Document {
  */
 var _schema: Mongoose.Schema = new Mongoose.Schema({
   username: {
+    type: String,
+    require: true
+  },
+  firstname: {
+    type: String,
+    require: true
+  },
+  lastname: {
+    type: String,
+    require: true
+  },
+  email: {
     type: String,
     require: true
   },
@@ -176,13 +194,16 @@ User
         .then(formations => {
           let fIds = _.shuffle(_.map(formations, f => f['id']))
           let idNum = 0;
-          var users: {}[] = [{
-            username: 'eric',
-            salt: '6MulWcxSt3p0BC4Xa59Xz9O8TUCu3VJE/cTwT2WOjws5XOnZhPfmj5Rku5EY8xzAgUDAgc5Z/6r1y6JLHtknmGINveNFJhadsAkFE+TS4EqI0Nzm8brPpZ3KZLHVLfF2tDBZtp9K5Z/l5WNOQkCFwEKaSzvbhnP+/i4hCZg2kyk=',
-            hashedPassword: 'b80776ef82727b04f57f314a655a31e926d3ea664e7295445409ef113c04c55984082a076ffbff9df377e19d96667026d498ad9bbd4f6211d6da39d7bb0fae331ad08709928513618174bc5a216ca6b74c5fd8e21cbbae0e7e44e24b6ae1d71a24f4088f10ca3533e144df1d66b9300ace3196097cf933b0a5f234b283b0fce3',
-            isAdmin: true,
-            formations: {}
-          }];
+      var users: {}[] = [{
+        username: 'eric',
+        firstname: 'Eric',
+        lastname: 'Machin',
+        email: 'ermachin@airfance.fr',
+        salt: '6MulWcxSt3p0BC4Xa59Xz9O8TUCu3VJE/cTwT2WOjws5XOnZhPfmj5Rku5EY8xzAgUDAgc5Z/6r1y6JLHtknmGINveNFJhadsAkFE+TS4EqI0Nzm8brPpZ3KZLHVLfF2tDBZtp9K5Z/l5WNOQkCFwEKaSzvbhnP+/i4hCZg2kyk=',
+        hashedPassword: 'b80776ef82727b04f57f314a655a31e926d3ea664e7295445409ef113c04c55984082a076ffbff9df377e19d96667026d498ad9bbd4f6211d6da39d7bb0fae331ad08709928513618174bc5a216ca6b74c5fd8e21cbbae0e7e44e24b6ae1d71a24f4088f10ca3533e144df1d66b9300ace3196097cf933b0a5f234b283b0fce3',
+        isAdmin: true,
+        formations: {}
+      }];
           users[0]['formations'][fIds[(idNum++) % fIds.length]] = {
             isFavorite: true,
             interest: 0.8,

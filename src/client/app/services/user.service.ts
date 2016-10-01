@@ -51,6 +51,8 @@ export class UserService {
       this.user = new User(this.jwtHelper.decodeToken(jwt));
     }
 
+    //this._logger.info(this.user);
+
     // if only username add to lastname
     if (!this.user.lastname && !this.user.firstname) {
       this.user.lastname = this.user.username;
@@ -66,7 +68,7 @@ export class UserService {
     return new Promise<void>((resolve, reject) => {
       this.http
         .post(
-          environment.serverUrl + 'users/create',
+          environment.serverUrl + 'users/login',
           body,
           {headers: contentHeaders}
         )
@@ -107,4 +109,29 @@ export class UserService {
   // getUser() {
   //   return this.user;
   // }
+
+  signup(username, password, firstname, lastname, email): Promise<void> {
+    let body = JSON.stringify({username, password, firstname, lastname, email});
+
+    return new Promise<void>((resolve, reject) => {
+      this.http
+        .post(
+          environment.serverUrl + 'users',
+          body,
+          {headers: contentHeaders}
+        )
+        .timeout(3000, new Error('Connection timeout exceeded'))
+        .toPromise()
+        .then(res => {
+          this._notifService.success("User created", "the user "+firstname+" "+lastname+' has been created');
+          resolve();
+        })
+        .catch(error => {
+          var msg = error._body || error.statusText || error.message || 'Connection error';
+          this._logger.error('Signup', msg);
+          this._notifService.error('Signup', msg);
+          reject();
+        })
+    });
+  }
 }

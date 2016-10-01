@@ -1,30 +1,28 @@
 import {Component} from "@angular/core";
+import {Http, Headers} from "@angular/http";
 import {Router} from "@angular/router";
-import {Http} from "@angular/http";
+import {contentHeaders} from "../../common/headers";
 import {Logger} from "angular2-logger/core";
-import {NotificationService} from "../../services/notification.service";
-import {environment} from "../../environment";
 import {UserService} from "../../services/user.service";
 
 @Component({
   moduleId: module.id,
-  selector: 'login',
-  templateUrl: 'login.html',
-  styleUrls: [ 'login.css' ]
+  selector: 'signup',
+  templateUrl: 'signup.html',
+  styleUrls: [ 'signup.css' ]
 })
-export class LoginComponent {
+export class SignupComponent {
+
   constructor(public router: Router,
-              public http: Http,
               private _logger: Logger,
-              private _notifService: NotificationService,
               private _userService: UserService) {
   }
 
-  login(event, username, password) {
-    //console.log(username+" "+password);
+  signup(event, username, password, firstname, lastname, email) {
+    //this._logger.debug("signup("+username+", "+password+", "+firstname+", "+lastname+", "+email+")");
     event.preventDefault();
 
-    this._userService.login(username, password)
+    this._userService.signup(username, password, firstname, lastname, email)
       .then(() => {
         this.router.navigate(['home']);
       })
@@ -33,8 +31,9 @@ export class LoginComponent {
       });
   }
 
-  signup(event) {
+  login(event) {
     event.preventDefault();
-    this.router.navigate(['/signup']);
+    this.router.navigate(['/login']);
   }
+
 }

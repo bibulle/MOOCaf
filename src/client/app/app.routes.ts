@@ -7,6 +7,7 @@ import {NotFoundComponent} from "./components/404/404";
 import {CatalogueComponent} from "./components/catalogue/catalogue";
 import {AuthGuard} from "./common/auth.guard";
 import {ClassComponent} from "./components/class/class";
+import {SignupComponent} from "./components/signup/signup";
 
 //import { PageComponent } from './page.home/page';
 
@@ -21,7 +22,8 @@ export const routes = [
   { path: 'classes',      component: ClassComponent, canActivate: [AuthGuard] },
   { path: 'classes/:id',  component: ClassComponent, canActivate: [AuthGuard] },
   // Show the 404 page for any routes that don't exist.
-  { path: '**',            component: NotFoundComponent }
+  { path: 'signup',       component: SignupComponent },
+  { path: '**',           component: NotFoundComponent }
 ];
 
 
