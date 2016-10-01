@@ -1,7 +1,8 @@
 import Mongoose = require("mongoose");
+import * as _ from "lodash";
+
 import {ParagraphType} from "./eParagraphType";
 import {IParagraphContent} from "./iParagraphContent";
-//var Schema = Mongoose.Schema;
 var debug = require('debug')('server:model:formation');
 
 export class IParagraph {
