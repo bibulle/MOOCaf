@@ -33,7 +33,7 @@ export class ScrollDirective implements OnInit, OnDestroy {
   }
   @HostListener('window:resize', ['$event'])
   onResize() {
-    console.log('resize  ');
+    //console.log('resize  ');
     if (this.subjectScroll) {
       this.subjectScroll.next(new ScrollDetectorData(this.el.nativeElement));
     }
