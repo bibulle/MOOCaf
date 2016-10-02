@@ -1,4 +1,4 @@
-<md-card class="course" flex="100" (click)="launchClass($event)">
+<md-card class="course" flex="100" (click)="launchClass($event)" (visibilityChange)="visibilityChange($event)">
   <md-card-subtitle>{{course.created | date}}</md-card-subtitle>
   <md-card-title>{{course.name}}</md-card-title>
   <md-card-content>
@@ -29,7 +29,7 @@
       </button>
     </span>
   </md-card-footer>
-  <div class="clipping-banner">
+  <div class="clipping-banner" *ngIf="course.isNew">
     <div class="banner">new !!</div>
   </div>
 </md-card>

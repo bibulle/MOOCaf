@@ -1,9 +1,10 @@
 import {Component, Input} from "@angular/core";
-//import {Logger} from "angular2-logger/core";
 import {Course} from "../../models/course";
 import {CourseService} from "../../services/course.service";
 import {Router} from "@angular/router";
 import {NotificationService} from "../../services/notification.service";
+import {VisibilityEvent} from "../../directives/visible-directive";
+//import {Logger} from "angular2-logger/core";
 
 @Component({
   moduleId: module.id,
@@ -23,6 +24,10 @@ export class CourseCardComponent {
   }
 
   ngOnInit() {
+    if (this.course['isNew'] == null) {
+      this.course['isNew'] = true;
+    }
+
   }
 
   toggleFavorite(event) {
@@ -47,5 +52,40 @@ export class CourseCardComponent {
     event.stopPropagation();
     this.router.navigate(['/classes', this.course.id]);
   }
+
+  visibilityChange(event:VisibilityEvent) {
+    // Is it visible ?
+    if ((event.topVisible && event.percentVisible > 0.4) || (event.percentVisible > 0.8)) {
+      this.course.dateSeen = this.course.dateSeen || new Date();
+      this.calcNew();
+    } else {
+      // If not visible any more and has been visible for less than 500 milli... it has not been seen
+      if (this.course.dateSeen && (new Date().getTime() - this.course.dateSeen.getTime()) < 500) {
+        this.course.dateSeen = null;
+        this.calcNew();
+      }
+    }
+  }
+
+  newTimeout;
+  calcNew() {
+    this.course.isNew =  ((this.course.dateSeen == null) || ((new Date().getTime() - this.course.dateSeen.getTime()) < 1000*60));
+    if (this.course.isNew) {
+      // TODO: Update course in the Db
+    }
+
+    if (this.course.dateSeen && this.course.isNew) {
+      this.newTimeout = setTimeout(() =>
+      {
+        this.calcNew();
+      },
+      10000)
+    } else {
+      if (this.newTimeout) {
+        clearTimeout(this.newTimeout);
+      }
+    }
+  }
+
 
 }

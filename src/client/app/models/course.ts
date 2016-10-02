@@ -3,20 +3,27 @@ import {Paragraph} from "./paragraph";
 
 export class Course {
 
+  // Course stuff
   id: string;
   name: string;
   description: string;
   note: number;
   noteCount: number;
-  isFavorite: boolean;
-  interest: number;
-  dateFollowed: Date;
-  dateFollowedEnd: Date;
-  percentFollowed: number;
+  parts: CoursePart[];
+
   created: Date;
   update: Date;
 
-  parts: CoursePart[];
+
+  // User stuff
+  isFavorite: boolean;
+  interest: number;
+  dateSeen: Date;
+  isNew: boolean;
+  dateFollowed: Date;
+  dateFollowedEnd: Date;
+  percentFollowed: number;
+
 
 }
 
