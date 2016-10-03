@@ -28,7 +28,7 @@ export class CourseCardComponent {
       this.course.new = true;
     }
 
-    this._logger.debug(this.course);
+    //this._logger.debug(this.course);
 
   }
 
@@ -74,7 +74,6 @@ export class CourseCardComponent {
 
   newTimeout;
   calcNew() {
-    this._logger.debug("calcNew "+this.course.id);
     this._courseService.calcNew(this.course);
 
     if (this.course.dateSeen && this.course.new) {
@@ -84,7 +83,6 @@ export class CourseCardComponent {
       },
       10000)
     } else {
-      this._logger.debug("calcNew clearTimeout");
       if (this.newTimeout) {
         clearTimeout(this.newTimeout);
       }
