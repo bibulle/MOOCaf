@@ -158,7 +158,7 @@ export class CourseService {
       //courseId: course.id,
       isFavorite: course.isFavorite,
       dateSeen: course.dateSeen,
-      isNew: course.isNew,
+      new: course.new,
       percentFollowed: course.percentFollowed,
     };
 
@@ -251,11 +251,11 @@ export class CourseService {
   }
 
   /**
-   * Methode to update the isNew value of the course
+   * Methode to update the new value of the course
    * @param course
    */
-  calcIsNew(course:Course) {
-    course.isNew = ((course.dateSeen == null) || ((new Date().getTime() - course.dateSeen.getTime()) < 1000*60));
+  calcNew(course:Course) {
+    course.new = ((course.dateSeen == null) || ((new Date().getTime() - course.dateSeen.getTime()) < 1000*60));
   }
 
   /**

@@ -4,7 +4,7 @@ import {CourseService} from "../../services/course.service";
 import {Router} from "@angular/router";
 import {NotificationService} from "../../services/notification.service";
 import {VisibilityEvent} from "../../directives/visible-directive";
-//import {Logger} from "angular2-logger/core";
+import {Logger} from "angular2-logger/core";
 
 @Component({
   moduleId: module.id,
@@ -18,14 +18,14 @@ export class CourseCardComponent {
   course: Course;
 
   constructor(public router: Router,
-              //private _logger: Logger,
+              private _logger: Logger,
               private _courseService: CourseService,
               private _notificationService: NotificationService) {
   }
 
   ngOnInit() {
-    if (this.course['isNew'] == null) {
-      this.course['isNew'] = true;
+    if (this.course.new == null) {
+      this.course.new = true;
     }
 
   }
@@ -56,29 +56,33 @@ export class CourseCardComponent {
   visibilityChange(event:VisibilityEvent) {
     // Is it visible ?
     if ((event.topVisible && event.percentVisible > 0.4) || (event.percentVisible > 0.8)) {
-      this.course.dateSeen = this.course.dateSeen || new Date();
-      this.calcNew();
-      this._courseService.saveUserValues(this.course)
-        .then(course => {
-          this.course = course;
-        })
-        .catch(err => {
-          this._notificationService.error("Error saving your choice", err.status+" : "+err.message);
-        });
+      if (!this.course.dateSeen) {
+        this.course.dateSeen = new Date();
+        this.calcNew();
+        this._courseService.saveUserValues(this.course)
+          .then(course => {
+            this.course = course;
+          })
+          .catch(err => {
+            this._notificationService.error("Error saving your choice", err.status+" : "+err.message);
+          });
+      }
     }
   }
 
   newTimeout;
   calcNew() {
-    this._courseService.calcIsNew(this.course);
+    this._logger.debug("calcNew "+this.course.id);
+    this._courseService.calcNew(this.course);
 
-    if (this.course.dateSeen && this.course.isNew) {
+    if (this.course.dateSeen && this.course.new) {
       this.newTimeout = setTimeout(() =>
       {
         this.calcNew();
       },
       10000)
     } else {
+      this._logger.debug("calcNew clearTimeout");
       if (this.newTimeout) {
         clearTimeout(this.newTimeout);
       }

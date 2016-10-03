@@ -1,6 +1,6 @@
 import Mongoose = require("mongoose");
 import * as _ from 'lodash';
-import UserCourse = require("./iUserCourse");
+import UserCourse = require("./UserCourse");
 import Course from "./course";
 var Schema = Mongoose.Schema;
 
@@ -75,10 +75,6 @@ var _schema: Mongoose.Schema = new Mongoose.Schema({
   updated: {
     type: Date,
     default: Date.now
-  },
-  courses: {
-    type: Schema.Types.Mixed,
-    require: false
   }
 
 })
@@ -122,7 +118,15 @@ class User extends IUser {
         .then(
           user => {
             user.id = user._id.toString();
-            resolve(user);
+
+            this._fillUserWithUserCourses(user)
+              .then(user => {
+                resolve(user);
+              })
+              .catch(err => {
+                reject(err);
+              });
+
           },
           err => {
             reject(err);
@@ -139,8 +143,16 @@ class User extends IUser {
           user => {
             if (user) {
               user.id = user._id.toString();
+              this._fillUserWithUserCourses(user)
+                .then(user => {
+                  resolve(user);
+                })
+                .catch(err => {
+                  reject(err);
+                });
+            } else {
+              resolve(user);
             }
-            resolve(user);
           },
           err => {
             reject(err);
@@ -160,8 +172,13 @@ class User extends IUser {
           .then(
             user => {
               user.id = user._id.toString();
-              //debug(user.courses['57eaa5673f918f13b01f2cac']);
-              resolve(user);
+              this._fillUserWithUserCourses(user)
+                .then(user => {
+                  resolve(user);
+                })
+                .catch(err => {
+                  reject(err);
+                });
             },
             err => {
               reject(err);
@@ -172,8 +189,13 @@ class User extends IUser {
             user => {
               user = user['_doc'];
               user.id = user._id.toString();
-              //debug(user.courses['57eaa5673f918f13b01f2cac']);
-              resolve(user);
+              this._fillUserWithUserCourses(user)
+                .then(user => {
+                  resolve(user);
+                })
+                .catch(err => {
+                  reject(err);
+                });
             },
             err => {
               reject(err);
@@ -181,6 +203,23 @@ class User extends IUser {
       }
     });
   }
+
+
+  static _fillUserWithUserCourses(user: User): Promise < User > {
+    return new Promise < IUser >((resolve, reject) => {
+      UserCourse.findByUserId(user['id'])
+        .then(courses => {
+            user.courses = courses;
+            resolve(user);
+        })
+        .catch(err => {
+          reject(err);
+        });
+    });
+  }
+
+
+
 }
 
 export = User;
