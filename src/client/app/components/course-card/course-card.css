@@ -33,6 +33,7 @@
 
 .course .favorite {
   color: #EDEDED;
+  z-index: 20;
 }
 .course .favorite .favorite {
   color: #cccccc;
