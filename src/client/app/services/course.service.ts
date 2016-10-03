@@ -69,9 +69,10 @@ export class CourseService {
           .subscribe(
             data => {
               //console.log(data);
-              data = data.map(f => {
-                this.retrieveDates(f);
-                return f
+              data = data.map(course => {
+                this.retrieveDates(course);
+                this.calcNew(course);
+                return course
               });
               //console.log(data);
               resolve(data);
@@ -95,6 +96,7 @@ export class CourseService {
       .then(response => {
         var course = response.json().data as Course;
         this.retrieveDates(course);
+        this.calcNew(course);
         return course;
       })
       .catch(error => this.handleError(error, this._logger));
@@ -129,6 +131,7 @@ export class CourseService {
         //this._service.success("Saved", "your change have been saved");
         var course = res.json().data as Course;
         this.retrieveDates(course);
+        this.calcNew(course);
         return course;
       })
       .catch(error => this.handleError(error, this._logger));
@@ -158,7 +161,7 @@ export class CourseService {
       //courseId: course.id,
       isFavorite: course.isFavorite,
       dateSeen: course.dateSeen,
-      isNew: course.isNew,
+      new: course.new,
       percentFollowed: course.percentFollowed,
     };
 
@@ -175,6 +178,7 @@ export class CourseService {
 
         var course = res.json().data as Course;
         this.retrieveDates(course);
+        this.calcNew(course);
         return course;
       })
       .catch(error => this.handleError(error, this._logger));
@@ -251,11 +255,11 @@ export class CourseService {
   }
 
   /**
-   * Methode to update the isNew value of the course
+   * Methode to update the new value of the course
    * @param course
    */
-  calcIsNew(course:Course) {
-    course.isNew = ((course.dateSeen == null) || ((new Date().getTime() - course.dateSeen.getTime()) < 1000*60));
+  calcNew(course:Course) {
+    course.new = ((course.dateSeen == null) || ((new Date().getTime() - course.dateSeen.getTime()) < 1000*60));
   }
 
   /**

@@ -7,11 +7,12 @@ import Course from "../models/course";
 import User = require("../models/user");
 import UserChoice = require("../models/userChoice");
 import isUndefined = require("lodash/isUndefined");
-import IUserCourse = require("../models/iUserCourse");
+import IUserCourse = require("../models/UserCourse");
 import IUserChoices = require("../models/iUserChoices");
 import Paragraph = require("../models/paragraph");
 import {ICoursePart} from "../models/iCoursePart";
 import {IParagraph} from "../models/iParagraph";
+import UserCourse = require("../models/UserCourse");
 
 
 const courseRouter: Router = Router();
@@ -128,55 +129,29 @@ courseRouter.route('/:course_id/userValues')
     var courseId = request.params.course_id;
 
     debug("PUT /" + courseId + "/userValues");
-    //debug(request.body);
 
-    // Search the user
-    User.findById(request['user']["id"])
-      .then(user => {
-        //console.log(user);
-        if (!user) {
-          return response.status(404).json({status: 404, message: "User not found"});
-        }
+    // console.log("0-----");
+    // debug(request.body);
+    var userCourse = new IUserCourse(request.body);
 
-        if (!user.courses) {
-          user.courses = {};
-        }
-        if (!user.courses[courseId]) {
-          user.courses[courseId] = new IUserCourse();
-        }
+    userCourse.userId = request['user']["id"];
+    userCourse.courseId = courseId;
 
-        console.log("1-----");
-        console.log(user.courses[courseId]);
-        console.log("2-----");
-        console.log(request.body);
-        console.log("3-----");
-        _.assign(user.courses[courseId], request.body);
+    // console.log("1-----");
+    // debug(userCourse);
 
-        if (user.courses[courseId].dateSeen) {
-          user.courses[courseId].dateSeen = new Date(""+user.courses[courseId].dateSeen);
-        }
-        console.log(user.courses[courseId]);
-        console.log("4------");
+    UserCourse.updateOrCreate(userCourse)
+      .then(userCourse => {
+        // console.log("2-----");
+        // debug(userCourse);
 
-        // Save the user back to Db
-        User.updateOrCreate(user)
-          .then(user => {
-            //console.log(user);
-
-            _getCourse(courseId, request['user']["id"], response);
-          })
-          .catch(err => {
-            console.log(err);
-            response.status(500).json({status: 500, message: "System error " + err});
-          })
+        _getCourse(courseId, request['user']["id"], response);
 
       })
       .catch(err => {
         console.log(err);
         response.status(500).json({status: 500, message: "System error " + err});
       });
-
-    //response.status(404).json({status: 404, message: "Course not found"});
 
   });
 
@@ -207,7 +182,7 @@ courseRouter.route('/:course_id/:paragraph_id/userChoice')
           user.courses = {};
         }
         if (!user.courses[courseId]) {
-          user.courses[courseId] = new IUserCourse();
+          user.courses[courseId] = new IUserCourse({});
         }
         if (!user.courses[courseId].userChoices) {
           user.courses[courseId].userChoices = {};
@@ -267,7 +242,7 @@ courseRouter.route('/:course_id/:paragraph_id/userChoice/check')
           user.courses = {};
         }
         if (!user.courses[courseId]) {
-          user.courses[courseId] = new IUserCourse();
+          user.courses[courseId] = new IUserCourse({});
         }
         if (!user.courses[courseId].userChoices) {
           user.courses[courseId].userChoices = {};
@@ -356,7 +331,7 @@ function _fillCourseForUser(course: Course, user: User): Promise < Course > {
       isFavorite = user.courses[course["id"]].isFavorite;
       interest = user.courses[course["id"]].interest;
       dateSeen = user.courses[course["id"]].dateSeen;
-      isNew = user.courses[course["id"]].isNew;
+      isNew = user.courses[course["id"]].new;
       dateFollowed = user.courses[course["id"]].dateFollowed;
       dateFollowedEnd = user.courses[course["id"]].dateFollowedEnd;
       percentFollowed = user.courses[course["id"]].percentFollowed;
@@ -390,7 +365,7 @@ function _fillCourseForUser(course: Course, user: User): Promise < Course > {
       isFavorite: isFavorite,
       interest: interest,
       dateSeen: dateSeen,
-      isNew: isNew,
+      new: isNew,
       dateFollowed: dateFollowed,
       dateFollowedEnd: dateFollowedEnd,
       percentFollowed: percentFollowed,

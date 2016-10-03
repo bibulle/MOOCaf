@@ -19,7 +19,7 @@ export class Course {
   isFavorite: boolean;
   interest: number;
   dateSeen: Date;
-  isNew: boolean;
+  new: boolean;
   dateFollowed: Date;
   dateFollowedEnd: Date;
   percentFollowed: number;

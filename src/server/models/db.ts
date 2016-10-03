@@ -1,4 +1,5 @@
 //import * as Mongoose from 'mongoose';
+import {DbInitialsData} from "./dbInitialsData";
 var Mongoose = require('mongoose');
 
 var debug = require('debug')('server:model:db');
@@ -36,12 +37,18 @@ var db = {
       });
       db.once('open', function () {
         debug("Connected to database ");
+
+        DbInitialsData.init();
+
         resolve
       });
     });
+
 
   }
 
 }
 
 export default db
+
+
