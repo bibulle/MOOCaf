@@ -69,9 +69,10 @@ export class CourseService {
           .subscribe(
             data => {
               //console.log(data);
-              data = data.map(f => {
-                this.retrieveDates(f);
-                return f
+              data = data.map(course => {
+                this.retrieveDates(course);
+                this.calcNew(course);
+                return course
               });
               //console.log(data);
               resolve(data);
@@ -95,6 +96,7 @@ export class CourseService {
       .then(response => {
         var course = response.json().data as Course;
         this.retrieveDates(course);
+        this.calcNew(course);
         return course;
       })
       .catch(error => this.handleError(error, this._logger));
@@ -129,6 +131,7 @@ export class CourseService {
         //this._service.success("Saved", "your change have been saved");
         var course = res.json().data as Course;
         this.retrieveDates(course);
+        this.calcNew(course);
         return course;
       })
       .catch(error => this.handleError(error, this._logger));
@@ -175,6 +178,7 @@ export class CourseService {
 
         var course = res.json().data as Course;
         this.retrieveDates(course);
+        this.calcNew(course);
         return course;
       })
       .catch(error => this.handleError(error, this._logger));

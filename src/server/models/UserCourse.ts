@@ -93,6 +93,24 @@ var _model = Mongoose.model < IUserCourseModel >('UserCourse', _schema);
 
 class UserCourse extends IUserCourse {
 
+  /**
+   * Constructor
+   * @param mongoose.Document<IUser>
+   */
+  constructor(document: {}) {
+    super(document);
+  }
+
+  static count(): Promise<number> {
+    return new Promise<number>((resolve, reject) => {
+      _model.count(
+        {},
+        (err, count) => {
+          err ? reject(err) : resolve(count);
+        });
+    })
+  };
+
   static findByUserId(userId: string): Promise < { [id: string]: UserCourse } > {
     return new Promise < { [id: string]: UserCourse } >((resolve, reject) => {
       _model.find({userId: userId})
@@ -137,9 +155,11 @@ class UserCourse extends IUserCourse {
 
   static updateOrCreate(userCourse: UserCourse): Promise < UserCourse > {
     return new Promise<IUserCourse>((resolve, reject) => {
+      var obj = {};
+      _.assign(obj, userCourse);
       _model.findOneAndUpdate(
         {userId: userCourse.userId, courseId: userCourse.courseId},
-        {$set: { isFavorite: userCourse.isFavorite, dateSeen: userCourse.dateSeen, new: userCourse.new}},
+        {$set: obj},
         {upsert: true, 'new': true},
         //{upsert: true, 'new': true, setDefaultsOnInsert: true},
         function (error, result) {

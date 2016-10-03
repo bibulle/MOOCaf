@@ -28,6 +28,8 @@ export class CourseCardComponent {
       this.course.new = true;
     }
 
+    this._logger.debug(this.course);
+
   }
 
   toggleFavorite(event) {
