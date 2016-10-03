@@ -12,7 +12,7 @@ import {Paragraph} from "../models/paragraph";
 @Injectable()
 export class CourseService {
 
-  private coursesUrl = environment.serverUrl+'api/course';
+  private coursesUrl = environment.serverUrl + 'api/course';
 
   private currentCourseCountSubject: BehaviorSubject<number>;
 
@@ -64,18 +64,13 @@ export class CourseService {
    */
   getCourses(currentOnly = false): Promise<Course[]> {
     return new Promise<Course[]>((resolve, reject) => {
-        this.authHttp.get(this.coursesUrl+"?currentOnly="+currentOnly)
+        this.authHttp.get(this.coursesUrl + "?currentOnly=" + currentOnly)
           .map((res: Response) => res.json().data as Course[])
           .subscribe(
             data => {
               //console.log(data);
               data = data.map(f => {
-                [ 'created', 'updated', 'dateFollowed', 'dateFollowedEnd']
-                  .map(s => {
-                    if (f[s]) {
-                      f[s] = new Date(""+f[s]);
-                    }
-                  });
+                this.retrieveDates(f);
                 return f
               });
               //console.log(data);
@@ -99,6 +94,7 @@ export class CourseService {
       .toPromise()
       .then(response => {
         var course = response.json().data as Course;
+        this.retrieveDates(course);
         return course;
       })
       .catch(error => this.handleError(error, this._logger));
@@ -118,29 +114,6 @@ export class CourseService {
   }
 
 
-
-  /**
-   * Save a favorite or not
-   * @param userChoice ({ courseId: string, isFavorite: boolean })
-   * @returns Promise<Course>
-   */
-  _saveUserValues(userChoice): Promise < Course > {
-    let url = `${this.coursesUrl}/${userChoice.courseId}/userValues`;
-    return this.authHttp
-      .put(url, userChoice, { headers: contentHeaders})
-      .toPromise()
-      .then(res => {
-        //console.log('======');
-        //console.log(res);
-        //console.log('======');
-        //this._service.success("Saved", "your change have been saved");
-        this.checkCurrentCourse();
-
-        return res.json().data;
-      })
-      .catch(error => this.handleError(error, this._logger));
-  }
-
   /**
    * Save a course
    * @param course
@@ -150,11 +123,13 @@ export class CourseService {
   private
   post(course: Course): Promise < Course > {
     return this.authHttp
-      .post(this.coursesUrl, JSON.stringify(course), { headers: contentHeaders})
+      .post(this.coursesUrl, JSON.stringify(course), {headers: contentHeaders})
       .toPromise()
       .then(res => {
         //this._service.success("Saved", "your change have been saved");
-        return res.json().data;
+        var course = res.json().data as Course;
+        this.retrieveDates(course);
+        return course;
       })
       .catch(error => this.handleError(error, this._logger));
   }
@@ -163,7 +138,7 @@ export class CourseService {
   private put(course: Course): Promise < Course > {
     let url = `${this.coursesUrl}/${course.id}`;
     return this.authHttp
-      .put(url, JSON.stringify(course), { headers: contentHeaders})
+      .put(url, JSON.stringify(course), {headers: contentHeaders})
       .toPromise()
       .then(() => {
         //this._service.success("Saved", "your change have been saved");
@@ -173,18 +148,36 @@ export class CourseService {
   }
 
   /**
-   * save paragraphs (user choice)
+   * save course user values (favorite, dateSeen, ...)
    * @returns {Promise<void>|Promise<Course>}
    * @param course Course
    */
   saveUserValues(course: Course): Promise < Course > {
 
     var userChoice = {
-      courseId: course.id,
-      isFavorite: course.isFavorite
+      //courseId: course.id,
+      isFavorite: course.isFavorite,
+      dateSeen: course.dateSeen,
+      isNew: course.isNew,
+      percentFollowed: course.percentFollowed,
     };
 
-    return this._saveUserValues(userChoice);
+    let url = `${this.coursesUrl}/${course.id}/userValues`;
+    return this.authHttp
+      .put(url, userChoice, {headers: contentHeaders})
+      .toPromise()
+      .then(res => {
+        //console.log('======');
+        //console.log(res);
+        //console.log('======');
+        //this._service.success("Saved", "your change have been saved");
+        this.checkCurrentCourse();
+
+        var course = res.json().data as Course;
+        this.retrieveDates(course);
+        return course;
+      })
+      .catch(error => this.handleError(error, this._logger));
   }
 
   /**
@@ -200,7 +193,7 @@ export class CourseService {
 
     let url = `${this.coursesUrl}/${courseId}/${paragraph['_id']}/userChoice`;
     return this.authHttp
-      .put(url, userChoice, { headers: contentHeaders})
+      .put(url, userChoice, {headers: contentHeaders})
       .toPromise()
       .then(res => {
         //console.log('======');
@@ -212,6 +205,12 @@ export class CourseService {
       .catch(error => this.handleError(error, this._logger));
   }
 
+  /**
+   * check user choice
+   * @param courseId
+   * @param paragraph
+   * @returns {Promise<TResult>}
+   */
   checkUserChoice(courseId: string, paragraph: Paragraph): Promise<Paragraph> {
 
     var userChoice = {
@@ -220,7 +219,7 @@ export class CourseService {
 
     let url = `${this.coursesUrl}/${courseId}/${paragraph['_id']}/userchoice/check`;
     return this.authHttp
-      .put(url, userChoice, { headers: contentHeaders})
+      .put(url, userChoice, {headers: contentHeaders})
       .toPromise()
       .then(res => {
         //console.log(res.json().data);
@@ -229,7 +228,6 @@ export class CourseService {
       })
       .catch(error => this.handleError(error, this._logger));
   }
-
 
 
   private handleError(error: any, logger) {
@@ -252,5 +250,24 @@ export class CourseService {
     return Promise.reject(error);
   }
 
+  /**
+   * Methode to update the isNew value of the course
+   * @param course
+   */
+  calcIsNew(course:Course) {
+    course.isNew = ((course.dateSeen == null) || ((new Date().getTime() - course.dateSeen.getTime()) < 1000*60));
+  }
+
+  /**
+   * get dates fom json to date
+   */
+  retrieveDates(course: Course) {
+    ['created', 'updated', 'dateSeen', 'dateFollowed', 'dateFollowedEnd']
+      .map(s => {
+        if (course[s]) {
+          course[s] = new Date("" + course[s]);
+        }
+      });
+  }
 
 }

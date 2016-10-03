@@ -58,21 +58,19 @@ export class CourseCardComponent {
     if ((event.topVisible && event.percentVisible > 0.4) || (event.percentVisible > 0.8)) {
       this.course.dateSeen = this.course.dateSeen || new Date();
       this.calcNew();
-    } else {
-      // If not visible any more and has been visible for less than 500 milli... it has not been seen
-      if (this.course.dateSeen && (new Date().getTime() - this.course.dateSeen.getTime()) < 500) {
-        this.course.dateSeen = null;
-        this.calcNew();
-      }
+      this._courseService.saveUserValues(this.course)
+        .then(course => {
+          this.course = course;
+        })
+        .catch(err => {
+          this._notificationService.error("Error saving your choice", err.status+" : "+err.message);
+        });
     }
   }
 
   newTimeout;
   calcNew() {
-    this.course.isNew =  ((this.course.dateSeen == null) || ((new Date().getTime() - this.course.dateSeen.getTime()) < 1000*60));
-    if (this.course.isNew) {
-      // TODO: Update course in the Db
-    }
+    this._courseService.calcIsNew(this.course);
 
     if (this.course.dateSeen && this.course.isNew) {
       this.newTimeout = setTimeout(() =>

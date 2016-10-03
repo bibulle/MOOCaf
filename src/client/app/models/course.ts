@@ -25,6 +25,8 @@ export class Course {
   percentFollowed: number;
 
 
+
+
 }
 
 export class CoursePart {

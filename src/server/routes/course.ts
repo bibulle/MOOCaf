@@ -145,8 +145,18 @@ courseRouter.route('/:course_id/userValues')
           user.courses[courseId] = new IUserCourse();
         }
 
-        user.courses[courseId].isFavorite = request.body.isFavorite;
-        //console.log(user);
+        console.log("1-----");
+        console.log(user.courses[courseId]);
+        console.log("2-----");
+        console.log(request.body);
+        console.log("3-----");
+        _.assign(user.courses[courseId], request.body);
+
+        if (user.courses[courseId].dateSeen) {
+          user.courses[courseId].dateSeen = new Date(""+user.courses[courseId].dateSeen);
+        }
+        console.log(user.courses[courseId]);
+        console.log("4------");
 
         // Save the user back to Db
         User.updateOrCreate(user)
@@ -335,6 +345,8 @@ function _fillCourseForUser(course: Course, user: User): Promise < Course > {
     // define the default values
     var isFavorite = false;
     var interest = 0;
+    var dateSeen = null;
+    var isNew = null;
     var dateFollowed = null;
     var dateFollowedEnd = null;
     var percentFollowed = 0;
@@ -343,9 +355,15 @@ function _fillCourseForUser(course: Course, user: User): Promise < Course > {
     if (user && user.courses && user.courses[course["id"]]) {
       isFavorite = user.courses[course["id"]].isFavorite;
       interest = user.courses[course["id"]].interest;
+      dateSeen = user.courses[course["id"]].dateSeen;
+      isNew = user.courses[course["id"]].isNew;
       dateFollowed = user.courses[course["id"]].dateFollowed;
       dateFollowedEnd = user.courses[course["id"]].dateFollowedEnd;
       percentFollowed = user.courses[course["id"]].percentFollowed;
+
+      if (dateSeen && isNew) {
+        isNew = ((dateSeen == null) || ((new Date().getTime() - dateSeen.getTime()) < 1000*60));
+      }
 
       // add user choices
       if (user.courses[course["id"]].userChoices) {
@@ -371,6 +389,8 @@ function _fillCourseForUser(course: Course, user: User): Promise < Course > {
     _.assign(f, {
       isFavorite: isFavorite,
       interest: interest,
+      dateSeen: dateSeen,
+      isNew: isNew,
       dateFollowed: dateFollowed,
       dateFollowedEnd: dateFollowedEnd,
       percentFollowed: percentFollowed,
