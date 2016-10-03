@@ -29,7 +29,9 @@
       </button>
     </span>
   </md-card-footer>
-  <div class="clipping-banner" *ngIf="course.new">
-    <div class="banner">new !!</div>
+  <div class="clipping-banner">
+    <div class="banner new"      *ngIf="course.new">new !!</div>
+    <div class="banner done"     *ngIf="course.done">done</div>
+    <div class="banner progress" *ngIf="course.inProgress">in progress</div>
   </div>
 </md-card>

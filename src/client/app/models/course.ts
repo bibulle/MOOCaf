@@ -22,7 +22,9 @@ export class Course {
   new: boolean;
   dateFollowed: Date;
   dateFollowedEnd: Date;
+  done: boolean;
   percentFollowed: number;
+  inProgress: boolean;
 
 
 

@@ -71,7 +71,7 @@ export class CourseService {
               //console.log(data);
               data = data.map(course => {
                 this.retrieveDates(course);
-                this.calcNew(course);
+                this.calcBooleans(course);
                 return course
               });
               //console.log(data);
@@ -96,7 +96,7 @@ export class CourseService {
       .then(response => {
         var course = response.json().data as Course;
         this.retrieveDates(course);
-        this.calcNew(course);
+        this.calcBooleans(course);
         return course;
       })
       .catch(error => this.handleError(error, this._logger));
@@ -131,7 +131,7 @@ export class CourseService {
         //this._service.success("Saved", "your change have been saved");
         var course = res.json().data as Course;
         this.retrieveDates(course);
-        this.calcNew(course);
+        this.calcBooleans(course);
         return course;
       })
       .catch(error => this.handleError(error, this._logger));
@@ -178,7 +178,7 @@ export class CourseService {
 
         var course = res.json().data as Course;
         this.retrieveDates(course);
-        this.calcNew(course);
+        this.calcBooleans(course);
         return course;
       })
       .catch(error => this.handleError(error, this._logger));
@@ -258,8 +258,10 @@ export class CourseService {
    * Methode to update the new value of the course
    * @param course
    */
-  calcNew(course:Course) {
+  calcBooleans(course:Course) {
     course.new = ((course.dateSeen == null) || ((new Date().getTime() - course.dateSeen.getTime()) < 1000*60));
+    course.done = ((course.dateFollowed != null) && (course.dateFollowedEnd != null));
+    course.inProgress = ((course.dateFollowed != null) && (course.dateFollowedEnd == null));
   }
 
   /**
