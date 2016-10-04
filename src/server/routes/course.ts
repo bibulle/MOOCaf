@@ -163,6 +163,7 @@ courseRouter.route('/:course_id/:paragraph_id/userChoice')
 
     var courseId = request.params.course_id;
     var paragraphId = request.params.paragraph_id;
+    var userId = request['user']["id"];
 
     debug("PUT /" + courseId + "/" + paragraphId + "/userChoice");
     //debug(request.body);
@@ -170,37 +171,34 @@ courseRouter.route('/:course_id/:paragraph_id/userChoice')
     var userChoice = new UserChoice(request.body);
     //debug(userChoice);
 
-    // Search the user
-    User.findById(request['user']["id"])
-      .then(user => {
-        //console.log(user);
-        if (!user) {
-          return response.status(404).json({status: 404, message: "User not found"});
+    // Search the userValues
+    UserCourse
+      .findByUserIdCourseId(userId, courseId)
+      .then(userCourse => {
+        //debug(userCourse);
+        //debug(userCourse.userChoices[paragraphId]);
+        if (userCourse == null) {
+          userCourse = new UserCourse({courseId: courseId, userId: userId});
+        }
+        if (userCourse.userChoices == null) {
+          userCourse.userChoices = {};
+        }
+        if (userCourse.userChoices[paragraphId] == null) {
+          userCourse.userChoices[paragraphId] = new IUserChoices()
         }
 
-        if (!user.courses) {
-          user.courses = {};
+        _.assign(userCourse.userChoices[paragraphId], userChoice);
+        if (!userCourse.userChoices[paragraphId].userCheckCount) {
+          userCourse.userChoices[paragraphId].userCheckCount = 0;
         }
-        if (!user.courses[courseId]) {
-          user.courses[courseId] = new IUserCourse({});
-        }
-        if (!user.courses[courseId].userChoices) {
-          user.courses[courseId].userChoices = {};
-        }
-        if (!user.courses[courseId].userChoices[paragraphId]) {
-          user.courses[courseId].userChoices[paragraphId] = new IUserChoices();
-        }
+        userCourse.userChoices[paragraphId].updated = new Date();
+        //debug(userCourse.userChoices[paragraphId]);
 
-        user.courses[courseId].userChoices[paragraphId].userChoice = userChoice.userChoice;
-        user.courses[courseId].userChoices[paragraphId].updated = new Date();
-        //console.log(user);
-
-        // Save the user back to Db
-        User.updateOrCreate(user)
-          .then(user => {
-            //debug(user);
-
-            _getCourseParagraph(courseId, paragraphId, request['user']["id"], response);
+        UserCourse
+          .updateOrCreate(userCourse)
+          .then(userCourse => {
+            //debug(userCourse);
+            _respondWithCourseParagraph(courseId, paragraphId, userId, response);
           })
           .catch(err => {
             console.log(err);
@@ -223,6 +221,7 @@ courseRouter.route('/:course_id/:paragraph_id/userChoice/check')
 
     var courseId = request.params.course_id;
     var paragraphId = request.params.paragraph_id;
+    var userId = request['user']["id"];
 
     debug("PUT /" + courseId + "/" + paragraphId + "/userChoice/check'");
     //debug(request.body);
@@ -230,32 +229,26 @@ courseRouter.route('/:course_id/:paragraph_id/userChoice/check')
     var userChoice = new UserChoice(request.body);
     //debug(userChoice);
 
-    // Search the user (to check if check can be done)
-    User.findById(request['user']["id"])
-      .then(user => {
-        //console.log(user);
-        if (!user) {
-          return response.status(404).json({status: 404, message: "User not found"});
+    // Search the user Values (to check if check can be done)
+    UserCourse
+      .findByUserIdCourseId(userId, courseId)
+      .then(userCourse => {
+        if (userCourse == null) {
+          userCourse = new UserCourse({courseId: courseId, userId: userId});
+        }
+        if (userCourse.userChoices == null) {
+          userCourse.userChoices = {};
+        }
+        if (userCourse.userChoices[paragraphId] == null) {
+          userCourse.userChoices[paragraphId] = new IUserChoices()
         }
 
-        if (!user.courses) {
-          user.courses = {};
+        _.assign(userCourse.userChoices[paragraphId], userChoice);
+        if (!userCourse.userChoices[paragraphId].userCheckCount) {
+          userCourse.userChoices[paragraphId].userCheckCount = 0;
         }
-        if (!user.courses[courseId]) {
-          user.courses[courseId] = new IUserCourse({});
-        }
-        if (!user.courses[courseId].userChoices) {
-          user.courses[courseId].userChoices = {};
-        }
-        if (!user.courses[courseId].userChoices[paragraphId]) {
-          user.courses[courseId].userChoices[paragraphId] = new IUserChoices();
-        }
-
-        user.courses[courseId].userChoices[paragraphId].userChoice = userChoice.userChoice;
-        if (!user.courses[courseId].userChoices[paragraphId].userCheckCount) {
-          user.courses[courseId].userChoices[paragraphId].userCheckCount = 0;
-        }
-
+        userCourse.userChoices[paragraphId].updated = new Date();
+        //debug(userCourse.userChoices[paragraphId]);
 
         // get the paragraph
         Course.findById(courseId)
@@ -263,24 +256,25 @@ courseRouter.route('/:course_id/:paragraph_id/userChoice/check')
             let paragraph = _searchParagraph(paragraphId, course.parts);
             if (paragraph != null) {
               // check the user choice
-              if (paragraph.maxCheckCount <= user.courses[courseId].userChoices[paragraphId].userCheckCount) {
+              if (paragraph.maxCheckCount <= userCourse.userChoices[paragraphId].userCheckCount) {
                 // Too many try, won't be saved
                 response.status(401).json({status: 401, message: "To many try"});
-              } else if (user.courses[courseId].userChoices[paragraphId].userCheckOK === true) {
+              } else if (userCourse.userChoices[paragraphId].userCheckOK === true) {
                 // Answer already correct
                 response.status(401).json({status: 401, message: "Answer already correct"});
               } else {
                 // Do the check
-                user.courses[courseId].userChoices[paragraphId].userCheckOK = (""+user.courses[courseId].userChoices[paragraphId].userChoice == ""+paragraph.answer);
-                user.courses[courseId].userChoices[paragraphId].userCheckCount += 1;
-                user.courses[courseId].userChoices[paragraphId].updated = new Date();
+                userCourse.userChoices[paragraphId].userCheckOK = (""+userCourse.userChoices[paragraphId].userChoice == ""+paragraph.answer);
+                userCourse.userChoices[paragraphId].userCheckCount += 1;
+                userCourse.userChoices[paragraphId].updated = new Date();
 
                 // save it to Db
-                User.updateOrCreate(user)
-                  .then(user => {
-                    //debug(user);
+                UserCourse
+                  .updateOrCreate(userCourse)
+                  .then(userCourse => {
+                    //debug(userCourse);
 
-                    _getCourseParagraph(courseId, paragraphId, request['user']["id"], response);
+                    _respondWithCourseParagraph(courseId, paragraphId, request['user']["id"], response);
                   })
                   .catch(err => {
                     console.log(err);
@@ -423,7 +417,7 @@ function _getCourse(courseId: string, userId: string, response) {
  * @param response
  * @private
  */
-function _getCourseParagraph(courseId: string, paragraphId: string, userId: string, response) {
+function _respondWithCourseParagraph(courseId: string, paragraphId: string, userId: string, response) {
   //debug("_getCourse : " + courseId + ", " + userId);
   Course.findById(courseId)
     .then(course => {

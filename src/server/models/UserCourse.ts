@@ -142,6 +142,7 @@ class UserCourse extends IUserCourse {
         .exec()
         .then(
           user => {
+            debug(user);
             if (user) {
               user.id = user._id.toString();
             }
