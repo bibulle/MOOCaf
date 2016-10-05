@@ -1,7 +1,7 @@
 import Mongoose = require("mongoose");
 import {IParagraph, schemaParagraph} from "./iParagraph";
 //var Schema = Mongoose.Schema;
-var debug = require('debug')('server:model:course');
+var debug = require('debug')('server:model:coursepart');
 
 export class ICoursePart {
   title: String;

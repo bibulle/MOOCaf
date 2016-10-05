@@ -23,10 +23,14 @@ export class ClassComponent {
   private courses: Course[];
 
   private course: Course;
+
+  private selectedPartNums: number[];
   private selectedPart: CoursePart;
   private selectedPartLevel: number;
 
   private scheduleClosed = true;
+
+  edited: boolean = false;
 
   constructor(private route: ActivatedRoute,
               public router: Router,
@@ -111,21 +115,28 @@ export class ClassComponent {
 
   /**
    * The selected part change
+   * @param selectedPartNums:number[]
    */
-  onNotifySelectedPart(selectedNums) {
+  onNotifySelectedPart(selectedPartNums:number[]) {
 
-    var selectedPart = this.course.parts[selectedNums[0]];
+    var selectedPart = this.course.parts[selectedPartNums[0]];
     var selectedPartLevel = 1;
 
-    if ((selectedNums.length > 1) && (selectedNums[1] != null)) {
-      selectedPart = selectedPart.parts[selectedNums[1]];
+    if ((selectedPartNums.length > 1) && (selectedPartNums[1] != null)) {
+      selectedPart = selectedPart.parts[selectedPartNums[1]];
       selectedPartLevel = 2;
 
     }
 
     this.selectedPart = selectedPart;
     this.selectedPartLevel = selectedPartLevel;
+    this.selectedPartNums = selectedPartNums;
   }
+
+  toggleEditMode() {
+    this.edited = !this.edited;
+  }
+
 
 
 }

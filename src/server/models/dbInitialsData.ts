@@ -41,228 +41,123 @@ export class DbInitialsData {
 
                               new IParagraph({
                                   type: ParagraphType.MarkDown,
-                                  content: [
-                                    '*quelques mots* ou  _quelques mots_\n\n**plus important** ou __également important__',
-                                    'Mon texte `code` fin de mon texte',
-                                    '    Première ligne de code\n    Deuxième ligne',
-                                    '> Ce texte apparaîtra dans un élément HTML blockquote.',
-                                    '* Pommes\n* Poires\n    * Sous élément avec au moins quatre espaces devant.',
-                                    '1. mon premier\n2. mon deuxième',
-                                    '# un titre de premier niveau\n#### un titre de quatrième niveau\n\n',
-                                    'Titre de niveau 1\n=====================\n\nTitre de niveau 2\n--------------------'
-                                  ]
+                                  content: '*few words* or  _few words_\n\n**plus important** ou __également important__\n\n' +
+                                  'Mon texte `code` fin de mon texte\n\n' +
+                                  '    Première ligne de code\n    Deuxième ligne\n\n' +
+                                  '> Ce texte apparaîtra dans un élément HTML blockquote.\n\n' +
+                                  '* Pommes\n* Poires\n    * Sous élément avec au moins quatre espaces devant.\n\n' +
+                                  '1. mon premier\n2. mon deuxième\n\n' +
+                                  '# un titre de premier niveau\n#### un titre de quatrième niveau\n\n\n\n' +
+                                  'Titre de niveau 1\n=====================\n\nTitre de niveau 2\n--------------------'
                                 }
                               ),
                               new IParagraph({
                                   type: ParagraphType.MarkDown,
-                                  content: [
-                                    '+	this is a list item\nindented with tabs\n\n' +
-                                    '+   this is a list item\n' +
-                                    'indented with spaces\n\n' +
-                                    'Code:\n\n	this code block is indented by one tab\n\n' +
-                                    'And: \n\n		this code block is indented by two tabs\n\n' +
-                                    'And: \n\n+	this is an example list item\n		indented with tabs\n\n' +
-                                    '+   this is an example list item\n	    indented with spaces'
-                                  ]
+                                  content: '+	this is a list item\nindented with tabs\n\n' +
+                                  '+   this is a list item\n' +
+                                  'indented with spaces\n\n' +
+                                  'Code:\n\n	this code block is indented by one tab\n\n' +
+                                  'And: \n\n		this code block is indented by two tabs\n\n' +
+                                  'And: \n\n+	this is an example list item\n		indented with tabs\n\n' +
+                                  '+   this is an example list item\n	    indented with spaces'
                                 }
                               ),
                               new IParagraph({
                                   type: ParagraphType.MarkDown,
-                                  content: [
-                                    '\`\`\`javascript\n  var s = "JavaScript syntax highlighting";\n  alert(s);\n\`\`\`',
-                                    '\`\`\`python\n  s = "Python syntax highlighting"\n  print s\n\`\`\`',
+                                  content:
+                                    '\`\`\`javascript\n  var s = "JavaScript syntax highlighting";\n  alert(s);\n\`\`\`\n\n' +
+                                    '\`\`\`python\n  s = "Python syntax highlighting"\n  print s\n\`\`\`\n\n' +
                                     '\`\`\`\n  No language indicated, so no syntax highlighting.\n  But let\'s throw in a <b>tag</b>.\n\`\`\`'
-                                  ]
                                 }
                               ),
                               new IParagraph({
                                   type: ParagraphType.Form,
-                                  content: [
-                                    {
-                                      type: ParagraphContentType.Label,
-                                      label: 'This is the title of the question'
-                                    },
-                                    {
-                                      type: ParagraphContentType.Radio,
-                                      name: 'F239712893F323AB35',
-                                      label: 'Is response **True** ?\n\nSecond line',
-                                      value: '1'
-                                    },
-                                    {
-                                      type: ParagraphContentType.Radio,
-                                      name: 'F239712893F323AB35',
-                                      label: 'Is response **False** ?',
-                                      value: '2'
-                                    },
-                                    {
-                                      type: ParagraphContentType.Radio,
-                                      name: 'F239712893F323AB35',
-                                      label: 'Or **Neither**',
-                                      value: '3'
-                                    },
-                                  ],
-                                  userChoice: undefined,
-                                  userCheckOK: undefined,
-                                  userCheckCount: 0,
+                                  content: {
+                                    type: ParagraphContentType.Radio,
+                                    label: 'This is the title of the question',
+                                    questions: [
+                                      'Is response **True** ?\n\nSecond line',
+                                      'Is response **False** ?',
+                                      'Or **Neither**'
+                                    ],
+                                  },
                                   maxCheckCount: 2
                                 }
                               ),
                               new IParagraph({
                                   type: ParagraphType.Form,
-                                  content: [
-                                    {
-                                      type: ParagraphContentType.Label,
-                                      label: 'This is the title of the question'
-                                    },
-                                    {
-                                      type: ParagraphContentType.Checkbox,
-                                      name: 'FC56E98',
-                                      label: 'Is response **True** ?\n\nSecond line',
-                                      value: '1'
-                                    },
-                                    {
-                                      type: ParagraphContentType.Checkbox,
-                                      name: 'FC56E98',
-                                      label: 'Is response **False** ?',
-                                      value: '2'
-                                    },
-                                    {
-                                      type: ParagraphContentType.Checkbox,
-                                      name: 'FC56E98',
-                                      label: 'Or **Neither**',
-                                      value: '3'
-                                    },
-                                  ],
-                                  userChoice: undefined,
-                                  userCheckOK: undefined,
-                                  userCheckCount: 0,
+                                  content: {
+                                    type: ParagraphContentType.Checkbox,
+                                    label: 'This is the title of the question',
+                                    questions: [
+                                      'Is response **True** ?\n\nSecond line',
+                                      'Is response **False** ?',
+                                      'Or **Neither**'
+                                    ],
+                                  },
                                   maxCheckCount: 3
                                 }
                               ),
                               new IParagraph({
                                   type: ParagraphType.Form,
-                                  content: [
-                                    {
-                                      type: ParagraphContentType.Label,
-                                      label: 'This is the title of the question'
-                                    },
-                                    {
-                                      type: ParagraphContentType.Text,
-                                      name: 'fec4637',
-                                      label: 'What do you think ?\n\nSecond line',
-                                      size: 20
-                                    },
-                                  ],
-                                  userChoice: undefined,
-                                  userCheckOK: undefined,
-                                  userCheckCount: 0,
+                                  content: {
+                                    type: ParagraphContentType.Text,
+                                    label: 'This is the title of the question',
+                                    question: 'What do you think ?\n\nSecond line',
+                                  },
                                   maxCheckCount: 3
                                 }
                               ),
                               new IParagraph({
                                   type: ParagraphType.Form,
-                                  content: [
-                                    {
-                                      type: ParagraphContentType.Label,
-                                      label: 'This is the title of the question'
-                                    },
-                                    {
-                                      type: ParagraphContentType.Radio,
-                                      name: 'F239712893F323AB35',
-                                      label: 'Is response **True** ?\n\nSecond line',
-                                      value: '1'
-                                    },
-                                    {
-                                      type: ParagraphContentType.Radio,
-                                      name: 'F239712893F323AB35',
-                                      label: 'Is response **False** ?',
-                                      value: '2'
-                                    },
-                                    {
-                                      type: ParagraphContentType.Radio,
-                                      name: 'F239712893F323AB35',
-                                      label: 'Or **Neither**',
-                                      value: '3'
-                                    },
-                                  ],
-                                  userChoice: 2,
-                                  userCheckOK: false,
-                                  userCheckCount: 2,
+                                  content: {
+                                    type: ParagraphContentType.Radio,
+                                    label: 'This is the title of the question',
+                                    questions: [
+                                      'Is response **True** ?\n\nSecond line',
+                                      'Is response **False** ?',
+                                      'Or **Neither**'
+                                    ],
+                                  },
                                   maxCheckCount: 2,
-                                  answer: 1
+                                  answer: '0'
                                 }
                               ),
                               new IParagraph({
                                   type: ParagraphType.Form,
-                                  content: [
-                                    {
-                                      type: ParagraphContentType.Label,
-                                      label: 'This is the title of the question'
-                                    },
-                                    {
-                                      type: ParagraphContentType.Checkbox,
-                                      name: 'FC56E98',
-                                      label: 'Is response **True** ?\n\nSecond line',
-                                      value: '1'
-                                    },
-                                    {
-                                      type: ParagraphContentType.Checkbox,
-                                      name: 'FC56E98',
-                                      label: 'Is response **False** ?',
-                                      value: '2'
-                                    },
-                                    {
-                                      type: ParagraphContentType.Checkbox,
-                                      name: 'FC56E98',
-                                      label: 'Or **Neither**',
-                                      value: '3'
-                                    },
-                                  ],
-                                  userChoice: ['1', '2'],
-                                  userCheckOK: false,
-                                  userCheckCount: 3,
+                                  content: {
+                                    type: ParagraphContentType.Checkbox,
+                                    label: 'This is the title of the question',
+                                    questions: [
+                                      'Is response **True** ?\n\nSecond line',
+                                      'Is response **False** ?',
+                                      'Or **Neither**'
+                                    ],
+                                  },
                                   maxCheckCount: 3,
-                                  answer: ['1', '3']
+                                answer: ['0', '2']
                                 }
                               ),
                               new IParagraph({
                                   type: ParagraphType.Form,
-                                  content: [
-                                    {
-                                      type: ParagraphContentType.Label,
-                                      label: 'This is the title of the question'
-                                    },
-                                    {
-                                      type: ParagraphContentType.Text,
-                                      name: 'fec4637',
-                                      label: 'What do you think ?\n\nSecond line',
-                                      size: 20
-                                    },
-                                  ],
-                                  userChoice: 'rgeg',
-                                  userCheckOK: false,
-                                  userCheckCount: 3,
+                                  content: {
+                                    type: ParagraphContentType.Text,
+                                    label: 'This is the title of the question',
+                                    question: 'What do you think ?\n\nSecond line',
+                                    size: 20
+                                  },
                                   maxCheckCount: 3,
                                   answer: 'sdkfsd sdg'
                                 }
                               ),
                               new IParagraph({
                                   type: ParagraphType.Form,
-                                  content: [
-                                    {
-                                      type: ParagraphContentType.Label,
-                                      label: 'This is the title of the question'
-                                    },
-                                    {
-                                      type: ParagraphContentType.Text,
-                                      name: 'fec4637',
-                                      label: 'What do you think ?',
-                                      size: 20
-                                    },
-                                  ],
-                                  userChoice: 'rgeg',
-                                  userCheckOK: false,
-                                  userCheckCount: 3,
+                                  content: {
+                                    type: ParagraphContentType.Text,
+                                    label: 'This is the title of the question',
+                                    question: 'What do you think ?\n\nSecond line',
+                                    size: 10
+                                  },
                                   maxCheckCount: 3,
                                   answer: 'sdkfsd sdg'
                                 }
@@ -512,7 +407,7 @@ export class DbInitialsData {
                                 callback(null);
                               })
                               .catch(err => {
-                                debug("Error creating user : " + err);
+                                debug("Error creating user-course : " + err);
                                 callback(err);
                               })
                           },

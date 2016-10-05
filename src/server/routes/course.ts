@@ -155,6 +155,67 @@ courseRouter.route('/:course_id/userValues')
 
   });
 
+courseRouter.route('/:course_id/:paragraphNums')
+// ============================================
+// update a course paragraph
+// ============================================
+  .put((request: Request, response: Response) => {
+
+    var courseId = request.params.course_id;
+    var paragraphNums = JSON.parse("["+request.params.paragraphNums+"]");
+    var userId = request['user']["id"];
+
+    debug("PUT /" + courseId + "/" + paragraphNums);
+    debug(request.body);
+
+    var paragraph = new IParagraph(request.body);
+    debug(paragraph);
+
+    // TODO : Add a check of user right
+
+    // Search the userValues
+    Course
+      .findById(courseId)
+      .then(course => {
+        //debug(userCourse);
+        //debug(userCourse.userChoices[paragraphId]);
+
+        let part = course.parts[paragraphNums[0]];
+        for (let i = 1; i < paragraphNums.length - 1; i++) {
+          part = part.parts[paragraphNums[i]];
+        }
+
+        let paraIndex = paragraphNums[paragraphNums.length -1];
+
+        if (paragraph['_id'] == null) {
+          // new para, add it
+          part.contents.splice(paraIndex, 0, paragraph);
+        } else {
+          // replace the para
+          // TODO : should be moved later ?
+          part.contents.splice(paraIndex, 1, paragraph);
+        }
+
+        // Save the course
+        Course
+          .updateOrCreate(course)
+          .then(course => {
+            //debug(course);
+            _respondWithCourseParagraph(courseId, paragraph['_id'], userId, response);
+          })
+          .catch(err => {
+            console.log(err);
+            response.status(500).json({status: 500, message: "System error " + err});
+          })
+
+      })
+      .catch(err => {
+        console.log(err);
+        response.status(500).json({status: 500, message: "System error " + err});
+      });
+
+  });
+
 courseRouter.route('/:course_id/:paragraph_id/userChoice')
 // ============================================
 // update user choice for a course paragraph
@@ -264,7 +325,7 @@ courseRouter.route('/:course_id/:paragraph_id/userChoice/check')
                 response.status(401).json({status: 401, message: "Answer already correct"});
               } else {
                 // Do the check
-                userCourse.userChoices[paragraphId].userCheckOK = (""+userCourse.userChoices[paragraphId].userChoice == ""+paragraph.answer);
+                userCourse.userChoices[paragraphId].userCheckOK = ("" + userCourse.userChoices[paragraphId].userChoice == "" + paragraph.answer);
                 userCourse.userChoices[paragraphId].userCheckCount += 1;
                 userCourse.userChoices[paragraphId].updated = new Date();
 
@@ -331,7 +392,7 @@ function _fillCourseForUser(course: Course, user: User): Promise < Course > {
       percentFollowed = user.courses[course["id"]].percentFollowed;
 
       if (dateSeen && isNew) {
-        isNew = ((dateSeen == null) || ((new Date().getTime() - dateSeen.getTime()) < 1000*60));
+        isNew = ((dateSeen == null) || ((new Date().getTime() - dateSeen.getTime()) < 1000 * 60));
       }
 
       // add user choices

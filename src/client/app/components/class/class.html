@@ -27,10 +27,15 @@
       <div class="part_header">
         <h3>{{selectedPart.title}}</h3>
       </div>
-      <div class="content" layout="column" layout-align="start stretch">
+      <div class="content"  [class.edited]="edited" layout="column" layout-align="start stretch">
+        <div class="content-part-buttons">
+          <button md-icon-button (click)="toggleEditMode()">
+            <md-icon>edit</md-icon>
+          </button>
+        </div>
         <div class="page-navigation" *ngIf="selectedPartLevel > 1" >Pages navigation....</div>
         <div class="page" layout="column" layout-align="start stretch">
-          <paragraph *ngFor="let paragraph of selectedPart.contents" [data]="paragraph" [courseId]="course.id"></paragraph>
+          <paragraph *ngFor="let paragraph of selectedPart.contents; let i = index" [data]="paragraph" [courseId]="course.id" [selectedPartNums]="selectedPartNums" [paragraphNum]="i"></paragraph>
         </div>
       </div>
 

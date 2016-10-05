@@ -15,13 +15,16 @@ export class ParagraphComponent implements OnInit {
   courseId: string;
 
   @Input()
-  src: string;
+  selectedPartNums: number[];
+
+  @Input()
+  paragraphNum: number;
+
+  paragraphNums: number[];
+
 
   @Input()
   data: Paragraph;
-
-  @Input()
-  rawContent: string;
 
   isMarkDown:boolean = false;
   isForm:boolean = false;
@@ -31,22 +34,16 @@ export class ParagraphComponent implements OnInit {
 
   ngOnInit() {
 
-    //console.log(this.courseId);
-    //console.log(this.data);
-
-    if (this.rawContent) {
-      this.data = new Paragraph({
-        type: ParagraphType.MarkDown,
-        content: [this.rawContent]
-      })
-    }
-
     if (this.data) {
       this.data = this.data as Paragraph;
       //console.log(this.data);
 
       this.isMarkDown = (this.data.type == ParagraphType.MarkDown);
       this.isForm = (this.data.type == ParagraphType.Form);
+
+      //console.log(this.selectedPartNums+" "+this.paragraphNum+" "+this.data['_id']);
+      this.paragraphNums = this.selectedPartNums.slice();
+      this.paragraphNums.push(this.paragraphNum);
     }
   }
 

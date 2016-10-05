@@ -1,7 +1,15 @@
 <div class="paragraph" layout="row" layout-align="start stretch">
-  <div class="buttons" flex="20"></div>
-  <div class="content_box" flex="80">
-    <div class="content" [innerHTML]="html"></div>
+  <div class="paragraph-buttons">
+  </div>
+  <div class="display" flex="100" layout="row" layout-align="start stretch">
+    <div class="buttons" flex="20"></div>
+    <div class="content_box" flex="80">
+      <div class="content" [innerHTML]="html"></div>
+    </div>
+  </div>
+  <div class="editor" flex="100">
+    <textarea [(ngModel)]="data.content" (keyup)="editorChange()" (change)="editorChange()">
+    </textarea>
   </div>
 </div>
 

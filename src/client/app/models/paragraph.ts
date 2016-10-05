@@ -12,7 +12,7 @@ export class Paragraph {
   type: ParagraphType;
 
   // The markdown rawContent
-  public content: ParagraphContent[] = new Array<ParagraphContent>();
+  public content: any[] = new Array<ParagraphContent>();
 
   // The user previous choice
   userChoice: any;

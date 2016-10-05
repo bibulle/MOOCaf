@@ -3,7 +3,7 @@ import * as _ from "lodash";
 
 import {ParagraphType} from "./eParagraphType";
 import {IParagraphContent} from "./iParagraphContent";
-var debug = require('debug')('server:model:course');
+var debug = require('debug')('server:model:paragraph');
 
 export class IParagraph {
 
@@ -11,7 +11,7 @@ export class IParagraph {
   type: ParagraphType;
 
   // The markdown rawContent
-  public content: IParagraphContent[] = new Array<IParagraphContent>();
+  public content: IParagraphContent = new IParagraphContent();
 
   // if it's form... the correct answer
   answer: any;
@@ -38,8 +38,10 @@ export class IParagraph {
     _.merge(this, document);
 
     if (!this.content) {
-      this.content = new Array<IParagraphContent>();
+      this.content = new IParagraphContent();
     }
+
+    //debug(this);
 
   }
 
@@ -58,8 +60,8 @@ schemaParagraph.add({
     require: true
   },
   content: {
-    type: [],
-    default: new Array<IParagraphContent>()
+    type: Mongoose.Schema.Types.Mixed,
+    default: new IParagraphContent()
   },
   answer: {
     type: Mongoose.Schema.Types.Mixed,

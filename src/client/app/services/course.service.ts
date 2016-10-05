@@ -151,6 +151,26 @@ export class CourseService {
   }
 
   /**
+   * save course paragraphs
+   * @param courseId
+   * @returns {Promise<Paragraph>}
+   */
+  saveParagraph(courseId: string, paragraphNums: number[], paragraph: Paragraph): Promise<Paragraph> {
+
+    //console.log(paragraph);
+
+    let url = `${this.coursesUrl}/${courseId}/${paragraphNums}`;
+    return this.authHttp
+      .put(url, paragraph, {headers: contentHeaders})
+      .toPromise()
+      .then(res => {
+        //console.log(res);
+        return res.json().data;
+      })
+      .catch(error => this.handleError(error, this._logger));
+  }
+
+  /**
    * save course user values (favorite, dateSeen, ...)
    * @returns {Promise<void>|Promise<Course>}
    * @param course Course

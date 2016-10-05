@@ -2,7 +2,7 @@
 body, input {
   /*text-align: left;*/
   /*font-family: "Open Sans",Verdana,Geneva,sans-serif,sans-serif;*/
-  font-family: 'Roboto', sans-serif, Verdana, Geneva, sans-serif, sans-serif;
+  font-family: 'Roboto', sans-serif, Verdana, Geneva;
 
 }
 
@@ -51,7 +51,7 @@ button, input, select, textarea {
   vertical-align: baseline;
 }
 
-button:focus {
+textarea:focus, button:focus {
   outline: 0;
 }
 
@@ -73,6 +73,14 @@ home, login, catalogue, class, progression {
 not-found {
   height: 100%;
 }
+
+.editor {
+  display: none;
+}
+.edited .editor {
+  display: inherit;
+}
+
 
 .md-display-1 {
   font-size: 34px;
