@@ -34,7 +34,11 @@ export class ClassScheduleComponent {
     event.stopPropagation();
 
     this.selectedPart = level1 + (level2 != null ? "."+level2 : "");
-    this.notifySelectedPart.emit([level1, level2]);
+    if (level2 != null) {
+      this.notifySelectedPart.emit([level1, level2]);
+    } else {
+      this.notifySelectedPart.emit([level1]);
+    }
 
     // Open it (but do not close it)
     if (!this.isOpened(level1, level2)) {

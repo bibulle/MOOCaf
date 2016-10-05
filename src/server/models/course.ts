@@ -91,7 +91,7 @@ export default class Course extends ICourse {
   static updateOrCreate(course: Course): Promise < Course > {
     return new Promise < ICourse >((resolve, reject) => {
 
-      // debug("updateOrCreate id:" + course["_id"]);
+      //debug("updateOrCreate  id:" + course["_id"]);
       if (course["_id"]) {
         course.updated = new Date();
         modelICourse.findByIdAndUpdate(course["_id"], course)

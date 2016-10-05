@@ -41,7 +41,6 @@ export class ParagraphComponent implements OnInit {
       this.isMarkDown = (this.data.type == ParagraphType.MarkDown);
       this.isForm = (this.data.type == ParagraphType.Form);
 
-      //console.log(this.selectedPartNums+" "+this.paragraphNum+" "+this.data['_id']);
       this.paragraphNums = this.selectedPartNums.slice();
       this.paragraphNums.push(this.paragraphNum);
     }

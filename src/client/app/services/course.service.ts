@@ -4,7 +4,7 @@ import {Logger} from "angular2-logger/app/core/logger";
 import {AuthHttp} from "angular2-jwt";
 import {contentHeaders} from "../common/headers";
 import {UserService} from "./user.service";
-import {Course} from "../models/course";
+import {Course, CoursePart} from "../models/course";
 import {environment} from "../environment";
 import {Observable, BehaviorSubject} from 'rxjs/Rx';
 import {Paragraph} from "../models/paragraph";
@@ -151,6 +151,26 @@ export class CourseService {
   }
 
   /**
+   * save course part
+   * @param courseId
+   * @returns {Promise<Paragraph>}
+   */
+  saveCoursePart(courseId: string, selectedPartNums: number[], coursePart: CoursePart): Promise<CoursePart> {
+
+    //console.log(coursePart);
+
+    let url = `${this.coursesUrl}/${courseId}/part/${selectedPartNums}`;
+    return this.authHttp
+      .put(url, coursePart, {headers: contentHeaders})
+      .toPromise()
+      .then(res => {
+        //console.log(res);
+        return res.json().data;
+      })
+      .catch(error => this.handleError(error, this._logger));
+  }
+
+  /**
    * save course paragraphs
    * @param courseId
    * @returns {Promise<Paragraph>}
@@ -159,7 +179,7 @@ export class CourseService {
 
     //console.log(paragraph);
 
-    let url = `${this.coursesUrl}/${courseId}/${paragraphNums}`;
+    let url = `${this.coursesUrl}/${courseId}/para/${paragraphNums}`;
     return this.authHttp
       .put(url, paragraph, {headers: contentHeaders})
       .toPromise()

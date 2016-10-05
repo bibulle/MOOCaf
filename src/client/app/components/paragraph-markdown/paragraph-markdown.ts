@@ -48,6 +48,9 @@ export class ParagraphMarkdownComponent extends ParagraphAbstract implements OnI
   }
 
 
+  /**
+   * The editor field has been changed
+   */
   editorChange() {
     this.html = ParagraphAbstract.markdownToHTML(this.data.content.toString());
     this.subjectEditor

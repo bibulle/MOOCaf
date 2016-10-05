@@ -29,6 +29,11 @@ export class ParagraphFormComponent extends ParagraphAbstract implements OnInit 
   editableJson: string;
   editorInError = false;
 
+  // The previous Json value
+  private _previousJson = "";
+
+
+
   // The queue to manage user choices
   private subjectParagraph: Subject<Paragraph>;
 
@@ -90,31 +95,6 @@ export class ParagraphFormComponent extends ParagraphAbstract implements OnInit 
 
 
   /**
-   * Add json version of the data for the editor
-   * @private
-   */
-  private _addEditableJson() {
-    this.editableJson = JSON.stringify(
-      this.data,
-      (key, value) => {
-        if (["_id", "label_html", "questions_html", "question_html", "id", "paragraphContentType", "updated", "created", "type"].indexOf(key) >= 0) {
-          return undefined;
-        }
-
-        if (key.startsWith("user")) {
-          return undefined
-        }
-
-        // if calculated html exit, remove it
-        if (value && value.raw && value.html) {
-          return value.raw
-        }
-        return value;
-      },
-      2);
-  }
-
-  /**
    * Is the paragraph closed (interface should then be disabled)
    * @param paragraph
    * @returns {boolean}
@@ -173,8 +153,6 @@ export class ParagraphFormComponent extends ParagraphAbstract implements OnInit 
 
   }
 
-
-  private _previousJson = "";
 
   /**
    * The editor field has been changed
@@ -278,6 +256,33 @@ export class ParagraphFormComponent extends ParagraphAbstract implements OnInit 
     if (this.data.content['question']) {
       this.data.content['question_html'] = ParagraphAbstract.markdownToHTML(this.data.content['question']).replace(/^<p>(.*)<\/p>[\r\n]*$/, "$1")
     }
+  }
+
+
+  /**
+   * Add json version of the data for the editor
+   * @private
+   */
+  private _addEditableJson() {
+    this.editableJson = JSON.stringify(
+      this.data,
+      (key, value) => {
+        if (["_id", "label_html", "questions_html", "question_html", "id", "paragraphContentType", "updated", "created", "type"].indexOf(key) >= 0) {
+          return undefined;
+        }
+
+        if (key.startsWith("user")) {
+          return undefined
+        }
+
+        // if calculated html exit, remove it
+        if (value && value.raw && value.html) {
+          return value.raw
+        }
+        return value;
+      },
+      2);
+    this._previousJson = this.editableJson;
   }
 
 

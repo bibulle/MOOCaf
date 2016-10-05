@@ -8,8 +8,17 @@
 }
 
 .courseTitle {
+  flex: 0 0 auto;
   text-align: center;
   margin-bottom: 0;
+}
+
+.part_header {
+  flex: 0 0 auto;
+  text-align: center;
+}
+.edited .content, .edited .part_header, .edited .courseTitle {
+  overflow-y: scroll;
 }
 
 .sidenavContent {
@@ -20,9 +29,6 @@
   overflow: auto;
 }
 
-.part_header h3 {
-  text-align: center;
-}
 
 md-sidenav-layout md-sidenav {
   box-shadow: none;

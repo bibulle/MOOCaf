@@ -32,7 +32,7 @@ export class IParagraph {
 
   /**
    * Constructor
-   * @param mongoose.Document<IUser>
+   * @param any
    */
   constructor(document: {}) {
     _.merge(this, document);

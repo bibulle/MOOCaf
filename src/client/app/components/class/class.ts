@@ -2,13 +2,13 @@ import {Component, OnChanges, SimpleChanges} from "@angular/core";
 import {Router, ActivatedRoute, Params} from "@angular/router";
 
 import {Logger} from "angular2-logger/core";
-import {NotificationService} from "../../services/notification.service";
+import {Subject} from "rxjs/Subject";
 
+import {NotificationService} from "../../services/notification.service";
 import {CourseService} from "../../services/course.service";
 import {Course, CoursePart} from "../../models/course";
-import {ParagraphType} from "../../models/paragraph-type.enum";
 import {Paragraph} from "../../models/paragraph";
-import {ParagraphContentType} from "../../models/paragraph-content-type.enum";
+import {ParagraphType} from "../../models/paragraph-type.enum";
 
 @Component({
   moduleId: module.id,
@@ -30,6 +30,11 @@ export class ClassComponent {
 
   private scheduleClosed = true;
 
+  // for previous value in the editor
+  private _previousValue = "";
+  // The queue to manage editor changes
+  subjectEditor: Subject<CoursePart>;
+
   edited: boolean = false;
 
   constructor(private route: ActivatedRoute,
@@ -47,10 +52,17 @@ export class ClassComponent {
 
   }
 
+  /**
+   * Two way of init (probably could be two different component)
+   *     First, the list of started class
+   *     Second a specific class (known with it's Id)
+   */
+
   ngOnInit() {
 
     this.course = null;
     this.courses = null;
+
 
     this.route.params.forEach((params: Params) => {
       let id = params['id'];
@@ -89,11 +101,40 @@ export class ClassComponent {
           {
             // If no part... add an fake one
             if (course.parts.length == 0) {
-              course.parts.push(new CoursePart({title: "Not yet defined"}));
+              course.parts.push(new CoursePart({
+                title: "Not yet defined"
+              }));
             }
 
             this.course = course;
             //console.log(course);
+
+
+            // Action defined when editor is edited
+            if (!this.subjectEditor) {
+              this.subjectEditor = new Subject<CoursePart>();
+              this.subjectEditor
+                .debounceTime(500)
+                .subscribe(
+                  coursePart => {
+                    //console.log(coursePart);
+                     return this._courseService.saveCoursePart(this.course.id, this.selectedPartNums, coursePart)
+                       .then(coursePart => {
+                         this._notificationService.message("All your modifications have been saved...");
+
+                         this.selectedPart = coursePart;
+                         this._previousValue = this.selectedPart.title;
+                       })
+                       .catch(error => {
+                         this._logger.error(error);
+                         this._notificationService.error("System error !!", "Error saving you changes !!\n\t" +(error.message || error));
+                       });
+                  },
+                  error => {
+                    this._logger.error(error)
+                  }
+                );
+            }
 
           })
           .catch(err => {
@@ -131,10 +172,32 @@ export class ClassComponent {
     this.selectedPart = selectedPart;
     this.selectedPartLevel = selectedPartLevel;
     this.selectedPartNums = selectedPartNums;
+
+    // Add an empty markdown paragraph if none
+    if (!selectedPart.contents || (selectedPart.contents.length == 0)) {
+      selectedPart.contents = [
+        new Paragraph({
+          type: ParagraphType.MarkDown,
+          content: ""
+        })
+      ];
+    }
+
+    this._previousValue = this.selectedPart.title;
   }
 
   toggleEditMode() {
     this.edited = !this.edited;
+  }
+
+  /**
+   * The editor field has been changed
+   */
+  editorChange() {
+    if (this._previousValue !== this.selectedPart.title) {
+      this.subjectEditor
+        .next(this.selectedPart);
+    }
   }
 
 

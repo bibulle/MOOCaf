@@ -37,22 +37,3 @@
   right:0;
   top:0;
 }
-
-.paragraph .editor {
-  /*display: none;*/
-  padding-right: 5px;
-  padding-left:5px;
-  border-bottom: 1px solid #cccccc;
-  padding-bottom: 5px;
-  margin-bottom: 6px;
-}
-
-.paragraph .editor.error textarea {
-  border-color: red;
-}
-
-.paragraph .editor textarea {
-  width: 100%;
-  font-family: monospace;
-  color: #555;
-}
