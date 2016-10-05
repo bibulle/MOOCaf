@@ -1,0 +1,14 @@
+<md-card class="course-progression" flex="100" layout="row" layout-align="start stretch">
+  <course-card class="course" [course]="course" flex="30"></course-card>
+  <div class="progression" flex="70" layout="column" layout-align="start stretch">
+    <div *ngFor="let part of course.parts" class="progression-part" flex="100" layout="row" layout-align="start center">
+      <div class="part-title">{{part.title}}</div>
+      <div class="progression-stat">
+        <div class="stat1"></div>
+        <div class="stat2"></div>
+        <div class="stat3"></div>
+      </div>
+      <div class="percent">72%</div>
+    </div>
+  </div>
+</md-card>
