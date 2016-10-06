@@ -33,7 +33,7 @@ export class ClassScheduleComponent implements OnInit, OnChanges {
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['selectedPartNums']) {
       let change = changes['selectedPartNums'];
-      if ((change.previousValue.toString() !== change.currentValue.toString()) && this.isOpened(change.previousValue)) {
+      if ((change.previousValue.toString() !== change.currentValue.toString()) && !this.isOpened(change.currentValue)) {
         this.openPart(null, change.currentValue);
       }
     }
