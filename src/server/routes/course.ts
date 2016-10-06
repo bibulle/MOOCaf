@@ -413,9 +413,19 @@ courseRouter.route('/:course_id/part/:trgPartNums/add')
 
         // calculate trg
         let trgParentPartNums = trgPartNums.slice(0, -1);
+        if (course.parts == null) {
+          course.parts = [];
+        }
         let trgParentParts = course.parts;
         if (trgParentPartNums.length > 0) {
-          trgParentParts = _searchPartByPath(trgParentPartNums, trgParentParts).parts;
+          let part = _searchPartByPath(trgParentPartNums, trgParentParts);
+          if (part.parts == null) {
+            part.parts = [];
+          }
+          trgParentParts = part.parts;
+        }
+        if (trgParentParts == null) {
+          trgParentParts = [];
         }
         let trgPartIndex = trgPartNums[trgPartNums.length - 1];
 
