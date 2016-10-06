@@ -52,6 +52,19 @@ md-content.class {
   top:0;
 }
 
+.content-part-buttons .warning {
+  display: none;
+  position: absolute;
+  top: -0.8em;
+  left: 0.4em;
+  font-size: 3em;
+}
+
+.content-part-buttons .md-warn .warning {
+  display: inherit;
+}
+
+
 .page-navigation {
   text-align: center;
 }

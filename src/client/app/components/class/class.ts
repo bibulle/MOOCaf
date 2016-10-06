@@ -1,4 +1,4 @@
-import {Component, OnChanges, SimpleChanges} from "@angular/core";
+import {Component, Input} from "@angular/core";
 import {Router, ActivatedRoute, Params} from "@angular/router";
 
 import {Logger} from "angular2-logger/core";
@@ -24,11 +24,14 @@ export class ClassComponent {
 
   private course: Course;
 
-  private selectedPartNums: number[];
+  private selectedPartNums: number[] = [0];
   private selectedPart: CoursePart;
   private selectedPartLevel: number;
+  private selectedPartIsLast: boolean;
 
-  private scheduleClosed = true;
+  private deletePartClicked:boolean = false;
+
+  //private scheduleClosed = true;
 
   // for previous value in the editor
   private _previousValue = "";
@@ -72,8 +75,7 @@ export class ClassComponent {
         // id is undefined, it's general class page asked
         // -----------------------------------------------
         this._courseService.getCourses(true)
-          .then(courses =>
-          {
+          .then(courses => {
             this.courses = courses
               .sort((f1, f2) => {
                 if (f1.dateFollowed && f2.dateFollowed) {
@@ -97,8 +99,7 @@ export class ClassComponent {
         // id is defined, only one course
         // ---------------------------------
         this._courseService.getCourse(id)
-          .then(course =>
-          {
+          .then(course => {
             // If no part... add an fake one
             if (course.parts.length == 0) {
               course.parts.push(new CoursePart({
@@ -118,17 +119,17 @@ export class ClassComponent {
                 .subscribe(
                   coursePart => {
                     //console.log(coursePart);
-                     return this._courseService.saveCoursePart(this.course.id, this.selectedPartNums, coursePart)
-                       .then(coursePart => {
-                         this._notificationService.message("All your modifications have been saved...");
+                    return this._courseService.saveCoursePart(this.course.id, this.selectedPartNums, coursePart)
+                      .then(coursePart => {
+                        this._notificationService.message("All your modifications have been saved...");
 
-                         this.selectedPart = coursePart;
-                         this._previousValue = this.selectedPart.title;
-                       })
-                       .catch(error => {
-                         this._logger.error(error);
-                         this._notificationService.error("System error !!", "Error saving you changes !!\n\t" +(error.message || error));
-                       });
+                        this.selectedPart = coursePart;
+                        this._previousValue = this.selectedPart.title;
+                      })
+                      .catch(error => {
+                        this._logger.error(error);
+                        this._notificationService.error("System error !!", "Error saving you changes !!\n\t" + (error.message || error));
+                      });
                   },
                   error => {
                     this._logger.error(error)
@@ -144,10 +145,6 @@ export class ClassComponent {
       }
 
 
-
-
-
-
     });
 
 
@@ -158,20 +155,28 @@ export class ClassComponent {
    * The selected part change
    * @param selectedPartNums:number[]
    */
-  onNotifySelectedPart(selectedPartNums:number[]) {
+  onNotifySelectedPart(selectedPartNums: number[]) {
+    //this._logger.debug("onNotifySelectedPart "+selectedPartNums);
 
-    var selectedPart = this.course.parts[selectedPartNums[0]];
+
     var selectedPartLevel = 1;
+    var isLast = (selectedPartNums[0] == this.course.parts.length - 1);
+    var selectedPart = this.course.parts[selectedPartNums[0]];
 
-    if ((selectedPartNums.length > 1) && (selectedPartNums[1] != null)) {
-      selectedPart = selectedPart.parts[selectedPartNums[1]];
-      selectedPartLevel = 2;
+    var workingArray = selectedPartNums.slice(1);
 
+    while (workingArray.length != 0) {
+      selectedPartLevel++;
+      isLast = (workingArray[0] == selectedPart.parts.length - 1);
+      selectedPart = selectedPart.parts[workingArray[0]];
+
+      workingArray = workingArray.slice(1);
     }
 
     this.selectedPart = selectedPart;
     this.selectedPartLevel = selectedPartLevel;
     this.selectedPartNums = selectedPartNums;
+    this.selectedPartIsLast = isLast;
 
     // Add an empty markdown paragraph if none
     if (!selectedPart.contents || (selectedPart.contents.length == 0)) {
@@ -200,6 +205,76 @@ export class ClassComponent {
     }
   }
 
+  moveUp() {
+    this._logger.debug("moveUp");
+    this._move(-1);
+  }
 
+  moveDown() {
+    this._logger.debug("moveDown");
+    this._move(+1);
+  }
+
+  /**
+   * Move a part
+   * @param direction (+1 for down or -1 for up)
+   * @private
+   */
+  _move(direction: number) {
+    let newSelectedPartNums = this.selectedPartNums.slice(0, -1);
+    newSelectedPartNums.push(this.selectedPartNums[this.selectedPartNums.length - 1] + direction);
+
+    this._courseService.movePart(this.course.id, this.selectedPartNums, newSelectedPartNums)
+      .then(course => {
+        this._notificationService.message("All your modifications have been saved...");
+
+        this.course = course;
+        this.onNotifySelectedPart(newSelectedPartNums);
+      })
+      .catch(error => {
+        this._logger.error(error);
+        this._notificationService.error("System error !!", "Error saving you changes !!\n\t" + (error.message || error));
+      });
+  }
+
+  addPageChild() {
+    this._logger.debug("addPageChild");
+  }
+
+  addPageSibling() {
+    this._logger.debug("addPageSibling");
+  }
+
+  deletePage() {
+    if (!this.deletePartClicked) {
+      this.deletePartClicked = true;
+      setTimeout(() => {
+          this.deletePartClicked = false;
+        },
+        3000);
+    } else {
+      this.deletePartClicked = false;
+      this._courseService.deletePart(this.course.id, this.selectedPartNums)
+        .then(course => {
+          this._notificationService.message("All your modifications have been saved...");
+
+          this.course = course;
+
+          let newSelectedPartNums = this.selectedPartNums.slice();
+          if (newSelectedPartNums[newSelectedPartNums.length - 1] != 0) {
+            newSelectedPartNums[newSelectedPartNums.length - 1] = newSelectedPartNums[newSelectedPartNums.length - 1] - 1;
+          } else if (newSelectedPartNums.length != 1) {
+            newSelectedPartNums.slice(0,-1);
+          } else {
+            newSelectedPartNums= [0];
+          }
+          this.onNotifySelectedPart(newSelectedPartNums);
+        })
+        .catch(error => {
+          this._logger.error(error);
+          this._notificationService.error("System error !!", "Error saving you changes !!\n\t" + (error.message || error));
+        });
+    }
+  }
 
 }

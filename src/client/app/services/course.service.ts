@@ -51,6 +51,7 @@ export class CourseService {
         this.currentCourseCountSubject.next(lst.length);
       })
       .catch(err => {
+          this._logger.debug(err);
           this.currentCourseCountSubject.next(0);
         }
       )
@@ -153,7 +154,9 @@ export class CourseService {
   /**
    * save course part
    * @param courseId
-   * @returns {Promise<Paragraph>}
+   * @param selectedPartNums (path to the part)
+   * @param coursePart the part to save
+   * @returns {Promise<CoursePart>}
    */
   saveCoursePart(courseId: string, selectedPartNums: number[], coursePart: CoursePart): Promise<CoursePart> {
 
@@ -171,8 +174,49 @@ export class CourseService {
   }
 
   /**
+   * move course part
+   * @param courseId
+   * @param srcSelectedPartNums
+   * @param trgSelectedPartNums
+   * @returns {Promise<Course>}
+   */
+  movePart(courseId: string, srcSelectedPartNums: number[], trgSelectedPartNums: number[]): Promise<Course> {
+
+    let url = `${this.coursesUrl}/${courseId}/part/${srcSelectedPartNums}/move`;
+    return this.authHttp
+      .put(url, trgSelectedPartNums, {headers: contentHeaders})
+      .toPromise()
+      .then(res => {
+        //console.log(res);
+        return res.json().data;
+      })
+      .catch(error => this.handleError(error, this._logger));
+  }
+
+  /**
+   * delete course part
+   * @param courseId
+   * @param srcSelectedPartNums
+   * @returns {Promise<Course>}
+   */
+  deletePart(courseId: string, srcSelectedPartNums: number[]): Promise<Course> {
+
+    let url = `${this.coursesUrl}/${courseId}/part/${srcSelectedPartNums}`;
+    return this.authHttp
+      .delete(url, {headers: contentHeaders})
+      .toPromise()
+      .then(res => {
+        //console.log(res);
+        return res.json().data;
+      })
+      .catch(error => this.handleError(error, this._logger));
+  }
+
+  /**
    * save course paragraphs
    * @param courseId
+   * @param paragraphNums
+   * @param paragraph
    * @returns {Promise<Paragraph>}
    */
   saveParagraph(courseId: string, paragraphNums: number[], paragraph: Paragraph): Promise<Paragraph> {
@@ -201,7 +245,7 @@ export class CourseService {
       //courseId: course.id,
       isFavorite: course.isFavorite,
       dateSeen: course.dateSeen,
-      new: course.new,
+      'new': course.new,
       percentFollowed: course.percentFollowed,
     };
 
@@ -226,14 +270,15 @@ export class CourseService {
 
   /**
    * save course paragraphs (user choice)
-   * @param fullUserChoice (UID and userchoice)
-   * @returns {Promise<void>|Promise<T>}
+   * @param courseId
+   * @param paragraph
+   * @returns {Promise<Paragraph>}
    */
   saveUserChoice(courseId: string, paragraph: Paragraph): Promise<Paragraph> {
 
     var userChoice = {
       userChoice: paragraph.userChoice
-    }
+    };
 
     let url = `${this.coursesUrl}/${courseId}/${paragraph['_id']}/userChoice`;
     return this.authHttp
@@ -253,13 +298,13 @@ export class CourseService {
    * check user choice
    * @param courseId
    * @param paragraph
-   * @returns {Promise<TResult>}
+   * @returns {Promise<Paragraph>}
    */
   checkUserChoice(courseId: string, paragraph: Paragraph): Promise<Paragraph> {
 
     var userChoice = {
       userChoice: paragraph.userChoice
-    }
+    };
 
     let url = `${this.coursesUrl}/${courseId}/${paragraph['_id']}/userchoice/check`;
     return this.authHttp

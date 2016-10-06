@@ -91,7 +91,7 @@ courseRouter.route('/:course_id')
     let courseId = request.params['course_id'];
     //debug("connected user : " + JSON.stringify(request['user']));
 
-    _getCourse(courseId, request['user']["id"], response);
+    _respondWithCourse(courseId, request['user']["id"], response);
 
   })
 
@@ -145,7 +145,7 @@ courseRouter.route('/:course_id/userValues')
         // console.log("2-----");
         // debug(userCourse);
 
-        _getCourse(courseId, request['user']["id"], response);
+        _respondWithCourse(courseId, request['user']["id"], response);
 
       })
       .catch(err => {
@@ -261,6 +261,122 @@ courseRouter.route('/:course_id/part/:partNums')
           .then(course => {
             //debug(course);
             _respondWithCoursePart(courseId, coursePart['_id'], partNums, userId, response);
+          })
+          .catch(err => {
+            console.log(err);
+            response.status(500).json({status: 500, message: "System error " + err});
+          })
+
+      })
+      .catch(err => {
+        console.log(err);
+        response.status(500).json({status: 500, message: "System error " + err});
+      });
+
+  });
+
+courseRouter.route('/:course_id/part/:partNums')
+// ============================================
+// delete a course part (a page)
+// ============================================
+  .delete((request: Request, response: Response) => {
+
+    var courseId = request.params.course_id;
+    var partNums = JSON.parse("[" + request.params.partNums + "]");
+    var userId = request['user']["id"];
+
+    debug("DEL /" + courseId + "/part/" + partNums);
+
+    // TODO : Add a check of user right
+
+    // Search the course
+    Course
+      .findById(courseId)
+      .then(course => {
+
+        let parentPartNums = partNums.slice(0, -1);
+
+        let parentParts = course.parts;
+        if (parentPartNums.length > 0) {
+          parentParts = _searchPartByPath(parentPartNums, parentParts).parts;
+        }
+
+        let partIndex = partNums[partNums.length - 1];
+
+        // remove the part
+        parentParts.splice(partIndex, 1);
+
+        // Save the course
+        Course
+          .updateOrCreate(course)
+          .then(course => {
+            //debug(course);
+            _respondWithCourse(courseId, userId, response);
+          })
+          .catch(err => {
+            console.log(err);
+            response.status(500).json({status: 500, message: "System error " + err});
+          })
+
+      })
+      .catch(err => {
+        console.log(err);
+        response.status(500).json({status: 500, message: "System error " + err});
+      });
+
+  });
+
+courseRouter.route('/:course_id/part/:srcPartNums/move')
+// ============================================
+// move a course part (a page)
+// ============================================
+  .put((request: Request, response: Response) => {
+
+    var courseId = request.params.course_id;
+    var srcPartNums = JSON.parse("[" + request.params.srcPartNums + "]");
+    var userId = request['user']["id"];
+
+    debug("PUT /" + courseId + "/part/" + srcPartNums + "/move");
+    //debug(request.body);
+
+    var trgPartNums = request.body;
+    //debug(trgPartNums);
+
+    // TODO : Add a check of user right
+
+    // Search the course
+    Course
+      .findById(courseId)
+      .then(course => {
+
+        // calculate src
+        let srcParentPartNums = srcPartNums.slice(0, -1);
+        let srcParentParts = course.parts;
+        if (srcParentPartNums.length > 0) {
+          srcParentParts = _searchPartByPath(srcParentPartNums, srcParentParts).parts;
+        }
+        let srcPartIndex = srcPartNums[srcPartNums.length - 1];
+
+        // calculate trg
+        let trgParentPartNums = trgPartNums.slice(0, -1);
+        let trgParentParts = course.parts;
+        if (trgParentPartNums.length > 0) {
+          trgParentParts = _searchPartByPath(trgParentPartNums, trgParentParts).parts;
+        }
+        let trgPartIndex = trgPartNums[trgPartNums.length - 1];
+
+        // remove the part from the src
+        let coursePart = srcParentParts.splice(srcPartIndex, 1)[0];
+
+        // add the part to the trg
+        trgParentParts.splice(trgPartIndex, 0, coursePart);
+
+        // Save the course
+        Course
+          .updateOrCreate(course)
+          .then(course => {
+            //debug(course);
+            _respondWithCourse(courseId, userId, response);
           })
           .catch(err => {
             console.log(err);
@@ -479,7 +595,7 @@ function _fillCourseForUser(course: Course, user: User): Promise < Course > {
       isFavorite: isFavorite,
       interest: interest,
       dateSeen: dateSeen,
-      new: isNew,
+      'new': isNew,
       dateFollowed: dateFollowed,
       dateFollowedEnd: dateFollowedEnd,
       percentFollowed: percentFollowed,
@@ -496,8 +612,8 @@ function _fillCourseForUser(course: Course, user: User): Promise < Course > {
  * @param response
  * @private
  */
-function _getCourse(courseId: string, userId: string, response) {
-  //debug("_getCourse : " + courseId + ", " + userId);
+function _respondWithCourse(courseId: string, userId: string, response) {
+  //debug("_respondWithCourse : " + courseId + ", " + userId);
   Course.findById(courseId)
     .then(course => {
       // Search the user
@@ -530,15 +646,16 @@ function _getCourse(courseId: string, userId: string, response) {
 }
 
 /**
- * Get a paragraph (filled) by Id
+ * Get a paragraph (filled) by Id or path
  * @param courseId
  * @param paragraphId
+ * @param paragraphNums
  * @param userId
  * @param response
  * @private
  */
 function _respondWithCourseParagraph(courseId: string, paragraphId: string, paragraphNums: number[], userId: string, response) {
-  //debug("_getCourse : " + courseId + ", " + userId);
+  //debug("_respondWithCourse : " + courseId + ", " + userId);
   Course.findById(courseId)
     .then(course => {
 
@@ -585,7 +702,8 @@ function _respondWithCourseParagraph(courseId: string, paragraphId: string, para
 /**
  * Get a course part (filled) by Id or path (nums)
  * @param courseId
- * @param paragraphId
+ * @param coursePartId
+ * @param partNums
  * @param userId
  * @param response
  * @private

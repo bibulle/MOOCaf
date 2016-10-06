@@ -41,6 +41,9 @@ md-content {
   display: block;
 }
 
+.class md-sidenav-layout {
+  overflow: visible;
+}
 .class .md-sidenav-content {
   overflow: inherit;
 }
