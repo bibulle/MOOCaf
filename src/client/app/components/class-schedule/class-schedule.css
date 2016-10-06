@@ -41,7 +41,8 @@
 
 .level1 button.selected, .level2 button.selected {
   /*background-color: #DDDDDD;*/
-  font-weight: bold;
+  /*font-weight: bold;*/
+  text-shadow: 1px 0px 0px black;
 }
 
 .level1 button:hover, .level2 button:hover {
@@ -74,3 +75,6 @@
   transition: height 5.5s, visibility 0s, opacity 0.5s linear;
 }
 
+.part-title {
+  padding-right: 0.8em;
+}
