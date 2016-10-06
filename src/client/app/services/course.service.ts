@@ -213,6 +213,25 @@ export class CourseService {
   }
 
   /**
+   * add a course part
+   * @param courseId
+   * @param srcSelectedPartNums
+   * @returns {Promise<Course>}
+   */
+  addPart(courseId: string, srcSelectedPartNums: number[]): Promise<Course> {
+
+    let url = `${this.coursesUrl}/${courseId}/part/${srcSelectedPartNums}/add`;
+    return this.authHttp
+      .put(url, {headers: contentHeaders})
+      .toPromise()
+      .then(res => {
+        //console.log(res);
+        return res.json().data;
+      })
+      .catch(error => this.handleError(error, this._logger));
+  }
+
+  /**
    * save course paragraphs
    * @param courseId
    * @param paragraphNums

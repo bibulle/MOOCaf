@@ -239,10 +239,42 @@ export class ClassComponent {
 
   addPageChild() {
     this._logger.debug("addPageChild");
+
+    let lastChildPartNums = this.selectedPartNums.slice();
+    lastChildPartNums.push(this.selectedPart.parts ? this.selectedPart.parts.length : 0);
+
+    this._addPage(lastChildPartNums);
   }
 
   addPageSibling() {
     this._logger.debug("addPageSibling");
+
+    let newPartNums = this.selectedPartNums.slice(0, -1);
+    newPartNums.push(this.selectedPartNums[this.selectedPartNums.length-1]+1);
+
+    this._addPage(newPartNums);
+  }
+
+  /**
+   * Add a page at the path in parameter
+   * @param newPartNums
+   * @private
+   */
+  _addPage(newPartNums) {
+    this._logger.debug("_addPage("+newPartNums+")");
+
+    this._courseService.addPart(this.course.id, newPartNums)
+      .then(course => {
+        this._notificationService.message("All your modifications have been saved...");
+
+        this.course = course;
+
+        this.onNotifySelectedPart(newPartNums);
+      })
+      .catch(error => {
+        this._logger.error(error);
+        this._notificationService.error("System error !!", "Error saving you changes !!\n\t" + (error.message || error));
+      });
   }
 
   deletePage() {
@@ -264,7 +296,7 @@ export class ClassComponent {
           if (newSelectedPartNums[newSelectedPartNums.length - 1] != 0) {
             newSelectedPartNums[newSelectedPartNums.length - 1] = newSelectedPartNums[newSelectedPartNums.length - 1] - 1;
           } else if (newSelectedPartNums.length != 1) {
-            newSelectedPartNums.slice(0,-1);
+            newSelectedPartNums = newSelectedPartNums.slice(0,-1);
           } else {
             newSelectedPartNums= [0];
           }

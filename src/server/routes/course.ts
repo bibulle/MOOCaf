@@ -391,6 +391,64 @@ courseRouter.route('/:course_id/part/:srcPartNums/move')
 
   });
 
+courseRouter.route('/:course_id/part/:trgPartNums/add')
+// ============================================
+// add a course part (a page)
+// ============================================
+  .put((request: Request, response: Response) => {
+
+    var courseId = request.params.course_id;
+    var trgPartNums = JSON.parse("[" + request.params.trgPartNums + "]");
+    var userId = request['user']["id"];
+
+    debug("PUT /" + courseId + "/part/" + trgPartNums + "/add");
+    //debug(request.body);
+
+    // TODO : Add a check of user right
+
+    // Search the course
+    Course
+      .findById(courseId)
+      .then(course => {
+
+        // calculate trg
+        let trgParentPartNums = trgPartNums.slice(0, -1);
+        let trgParentParts = course.parts;
+        if (trgParentPartNums.length > 0) {
+          trgParentParts = _searchPartByPath(trgParentPartNums, trgParentParts).parts;
+        }
+        let trgPartIndex = trgPartNums[trgPartNums.length - 1];
+
+        // create a new coursePart
+        let coursePart = new ICoursePart({
+          title: "New page",
+          parts: [],
+          contents: []
+        });
+
+        // add the part to the trg
+        trgParentParts.splice(trgPartIndex, 0, coursePart);
+
+        // Save the course
+        Course
+          .updateOrCreate(course)
+          .then(course => {
+            //debug(course);
+            _respondWithCourse(courseId, userId, response);
+          })
+          .catch(err => {
+            console.log(err);
+            response.status(500).json({status: 500, message: "System error " + err});
+          })
+
+      })
+      .catch(err => {
+        console.log(err);
+        response.status(500).json({status: 500, message: "System error " + err});
+      });
+
+  });
+
 courseRouter.route('/:course_id/:paragraph_id/userChoice')
 // ============================================
 // update user choice for a course paragraph
@@ -544,65 +602,100 @@ courseRouter.route('/:course_id/:paragraph_id/userChoice/check')
  */
 function _fillCourseForUser(course: Course, user: User): Promise < Course > {
   //debug("_fillCourseForUser : " + course["id"] + ", " + user["id"]);
-  return new Promise < Course >((resolve) => {
-    var f = course;
 
-    // define the default values
-    var isFavorite = false;
-    var interest = 0;
-    var dateSeen = null;
-    var isNew = null;
-    var dateFollowed = null;
-    var dateFollowedEnd = null;
-    var percentFollowed = 0;
 
-    // get values from the user
-    if (user && user.courses && user.courses[course["id"]]) {
-      isFavorite = user.courses[course["id"]].isFavorite;
-      interest = user.courses[course["id"]].interest;
-      dateSeen = user.courses[course["id"]].dateSeen;
-      isNew = user.courses[course["id"]].new;
-      dateFollowed = user.courses[course["id"]].dateFollowed;
-      dateFollowedEnd = user.courses[course["id"]].dateFollowedEnd;
-      percentFollowed = user.courses[course["id"]].percentFollowed;
 
-      if (dateSeen && isNew) {
-        isNew = ((dateSeen == null) || ((new Date().getTime() - dateSeen.getTime()) < 1000 * 60));
-      }
+  return new Promise < Course >((resolve, reject) => {
 
-      // add user choices
-      if (user.courses[course["id"]].userChoices) {
 
-        _.forIn(user.courses[course["id"]].userChoices, (value, paragraphId) => {
-          let p = _searchParagraphById(paragraphId, f.parts);
-          if (p) {
-            //console.log(p);
-            p.userChoice = value.userChoice;
-            p.userCheckCount = value.userCheckCount;
-            p.userCheckOK = value.userCheckOK;
-
-            // remove the answer to not spoil !!
-            if ((value.userCheckCount == null) || (value.userCheckCount < p.maxCheckCount)) {
-              p.answer = null;
-            }
-          }
-        })
-      }
+    // as every course go there before being sen did just some verification
+    // if no page... add one
+    if (!course.parts) {
+      course.parts = [];
     }
+    if (course.parts.length == 0) {
+      course.parts.push(new ICoursePart({
+        title: "Not yet defined",
+        parts: [],
+        contents: []
+      }));
+      // Save the course
+      Course
+        .updateOrCreate(course)
+        .then(course => {
+          //debug(course);
+          _fillCourseForUser(course, user)
+            .then(course => {
+              resolve(course);
+            })
+            .catch(err => {
+              reject(err);
+            });
+        })
+        .catch(err => {
+          console.log(err);
+          reject(err);
+        })
+    } else {
 
-    // assign the values into the course
-    _.assign(f, {
-      isFavorite: isFavorite,
-      interest: interest,
-      dateSeen: dateSeen,
-      'new': isNew,
-      dateFollowed: dateFollowed,
-      dateFollowedEnd: dateFollowedEnd,
-      percentFollowed: percentFollowed,
-      id: f['_id']
-    });
+      // define the default values
+      var isFavorite = false;
+      var interest = 0;
+      var dateSeen = null;
+      var isNew = null;
+      var dateFollowed = null;
+      var dateFollowedEnd = null;
+      var percentFollowed = 0;
 
-    resolve(f);
+      // get values from the user
+      if (user && user.courses && user.courses[course["id"]]) {
+        isFavorite = user.courses[course["id"]].isFavorite;
+        interest = user.courses[course["id"]].interest;
+        dateSeen = user.courses[course["id"]].dateSeen;
+        isNew = user.courses[course["id"]].new;
+        dateFollowed = user.courses[course["id"]].dateFollowed;
+        dateFollowedEnd = user.courses[course["id"]].dateFollowedEnd;
+        percentFollowed = user.courses[course["id"]].percentFollowed;
+
+        if (dateSeen && isNew) {
+          isNew = ((dateSeen == null) || ((new Date().getTime() - dateSeen.getTime()) < 1000 * 60));
+        }
+
+        // add user choices
+        if (user.courses[course["id"]].userChoices) {
+
+          _.forIn(user.courses[course["id"]].userChoices, (value, paragraphId) => {
+            let p = _searchParagraphById(paragraphId, course.parts);
+            if (p) {
+              //console.log(p);
+              p.userChoice = value.userChoice;
+              p.userCheckCount = value.userCheckCount;
+              p.userCheckOK = value.userCheckOK;
+
+              // remove the answer to not spoil !!
+              if ((value.userCheckCount == null) || (value.userCheckCount < p.maxCheckCount)) {
+                p.answer = null;
+              }
+            }
+          })
+        }
+      }
+
+      // assign the values into the course
+      _.assign(course, {
+        isFavorite: isFavorite,
+        interest: interest,
+        dateSeen: dateSeen,
+        'new': isNew,
+        dateFollowed: dateFollowed,
+        dateFollowedEnd: dateFollowedEnd,
+        percentFollowed: percentFollowed,
+        id: course['_id']
+      });
+
+      resolve(course);
+
+    }
   })
 }
 /**
