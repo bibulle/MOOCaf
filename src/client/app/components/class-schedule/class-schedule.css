@@ -55,11 +55,20 @@
 .more {
   display: inherit;
 }
+md-icon.no-child {
+  display: none;
+}
 .level1.open .less {
   display: inherit;
 }
 .level1.open .more {
   display: none;
+}
+.level1 .no-child .less, .level1 .no-child .more {
+  display: none;
+}
+.level1 .no-child md-icon.no-child {
+  display: inherit;
 }
 
 .level2 {
@@ -78,3 +87,4 @@
 .part-title {
   padding-right: 0.8em;
 }
+
