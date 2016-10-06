@@ -20,6 +20,10 @@ export class ParagraphMarkdownComponent extends ParagraphAbstract implements OnI
 
   html: string = "";
 
+  // for previous value in the editor
+  private _previousValue = "";
+
+
   constructor(_courseService: CourseService,
               _logger: Logger,
               _notificationService: NotificationService) {
@@ -44,6 +48,7 @@ export class ParagraphMarkdownComponent extends ParagraphAbstract implements OnI
   prepareData(): void {
     if (this.data && this.data.content) {
       this.html = ParagraphAbstract.markdownToHTML(this.data.content.toString());
+      this._previousValue = this.data.content.toString();
     }
   }
 
@@ -52,8 +57,11 @@ export class ParagraphMarkdownComponent extends ParagraphAbstract implements OnI
    * The editor field has been changed
    */
   editorChange() {
-    this.html = ParagraphAbstract.markdownToHTML(this.data.content.toString());
-    this.subjectEditor
-      .next(this.data);
+    if (this._previousValue !== this.data.content.toString()) {
+      this._previousValue = this.data.content.toString();
+      this.html = ParagraphAbstract.markdownToHTML(this.data.content.toString());
+      this.subjectEditor
+        .next(this.data);
+    }
   }
 }

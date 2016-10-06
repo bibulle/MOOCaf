@@ -166,10 +166,10 @@ courseRouter.route('/:course_id/para/:paragraphNums')
     var userId = request['user']["id"];
 
     debug("PUT /" + courseId + "/para/" + paragraphNums);
-    debug(request.body);
+    //debug(request.body);
 
     var paragraph = new IParagraph(request.body);
-    debug(paragraph);
+    //debug(paragraph);
 
     // TODO : Add a check of user right
 
