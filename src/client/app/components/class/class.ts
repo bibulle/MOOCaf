@@ -238,7 +238,7 @@ export class ClassComponent {
   }
 
   addPageChild() {
-    this._logger.debug("addPageChild");
+    //this._logger.debug("addPageChild");
 
     let lastChildPartNums = this.selectedPartNums.slice();
     lastChildPartNums.push(this.selectedPart.parts ? this.selectedPart.parts.length : 0);
@@ -247,7 +247,7 @@ export class ClassComponent {
   }
 
   addPageSibling() {
-    this._logger.debug("addPageSibling");
+    //this._logger.debug("addPageSibling");
 
     let newPartNums = this.selectedPartNums.slice(0, -1);
     newPartNums.push(this.selectedPartNums[this.selectedPartNums.length-1]+1);
@@ -261,7 +261,7 @@ export class ClassComponent {
    * @private
    */
   _addPage(newPartNums) {
-    this._logger.debug("_addPage("+newPartNums+")");
+    //this._logger.debug("_addPage("+newPartNums+")");
 
     this._courseService.addPart(this.course.id, newPartNums)
       .then(course => {
