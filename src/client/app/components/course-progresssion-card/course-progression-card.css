@@ -1,0 +1,40 @@
+.progression-part {
+  padding-left: 1em;
+}
+
+
+.part-title {
+  flex: 0 0 30%;
+}
+
+.progression-stat {
+  margin: 3px 10px 3px 10px;
+  flex: 1 1 100%;
+  align-self: stretch;
+  border: 1px solid #CCC;
+}
+.percent {
+  flex: 0 0 10%;
+}
+
+
+
+.stat1 {
+  background-color: #555555;
+  width: 30%;
+  height: 100%;
+  float: left;
+}
+.stat2 {
+  background-color: #a8a8a8;
+  width: 20%;
+  height: 100%;
+  float: left;
+}
+.stat3 {
+  background-color: #543232;
+  width: 20%;
+  height: 100%;
+  float: left;
+}
+

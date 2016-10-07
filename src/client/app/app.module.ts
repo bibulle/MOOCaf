@@ -46,9 +46,11 @@ import {ClassScheduleComponent} from "./components/class-schedule/class-schedule
 import {ParagraphComponent} from "./components/paragraph/paragraph";
 import {ParagraphMarkdownComponent} from "./components/paragraph-markdown/paragraph-markdown";
 import {ParagraphFormComponent} from "./components/paragraph-form/paragraph-form";
+import {ProgressionComponent} from "./components/progression/progression";
 import {ScrollDirective} from "./directives/scroll-directive";
 import {ScrollService} from "./services/scroll.service";
 import {VisibleDirective} from "./directives/visible-directive";
+import {CourseProgressionCardComponent} from "./components/course-progresssion-card/course-progression-card";
 
 let loggerProvider = LOG_LOGGER_PROVIDERS;
 if (environment.production) {
@@ -86,11 +88,13 @@ if (environment.production) {
     LogoComponent,
     CatalogueComponent,
     CourseCardComponent,
+    CourseProgressionCardComponent,
     ClassComponent,
     ClassScheduleComponent,
     ParagraphComponent,
     ParagraphMarkdownComponent,
     ParagraphFormComponent,
+    ProgressionComponent,
     FlexDirective,
     LayoutDirective,
     LayoutAlignDirective,
