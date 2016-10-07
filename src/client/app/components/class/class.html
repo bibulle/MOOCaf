@@ -17,7 +17,7 @@
   <md-sidenav-layout flex="100">
 
     <md-sidenav #schedule (open)="scheduleButton.focus()" [opened]="true" mode="side" align="start">
-      <class-schedule [course]="course" (notifySelectedPart)='onNotifySelectedPart($event)'
+      <class-schedule [course]="course" (notifySelectedPart)='onNotifySelectedPartNum($event)'
                       [selectedPartNums]="selectedPartNums" layout="row"
                       layout-align="start stretch"></class-schedule>
     </md-sidenav>
@@ -74,7 +74,9 @@
         <div class="page" layout="column" layout-align="start stretch">
           <paragraph *ngFor="let paragraph of selectedPart.contents; let i = index" [data]="paragraph"
                      [courseId]="course.id" [selectedPartNums]="selectedPartNums" [paragraphNum]="i"
-                     [edited]="edited"></paragraph>
+                     [paragraphCount]="selectedPart.contents.length"
+                     [edited]="edited"
+                     (notifySelectedPart)='onNotifySelectedPartContent($event)'></paragraph>
         </div>
       </div>
 
