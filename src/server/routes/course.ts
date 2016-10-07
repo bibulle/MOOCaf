@@ -13,6 +13,8 @@ import Paragraph = require("../models/paragraph");
 import {ICoursePart} from "../models/iCoursePart";
 import {IParagraph} from "../models/iParagraph";
 import UserCourse = require("../models/UserCourse");
+import {ParagraphType} from "../models/eParagraphType";
+import {ParagraphContentType} from "../models/eParagraphContentType";
 
 
 const courseRouter: Router = Router();
@@ -212,6 +214,225 @@ courseRouter.route('/:course_id/para/:paragraphNums')
         response.status(500).json({status: 500, message: "System error " + err});
       });
 
+  })
+  // ============================================
+  // delete a course paragraph
+  // ============================================
+  .delete((request: Request, response: Response) => {
+
+    var courseId = request.params.course_id;
+    var paragraphNums = JSON.parse("[" + request.params.paragraphNums + "]");
+    var userId = request['user']["id"];
+
+    debug("DEL /" + courseId + "/para/" + paragraphNums);
+
+    // TODO : Add a check of user right
+
+    // Search the course
+    Course
+      .findById(courseId)
+      .then(course => {
+
+        let parentPartNums = paragraphNums.slice(0, -2);
+
+        let parentParts = course.parts;
+        if (parentPartNums.length > 0) {
+          parentParts = _searchPartByPath(parentPartNums, parentParts).parts;
+        }
+        let parentPart = parentParts[paragraphNums[paragraphNums.length - 2]];
+        let paraIndex = paragraphNums[paragraphNums.length - 1];
+
+        // remove the para
+        parentPart.contents.splice(paraIndex, 1);
+
+        // Save the course
+        Course
+          .updateOrCreate(course)
+          .then(course => {
+            //debug(course);
+            _respondWithCoursePart(courseId, null, paragraphNums.slice(0, -1), userId, response);
+          })
+          .catch(err => {
+            console.log(err);
+            response.status(500).json({status: 500, message: "System error " + err});
+          })
+
+      })
+      .catch(err => {
+        console.log(err);
+        response.status(500).json({status: 500, message: "System error " + err});
+      });
+
+  });
+
+courseRouter.route('/:course_id/para/:srcParaNums/move')
+// ============================================
+// move a course paragraph
+// ============================================
+  .put((request: Request, response: Response) => {
+
+    var courseId = request.params.course_id;
+    var srcParaNums = JSON.parse("[" + request.params.srcParaNums + "]");
+    var userId = request['user']["id"];
+
+    debug("PUT /" + courseId + "/para/" + srcParaNums + "/move");
+    //debug(request.body);
+
+    var trgParaNum = request.body.trgParaNum;
+    //debug(trgParaNum);
+
+    // TODO : Add a check of user right
+
+    // Search the course
+    Course
+      .findById(courseId)
+      .then(course => {
+
+        // calculate src
+        let srcParentPartNums = srcParaNums.slice(0, -2);
+        let srcParentParts = course.parts;
+        if (srcParentPartNums.length > 0) {
+          srcParentParts = _searchPartByPath(srcParentPartNums, srcParentParts).parts;
+        }
+        let srcParentPart = srcParentParts[srcParaNums[srcParaNums.length - 2]];
+        let srcParaIndex = srcParaNums[srcParaNums.length - 1];
+
+        // calculate trg
+        let trgParaIndex = trgParaNum;
+
+        // remove the para from the src
+        let paragraph = srcParentPart.contents.splice(srcParaIndex, 1)[0];
+
+        // add the part to the trg
+        srcParentPart.contents.splice(trgParaIndex, 0, paragraph);
+
+        // Save the course
+        Course
+          .updateOrCreate(course)
+          .then(course => {
+            //debug(course);
+            _respondWithCoursePart(courseId, null, srcParaNums.slice(0, -1), userId, response);
+          })
+          .catch(err => {
+            console.log(err);
+            response.status(500).json({status: 500, message: "System error " + err});
+          })
+
+      })
+      .catch(err => {
+        console.log(err);
+        response.status(500).json({status: 500, message: "System error " + err});
+      });
+
+  });
+
+courseRouter.route('/:course_id/para/:trgParaNums/add')
+// ============================================
+// add a course paragraph
+// ============================================
+  .put((request: Request, response: Response) => {
+
+    var courseId = request.params.course_id;
+    var trgParaNums = JSON.parse("[" + request.params.trgParaNums + "]");
+    var userId = request['user']["id"];
+
+    debug("PUT /" + courseId + "/para/" + trgParaNums + "/add");
+    //debug(request.body);
+
+    let type:ParagraphType = request.body.type;
+    let subType:ParagraphContentType = request.body.subType;
+
+    // TODO : Add a check of user right
+
+    // Search the course
+    Course
+      .findById(courseId)
+      .then(course => {
+
+        // calculate trg
+        let trgParentPartNums = trgParaNums.slice(0, -2);
+        if (course.parts == null) {
+          course.parts = [];
+        }
+        let trgParentParts = course.parts;
+        if (trgParentPartNums.length > 0) {
+          let part = _searchPartByPath(trgParentPartNums, trgParentParts);
+          if (part.parts == null) {
+            part.parts = [];
+          }
+          trgParentParts = part.parts;
+        }
+        if (trgParentParts == null) {
+          trgParentParts = [];
+        }
+        let trgParentPart = trgParentParts[trgParaNums[trgParaNums.length - 2]];
+        let trgParaIndex = trgParaNums[trgParaNums.length - 1];
+
+        // create a new paragraph
+        let paragraph:IParagraph;
+        if (type == ParagraphType.MarkDown) {
+          paragraph = new IParagraph({
+            type: type,
+            content: 'content'
+          });
+        } else if (subType ==   ParagraphContentType.Text) {
+          paragraph = new IParagraph({
+            type: type,
+            content: {
+              type: subType,
+              label: 'Title',
+              question: 'Question',
+            },
+            maxCheckCount: 3,
+            answer: 'answer'
+          });
+        } else if (subType ==   ParagraphContentType.Radio) {
+          paragraph = new IParagraph({
+            type: type,
+            content: {
+              type: subType,
+              label: 'Title',
+              questions: ['Choice 1', 'Choice 2'],
+            },
+            maxCheckCount: 3,
+            answer: 0
+          });
+        } else {
+          paragraph = new IParagraph({
+            type: type,
+            content: {
+              type: subType,
+              label: 'Title',
+              questions: ['Choice 1', 'Choice 2'],
+            },
+            maxCheckCount: 3,
+            answer: [0]
+          });
+        }
+
+        //debug(paragraph);
+
+        // add the part to the trg
+        trgParentPart.contents.splice(trgParaIndex, 0, paragraph);
+
+        // Save the course
+        Course
+          .updateOrCreate(course)
+          .then(course => {
+            //debug(course);
+            _respondWithCoursePart(courseId, null, trgParaNums.slice(0, -1), userId, response);
+          })
+          .catch(err => {
+            console.log(err);
+            response.status(500).json({status: 500, message: "System error " + err});
+          })
+
+      })
+      .catch(err => {
+        console.log(err);
+        response.status(500).json({status: 500, message: "System error " + err});
+      });
+
   });
 
 courseRouter.route('/:course_id/part/:partNums')
@@ -273,12 +494,10 @@ courseRouter.route('/:course_id/part/:partNums')
         response.status(500).json({status: 500, message: "System error " + err});
       });
 
-  });
-
-courseRouter.route('/:course_id/part/:partNums')
-// ============================================
-// delete a course part (a page)
-// ============================================
+  })
+  // ============================================
+  // delete a course part (a page)
+  // ============================================
   .delete((request: Request, response: Response) => {
 
     var courseId = request.params.course_id;
@@ -614,7 +833,6 @@ function _fillCourseForUser(course: Course, user: User): Promise < Course > {
   //debug("_fillCourseForUser : " + course["id"] + ", " + user["id"]);
 
 
-
   return new Promise < Course >((resolve, reject) => {
 
 
@@ -827,7 +1045,6 @@ function _respondWithCoursePart(courseId: string, coursePartId: string, partNums
                 if (coursePartId) {
                   part = _searchPartById(coursePartId, cou.parts);
                 } else {
-                  partNums.push(0);
                   part = _searchPartByPath(partNums, cou.parts);
                 }
 

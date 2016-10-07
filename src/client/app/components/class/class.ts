@@ -128,7 +128,7 @@ export class ClassComponent {
                       })
                       .catch(error => {
                         this._logger.error(error);
-                        this._notificationService.error("System error !!", "Error saving you changes !!\n\t" + (error.message || error));
+                        this._notificationService.error("System error !!", "Error saving you changes !!\n\t" + (error.message || error.error || error));
                       });
                   },
                   error => {
@@ -152,10 +152,20 @@ export class ClassComponent {
 
 
   /**
-   * The selected part change
+   * The selected part content change
    * @param selectedPartNums:number[]
    */
-  onNotifySelectedPart(selectedPartNums: number[]) {
+  onNotifySelectedPartContent(selectedPart: CoursePart) {
+    //this._logger.debug("onNotifySelectedPartContent "+selectedPart);
+
+    this.selectedPart = selectedPart;
+  }
+
+  /**
+   * The selected part Num change
+   * @param selectedPartNums:number[]
+   */
+  onNotifySelectedPartNum(selectedPartNums: number[]) {
     //this._logger.debug("onNotifySelectedPart "+selectedPartNums);
 
 
@@ -186,6 +196,11 @@ export class ClassComponent {
           content: ""
         })
       ];
+      // and save it
+      this._courseService.saveCoursePart(this.course.id, this.selectedPartNums, selectedPart)
+        .then(coursePart => {
+          this.selectedPart = coursePart;
+        })
     }
 
     this._previousValue = this.selectedPart.title;
@@ -229,11 +244,11 @@ export class ClassComponent {
         this._notificationService.message("All your modifications have been saved...");
 
         this.course = course;
-        this.onNotifySelectedPart(newSelectedPartNums);
+        this.onNotifySelectedPartNum(newSelectedPartNums);
       })
       .catch(error => {
         this._logger.error(error);
-        this._notificationService.error("System error !!", "Error saving you changes !!\n\t" + (error.message || error));
+        this._notificationService.error("System error !!", "Error saving you changes !!\n\t" + (error.message || error.error || error));
       });
   }
 
@@ -269,11 +284,11 @@ export class ClassComponent {
 
         this.course = course;
 
-        this.onNotifySelectedPart(newPartNums);
+        this.onNotifySelectedPartNum(newPartNums);
       })
       .catch(error => {
         this._logger.error(error);
-        this._notificationService.error("System error !!", "Error saving you changes !!\n\t" + (error.message || error));
+        this._notificationService.error("System error !!", "Error saving you changes !!\n\t" + (error.message || error.error || error));
       });
   }
 
@@ -300,11 +315,11 @@ export class ClassComponent {
           } else {
             newSelectedPartNums= [0];
           }
-          this.onNotifySelectedPart(newSelectedPartNums);
+          this.onNotifySelectedPartNum(newSelectedPartNums);
         })
         .catch(error => {
           this._logger.error(error);
-          this._notificationService.error("System error !!", "Error saving you changes !!\n\t" + (error.message || error));
+          this._notificationService.error("System error !!", "Error saving you changes !!\n\t" + (error.message || error.error || error));
         });
     }
   }

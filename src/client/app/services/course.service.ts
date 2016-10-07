@@ -8,6 +8,8 @@ import {Course, CoursePart} from "../models/course";
 import {environment} from "../environment";
 import {Observable, BehaviorSubject} from 'rxjs/Rx';
 import {Paragraph} from "../models/paragraph";
+import {ParagraphType} from "../models/paragraph-type.enum";
+import {ParagraphContentType} from "../models/paragraph-content-type.enum";
 
 @Injectable()
 export class CourseService {
@@ -71,8 +73,8 @@ export class CourseService {
             data => {
               //console.log(data);
               data = data.map(course => {
-                this.retrieveDates(course);
-                this.calcBooleans(course);
+                CourseService.retrieveDates(course);
+                CourseService.calcBooleans(course);
                 return course
               });
               //console.log(data);
@@ -96,8 +98,8 @@ export class CourseService {
       .toPromise()
       .then(response => {
         var course = response.json().data as Course;
-        this.retrieveDates(course);
-        this.calcBooleans(course);
+        CourseService.retrieveDates(course);
+        CourseService.calcBooleans(course);
         return course;
       })
       .catch(error => this.handleError(error, this._logger));
@@ -131,8 +133,8 @@ export class CourseService {
       .then(res => {
         //this._service.success("Saved", "your change have been saved");
         var course = res.json().data as Course;
-        this.retrieveDates(course);
-        this.calcBooleans(course);
+        CourseService.retrieveDates(course);
+        CourseService.calcBooleans(course);
         return course;
       })
       .catch(error => this.handleError(error, this._logger));
@@ -222,7 +224,7 @@ export class CourseService {
 
     let url = `${this.coursesUrl}/${courseId}/part/${srcSelectedPartNums}/add`;
     return this.authHttp
-      .put(url, {headers: contentHeaders})
+      .put(url, {}, {headers: contentHeaders})
       .toPromise()
       .then(res => {
         //console.log(res);
@@ -232,7 +234,7 @@ export class CourseService {
   }
 
   /**
-   * save course paragraphs
+   * save course paragraph
    * @param courseId
    * @param paragraphNums
    * @param paragraph
@@ -245,6 +247,64 @@ export class CourseService {
     let url = `${this.coursesUrl}/${courseId}/para/${paragraphNums}`;
     return this.authHttp
       .put(url, paragraph, {headers: contentHeaders})
+      .toPromise()
+      .then(res => {
+        //console.log(res);
+        return res.json().data;
+      })
+      .catch(error => this.handleError(error, this._logger));
+  }
+
+  /**
+   * move course paragraph
+   * @param courseId
+   * @param srcSelectedParaNums
+   * @param trgSelectedParaNum
+   * @returns {Promise<CoursePart>}
+   */
+  moveParagraph(courseId: string, srcSelectedParaNums: number[], trgSelectedParaNum: number): Promise<CoursePart> {
+
+    let url = `${this.coursesUrl}/${courseId}/para/${srcSelectedParaNums}/move`;
+    return this.authHttp
+      .put(url, {trgParaNum: trgSelectedParaNum}, {headers: contentHeaders})
+      .toPromise()
+      .then(res => {
+        //console.log(res);
+        return res.json().data;
+      })
+      .catch(error => this.handleError(error, this._logger));
+  }
+
+  /**
+   * delete course paragraph
+   * @param courseId
+   * @param srcSelectedParaNums
+   * @returns {Promise<CoursePart>}
+   */
+  deleteParagraph(courseId: string, srcSelectedParaNums: number[]): Promise<CoursePart> {
+
+    let url = `${this.coursesUrl}/${courseId}/para/${srcSelectedParaNums}`;
+    return this.authHttp
+      .delete(url, {headers: contentHeaders})
+      .toPromise()
+      .then(res => {
+        //console.log(res);
+        return res.json().data;
+      })
+      .catch(error => this.handleError(error, this._logger));
+  }
+
+  /**
+   * add course paragraph
+   * @param courseId
+   * @param srcSelectedParaNums
+   * @returns {Promise<CoursePart>}
+   */
+  addParagraph(courseId: string, srcSelectedParaNums: number[], type: ParagraphType, subType: ParagraphContentType): Promise<CoursePart> {
+
+    let url = `${this.coursesUrl}/${courseId}/para/${srcSelectedParaNums}/add`;
+    return this.authHttp
+      .put(url, {type: type, subType:subType}, {headers: contentHeaders})
       .toPromise()
       .then(res => {
         //console.log(res);
@@ -280,8 +340,8 @@ export class CourseService {
         this.checkCurrentCourse();
 
         var course = res.json().data as Course;
-        this.retrieveDates(course);
-        this.calcBooleans(course);
+        CourseService.retrieveDates(course);
+        CourseService.calcBooleans(course);
         return course;
       })
       .catch(error => this.handleError(error, this._logger));
@@ -362,7 +422,7 @@ export class CourseService {
    * Methode to update the new value of the course
    * @param course
    */
-  calcBooleans(course:Course) {
+  static calcBooleans(course:Course) {
     course.new = ((course.dateSeen == null) || ((new Date().getTime() - course.dateSeen.getTime()) < 1000*60));
     course.done = ((course.dateFollowed != null) && (course.dateFollowedEnd != null));
     course.inProgress = ((course.dateFollowed != null) && (course.dateFollowedEnd == null));
@@ -371,7 +431,7 @@ export class CourseService {
   /**
    * get dates fom json to date
    */
-  retrieveDates(course: Course) {
+  static retrieveDates(course: Course) {
     ['created', 'updated', 'dateSeen', 'dateFollowed', 'dateFollowedEnd']
       .map(s => {
         if (course[s]) {

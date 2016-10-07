@@ -68,3 +68,7 @@ md-content.class {
 .page-navigation {
   text-align: center;
 }
+
+paragraph {
+  position: relative;
+}
