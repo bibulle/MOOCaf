@@ -41,7 +41,8 @@
 
 .level1 button.selected, .level2 button.selected {
   /*background-color: #DDDDDD;*/
-  font-weight: bold;
+  /*font-weight: bold;*/
+  text-shadow: 1px 0px 0px black;
 }
 
 .level1 button:hover, .level2 button:hover {
@@ -54,11 +55,20 @@
 .more {
   display: inherit;
 }
+md-icon.no-child {
+  display: none;
+}
 .level1.open .less {
   display: inherit;
 }
 .level1.open .more {
   display: none;
+}
+.level1 .no-child .less, .level1 .no-child .more {
+  display: none;
+}
+.level1 .no-child md-icon.no-child {
+  display: inherit;
 }
 
 .level2 {
@@ -72,5 +82,9 @@
   opacity: 1;
   height: auto;
   transition: height 5.5s, visibility 0s, opacity 0.5s linear;
+}
+
+.part-title {
+  padding-right: 0.8em;
 }
 

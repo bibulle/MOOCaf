@@ -1,4 +1,4 @@
-import {Component, Input, EventEmitter, Output} from "@angular/core";
+import {Component, Input, EventEmitter, Output, OnInit, OnChanges, SimpleChanges} from "@angular/core";
 import {Router} from "@angular/router";
 import {Logger} from "angular2-logger/core";
 import {Course} from "../../models/course";
@@ -10,16 +10,16 @@ import {Course} from "../../models/course";
   styleUrls: ['class-schedule.css']
 })
 
-export class ClassScheduleComponent {
-
+export class ClassScheduleComponent implements OnInit, OnChanges {
   @Input()
   course: Course;
 
   @Output()
   notifySelectedPart: EventEmitter<number[]> = new EventEmitter<number[]>();
 
-  selectedPart = "0";
-  openedPart = "";
+  @Input()
+  selectedPartNums = [0];
+  openedPart = [];
 
   constructor(public router: Router,
               private _logger: Logger) {
@@ -27,36 +27,48 @@ export class ClassScheduleComponent {
   }
 
   ngOnInit() {
-      this.notifySelectedPart.emit([0]);
+    this.notifySelectedPart.emit([0]);
   }
 
-  selectPart(event, level1, level2) {
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['selectedPartNums']) {
+      let change = changes['selectedPartNums'];
+      if ((change.previousValue.toString() !== change.currentValue.toString()) && !this.isOpened(change.currentValue)) {
+        this.openPart(null, change.currentValue);
+      }
+    }
+  }
+
+  selectPart(event, levels: number[]) {
     event.stopPropagation();
 
-    this.selectedPart = level1 + (level2 != null ? "."+level2 : "");
-    this.notifySelectedPart.emit([level1, level2]);
+    this.selectedPartNums = levels;
+    this.notifySelectedPart.emit(this.selectedPartNums);
 
     // Open it (but do not close it)
-    if (!this.isOpened(level1, level2)) {
-      this.openPart(event, level1, level2);
+    if (!this.isOpened(this.selectedPartNums)) {
+      this.openPart(event, this.selectedPartNums);
     }
 
   }
 
-  openPart(event, level1, level2) {
-    event.stopPropagation();
+  openPart(event, levels: number[]) {
+    if (event) {
+      event.stopPropagation();
+    }
 
-    if (this.isOpened(level1, level2)) {
-      this.openedPart = "";
+    if (this.isOpened(levels)) {
+      this.openedPart = [];
     } else {
-      this.openedPart = level1 + (level2 != null ? "."+level2 : "");
+      this.openedPart = levels;
     }
   }
 
-  isOpened(level1,level2) {
-    return (this.openedPart.startsWith(level1 + (level2 != null ? "."+level2 : "")));
+  isOpened(levels: number[]) {
+    return (this.openedPart.toString().startsWith(levels.toString().toString()));
   }
-  isSelected(level1,level2) {
-    return (this.selectedPart == level1 + (level2 != null ? "."+level2 : ""));
+
+  isSelected(levels: number[]) {
+    return (this.selectedPartNums.toString() == levels.toString());
   }
 }

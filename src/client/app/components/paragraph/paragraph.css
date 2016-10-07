@@ -1,10 +1,13 @@
 .paragraph {
   /*width: 100%;*/
+  position: relative;
 }
 .paragraph .buttons {
   /*width: 10%;*/
   /*min-height: 10px;*/
   /*float: left;*/
+  padding-right: 1%;
+  padding-left: 1%;
 }
 .paragraph .content_box {
   width: 89%;
@@ -12,8 +15,8 @@
   float: left;
   margin-bottom: 6px;
 
-  border-bottom: 1px solid #eeeeee;
-  border-radius: 3px;
+  border-bottom: 1px solid #cccccc;
+  /*border-radius: 3px;*/
 
   /*-webkit-box-shadow: 2px 2px 4px 0px rgba(0,0,0,0.4);
   -moz-box-shadow: 2px 2px 4px 0px rgba(0,0,0,0.4);
@@ -27,4 +30,10 @@
   display: block;
   clear: both;
 
+}
+
+.paragraph-buttons {
+  position: absolute;
+  right:0;
+  top:0;
 }

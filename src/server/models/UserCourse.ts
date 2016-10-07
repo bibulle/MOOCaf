@@ -4,7 +4,7 @@ var Schema = Mongoose.Schema;
 
 import IUserChoices = require("./iUserChoices");
 
-var debug = require('debug')('server:model:user');
+var debug = require('debug')('server:model:user-course');
 
 class IUserCourse {
 
@@ -142,7 +142,7 @@ class UserCourse extends IUserCourse {
         .exec()
         .then(
           user => {
-            debug(user);
+            //debug(user);
             if (user) {
               user.id = user._id.toString();
             }
