@@ -29,6 +29,7 @@ export class CourseProgressionCardComponent {
     }
 
     //this._logger.debug(this.course);
+    this._calcProgression(this.course);
 
   }
 
@@ -90,4 +91,35 @@ export class CourseProgressionCardComponent {
   }
 
 
+  /**
+   * CAlculate fake progression percent
+   * @param course
+   * @private
+   */
+  private _calcProgression(course: Course) {
+    let percentTotal = course.percentFollowed;
+    let partsCount = course.parts.length;
+
+    let cpt = 30;
+    let percentCount = 1;
+    while ((cpt > 0) && (percentCount != 0)) {
+      percentCount = percentTotal*partsCount;
+      for (let i = 0 ; i < partsCount; i++) {
+        let statTotal = percentCount;
+        if (i != partsCount-1) {
+          statTotal = percentTotal/2 + Math.random() * percentTotal/2 * (partsCount - i);
+        }
+        statTotal = Math.min(1, Math.max(0,statTotal));
+        percentCount = percentCount - statTotal;
+
+        course.parts[i]['percentFollowed'] = statTotal;
+
+        course.parts[i]['stat3'] = Math.floor(40*Math.random() * 0.1 * statTotal)/40;
+        course.parts[i]['stat2'] = Math.floor(50*Math.random() * 0.5 * statTotal)/50;
+        course.parts[i]['stat1'] = statTotal - course.parts[i]['stat2'] - course.parts[i]['stat3'];
+
+      }
+      cpt--;
+    }
+  }
 }

@@ -40,8 +40,12 @@ courseRouter.route('/')
     //debug("connected user : " + JSON.stringify(request['user']));
 
     var currentOnly = false;
+    var progressOnly = false;
     if (request.query['currentOnly']) {
       currentOnly = (request.query['currentOnly'] === "true");
+    }
+    if (request.query['progressOnly']) {
+      progressOnly = (request.query['progressOnly'] === "true");
     }
 
     Course.find()
@@ -61,6 +65,11 @@ courseRouter.route('/')
                   completedCourses = completedCourses
                     .filter(f => {
                       return (f.dateFollowed && !f.dateFollowedEnd)
+                    })
+                } else if (progressOnly) {
+                  completedCourses = completedCourses
+                    .filter(f => {
+                      return (f.dateFollowed)
                     })
                 }
 
