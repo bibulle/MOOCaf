@@ -25,7 +25,7 @@ export class ProgressionComponent {
 
   ngOnInit() {
 
-    this._courseService.getCourses()
+    this._courseService.getCourses(false, true)
       .then(courses =>
       {
         this.courses = courses;
