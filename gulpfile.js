@@ -39,7 +39,7 @@ var vendorNpmFiles = [
   'angular2-notifications/lib/*.+(js|js.map)',
   'angular2-jwt/*.+(js|js.map)',
   '@angular2-material/**/*'
-]
+];
 
 
 // clean the contents of the distribution directory
@@ -99,7 +99,7 @@ gulp.task('copy_vendor', function () {
 gulp.task('watch', function() {
   gulp.watch(src1+'/**/*', ['copy_js']);
   gulp.watch(src2+'/**/*', ['copy_static']);
-  gulp.watch(src3+'/*/*', ['copy_vendor']);
+  // gulp.watch(src3+'/*/*', ['copy_vendor']);
 });
 
 

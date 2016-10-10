@@ -1,2 +1,29 @@
+<div class="paragraph-buttons" *ngIf="edited"  [class.add-paragraph-clicked]="addParagraphClicked">
+  <button md-icon-button (click)="moveUp()" class="md-primary" *ngIf="(paragraphNum != 0)" title="Move up">
+    <md-icon>arrow_upward</md-icon>
+  </button>
+  <button md-icon-button (click)="moveDown()" class="md-primary" *ngIf="paragraphCount-1 != paragraphNum" title="Move down">
+    <md-icon>arrow_downward</md-icon>
+  </button>
+  <button md-icon-button (click)="addParagraphSibling()" class="md-primary" title="Add a sibling paragraph">
+    <md-icon>note_add</md-icon>
+  </button>
+  <button md-icon-button (click)="addParagraphSibling('markdown')" class="md-primary add-paragraph-type markdown" title="Add a text paragraph">
+    <md-icon>subject</md-icon>
+  </button>
+  <button md-icon-button (click)="addParagraphSibling('question-check')" class="md-primary add-paragraph-type question-check" title="Add a question checkbox paragraph">
+    <md-icon>check_box</md-icon>
+  </button>
+  <button md-icon-button (click)="addParagraphSibling('question-radio')" class="md-primary add-paragraph-type question-radio" title="Add a question radio paragraph">
+    <md-icon>radio_button_checked</md-icon>
+  </button>
+  <button md-icon-button (click)="addParagraphSibling('question-text')" class="md-primary add-paragraph-type question-text" title="Add a question text paragraph">
+    <md-icon>short_text</md-icon>
+  </button>
+  <button md-icon-button (click)="deleteParagraph()" class="md-primary" [class.md-warn]="deleteParagraphClicked" title="Delete paragraph">
+    <md-icon class="delete">delete</md-icon>
+    <md-icon class="warning">announcement</md-icon>
+  </button>
+</div>
 <paragraph-markdown *ngIf="isMarkDown" [data]="data" [courseId]="courseId" [paragraphNums]="paragraphNums"></paragraph-markdown>
 <paragraph-form     *ngIf="isForm"     [data]="data" [courseId]="courseId" [paragraphNums]="paragraphNums"></paragraph-form>

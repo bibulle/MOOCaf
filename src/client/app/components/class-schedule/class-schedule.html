@@ -1,13 +1,14 @@
 <div class="schedule" flex="100" layout="column" layout-align="start stretch">
-  <div class="level1" [class.open]="isOpened(i)" layout="column" layout-align="start start" *ngFor="let part1 of course.parts; let i = index">
-    <button class="" [class.selected]="isSelected(i)" layout="row" layout-align="start stretch" (click)="selectPart($event, i)">
-      <md-icon class="more" (click)="openPart($event, i)">chevron_right</md-icon>
-      <md-icon class="less" (click)="openPart($event, i)">expand_more</md-icon>
-      <div>{{part1.title}}</div>
+  <div class="level1" [class.open]="isOpened([i])" layout="column" layout-align="start start" *ngFor="let part1 of course.parts; let i = index">
+    <button class="" [class.selected]="isSelected([i])" [class.no-child]="!part1.parts || (part1.parts.length == 0)" layout="row" layout-align="start stretch" (click)="selectPart($event, [i])">
+      <md-icon class="more" (click)="openPart($event, [i])">chevron_right</md-icon>
+      <md-icon class="less" (click)="openPart($event, [i])">expand_more</md-icon>
+      <md-icon class="no-child">none</md-icon>
+      <div class="part-title">{{part1.title}}</div>
     </button>
     <div class="level2" flex="100" layout="column" layout-align="start stretch">
-      <button class=""  [class.selected]="isSelected(i, j)" layout="row" layout-align="start stretch" *ngFor="let part2 of part1.parts; let j = index" (click)="selectPart($event, i, j)">
-        <div>{{part2.title}}</div>
+      <button class=""  [class.selected]="isSelected([i, j])" layout="row" layout-align="start stretch" *ngFor="let part2 of part1.parts; let j = index" (click)="selectPart($event, [i, j])">
+        <div class="part-title">{{part2.title}}</div>
       </button>
     </div>
   </div>

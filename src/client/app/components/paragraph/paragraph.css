@@ -2,6 +2,7 @@
   /*width: 100%;*/
   position: relative;
 }
+
 .paragraph .buttons {
   /*width: 10%;*/
   /*min-height: 10px;*/
@@ -9,6 +10,7 @@
   padding-right: 1%;
   padding-left: 1%;
 }
+
 .paragraph .content_box {
   width: 89%;
   /* min-height: 10px;*/
@@ -22,9 +24,11 @@
   -moz-box-shadow: 2px 2px 4px 0px rgba(0,0,0,0.4);
   box-shadow: 2px 2px 4px 0px rgba(0,0,0,0.4);*/
 }
+
 .paragraph .content {
   /*padding: 10px;*/
 }
+
 .paragraph:after {
   content: '';
   display: block;
@@ -34,6 +38,57 @@
 
 .paragraph-buttons {
   position: absolute;
-  right:0;
-  top:0;
+  right: 6px;
+  top: 0;
+  z-index: 20;
 }
+
+.paragraph-buttons .warning {
+  display: none;
+  position: absolute;
+  top: -0.8em;
+  left: 0.4em;
+  font-size: 3em;
+}
+
+.paragraph-buttons .md-warn .warning {
+  display: inherit;
+}
+
+.paragraph-buttons .material-icons {
+  font-size: 18px;
+}
+
+.paragraph-buttons md-icon {
+  width: 18px;
+  height: 18px;
+}
+
+.paragraph-buttons [md-icon-button] {
+  width: 30px;
+  height: 30px;
+  line-height: 18px;
+}
+
+.paragraph-buttons .add-paragraph-type {
+  display: none;
+  position: absolute;
+  top:  20px;
+}
+
+.paragraph-buttons.add-paragraph-clicked .add-paragraph-type {
+  display: inline-block;
+}
+.paragraph-buttons .add-paragraph-type.markdown{
+  right: 34px;
+}
+.paragraph-buttons .add-paragraph-type.question-check{
+  right: 59px;
+}
+.paragraph-buttons .add-paragraph-type.question-radio{
+  right: 84px;
+}
+.paragraph-buttons .add-paragraph-type.question-text{
+  right: 109px;
+}
+

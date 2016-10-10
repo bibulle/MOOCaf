@@ -41,6 +41,9 @@ md-content {
   display: block;
 }
 
+.class md-sidenav-layout {
+  overflow: visible;
+}
 .class .md-sidenav-content {
   overflow: inherit;
 }
@@ -54,6 +57,7 @@ button, input, select, textarea {
 textarea:focus, button:focus {
   outline: 0;
 }
+
 
 home, login, catalogue, class, progression {
   /*overflow: auto;*/
@@ -98,7 +102,9 @@ not-found {
   font-family: monospace;
   color: #555;
 }
-
+.paragraph .editor textarea {
+  min-height: 5em;
+}
 
 
 .md-display-1 {

@@ -37,7 +37,7 @@ export class IParagraph {
   constructor(document: {}) {
     _.merge(this, document);
 
-    if (!this.content) {
+    if (this.content == null) {
       this.content = new IParagraphContent();
     }
 

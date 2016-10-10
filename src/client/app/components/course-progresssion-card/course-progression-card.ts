@@ -74,7 +74,7 @@ export class CourseProgressionCardComponent {
 
   newTimeout;
   calcNew() {
-    this._courseService.calcBooleans(this.course);
+    CourseService.calcBooleans(this.course);
 
     if (this.course.dateSeen && this.course.new) {
       this.newTimeout = setTimeout(() =>
