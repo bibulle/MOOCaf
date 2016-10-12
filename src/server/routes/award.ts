@@ -91,7 +91,7 @@ function _fillAwardForUser(award: Award, user: User): Promise < Award > {
     });
 
     // work on the secret ones
-    if (award.secret && (award.limitCount > award.userCount)) {
+    if (!user.isAdmin && award.secret && (award.limitCount > award.userCount)) {
       award.imgPath="lock.svg";
       award.name = "? Secret ?";
       award.description = "Will still locked until you get it.";

@@ -910,7 +910,7 @@ function _fillCourseForUser(course: Course, user: User): Promise < Course > {
               p.userCheckOK = value.userCheckOK;
 
               // remove the answer to not spoil !!
-              if ((value.userCheckCount == null) || (value.userCheckCount < p.maxCheckCount)) {
+              if (!user.isAdmin && (value.userCheckCount == null) || (value.userCheckCount < p.maxCheckCount)) {
                 p.answer = null;
               }
             }
