@@ -26,42 +26,37 @@ awardRouter.route('/')
     debug("GET /awards");
     //debug("connected user : " + JSON.stringify(request['user']));
 
-    Award.find()
-      .then(awards => {
-        // Search the user
-        User.findById(request['user']["id"])
-          .then(user => {
-            //debug(user);
-            // fill each award with users values
-            var promises = _.map(awards,
-              a => {
-                return _fillAwardForUser(a, user)
-              });
-            Promise.all(promises)
-              .then(completedAwards => {
-                response.json({data: completedAwards})
-              })
-              .catch(err => {
-                console.log(err);
-                response.status(500).send("System error " + err);
-              });
-          })
-          .catch(err => {
-            //debug("find catch");
-            if (err == "WRONG_USER") {
-              response.status(401).send("WRONG_USER");
-            } else {
-              console.log(err);
-              response.status(500).send("System error " + err);
-            }
-          });
+    _respondWithAwardsList(request, response);
+  })
+  // ============================================
+  // update an award
+  // ============================================
+  .put((request: Request, response: Response) => {
+
+    var userId = request['user']["id"];
+
+    debug("PUT /awards");
+    //debug(request.body);
+
+    var award = new Award(request.body);
+    //debug(award);
+
+    // TODO : Add a check of user right
+
+    // Save the award
+    Award
+      .updateOrCreate(award)
+      .then(award => {
+        //debug(award);
+        _respondWithAwardsList(request, response);
       })
       .catch(err => {
-        //debug("find catch");
         console.log(err);
-        response.status(500).send("System error " + err);
+        response.status(500).json({status: 500, message: "System error " + err});
       });
-  });
+
+  })
+;
 
 /**
  * fill award with user data
@@ -92,7 +87,7 @@ function _fillAwardForUser(award: Award, user: User): Promise < Award > {
 
     // work on the secret ones
     if (!user.isAdmin && award.secret && (award.limitCount > award.userCount)) {
-      award.imgPath="lock.svg";
+      award.imgPath = "lock.svg";
       award.name = "? Secret ?";
       award.description = "Will still locked until you get it.";
     }
@@ -100,6 +95,44 @@ function _fillAwardForUser(award: Award, user: User): Promise < Award > {
     resolve(award);
 
   })
+}
+
+function _respondWithAwardsList(request: Request, response: Response) {
+  Award.find()
+    .then(awards => {
+      // Search the user
+      User.findById(request['user']["id"])
+        .then(user => {
+          //debug(user);
+          // fill each award with users values
+          var promises = _.map(awards,
+            a => {
+              return _fillAwardForUser(a, user)
+            });
+          Promise.all(promises)
+            .then(completedAwards => {
+              response.json({data: completedAwards})
+            })
+            .catch(err => {
+              console.log(err);
+              response.status(500).send("System error " + err);
+            });
+        })
+        .catch(err => {
+          //debug("find catch");
+          if (err == "WRONG_USER") {
+            response.status(401).send("WRONG_USER");
+          } else {
+            console.log(err);
+            response.status(500).send("System error " + err);
+          }
+        });
+    })
+    .catch(err => {
+      //debug("find catch");
+      console.log(err);
+      response.status(500).send("System error " + err);
+    });
 }
 
 export {awardRouter}

@@ -1,5 +1,18 @@
-<md-content class="awards" flex="100" layout="column" layout-align="start stretch">
+<md-content class="awards" flex="100" layout="column" layout-align="start stretch" [class.edited]="edited">
+
+  <div class="edit-awards-buttons">
+    <button md-icon-button (click)="addAward()" class="md-primary" *ngIf="edited"
+            title="Add an award">
+      <md-icon>add</md-icon>
+    </button>
+    <button md-icon-button (click)="toggleEditMode()" [class.md-accent]="edited" [class.md-primary]="!edited"
+            title="Edit awards">
+      <md-icon>edit</md-icon>
+    </button>
+  </div>
+
   <div class="award-list" layout="row" layout-align="start start" layout-wrap flex="100">
+
     <H2 flex="100">Award earned</H2>
     <div class="award earned" *ngFor="let award of awards" [class.finished]="award.userCount >= award.limitCount">
       <div class="badge" *ngIf="award.userCount >= award.limitCount" title="{{award.description}}" layout="row" layout-align="start-stretch">
@@ -8,8 +21,12 @@
         <div class="name" layout="row" layout-align="start center">
           <div flex="100">{{award.name}}</div>
         </div>
+        <div class="editor" [class.error]="award.editorInError">
+          <textarea [(ngModel)]="award.editableJson" (keyup)="editorChange(award)" (change)="editorChange(award)"></textarea>
+        </div>
       </div>
     </div>
+
     <H2 class="next" flex="100">Next ones</H2>
     <div class="award next" *ngFor="let award of awards" title="{{award.name}}" [class.finished]="award.userCount >= award.limitCount">
       <div class="badge" *ngIf="award.userCount < award.limitCount" title="{{award.description}} ({{100*award.userCount/award.limitCount | number:'1.0-0'}}%)" layout="row" layout-align="start-stretch">
@@ -17,6 +34,9 @@
         <md-icon class="over  level{{award.level}}" svgSrc="img/{{award.imgPath}}" [style]="award.clipping"></md-icon>
         <div class="name" layout="row" layout-align="start center">
           <div flex="100">{{award.name}}</div>
+        </div>
+        <div class="editor" [class.error]="award.editorInError">
+          <textarea [(ngModel)]="award.editableJson" (keyup)="editorChange(award)" (change)="editorChange(award)"></textarea>
         </div>
       </div>
     </div>

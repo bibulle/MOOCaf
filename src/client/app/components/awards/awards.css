@@ -1,3 +1,7 @@
+.awards {
+  position: relative;
+}
+
 .award-list {
   overflow: auto;
   width: 100%;
@@ -40,7 +44,7 @@ h2.next {
   left: 0;
 }
 .badge md-icon.under {
-  flex: 0 0 50%
+  flex: 0 0 10em
 }
 
 .badge .name {
@@ -51,4 +55,19 @@ h2.next {
 .badge .name div {
   font-size: 1.5em;
   margin: 0.5em;
+}
+
+.edit-awards-buttons {
+  position: absolute;
+  right:25px;
+  top:0;
+}
+
+.edited .badge {
+  width: 50em;
+}
+
+.editor {
+  min-height: 100%;
+  width: 30em;
 }
