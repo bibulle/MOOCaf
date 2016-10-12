@@ -181,13 +181,13 @@ export class UserService {
   /**
    * save award
    * @param award
-   * @returns {Promise<TResult>}
+   * @returns {Promise<Award>}
    */
-  saveAward(award: Award): Promise<Award[]> {
-    return new Promise<Award[]>((resolve, reject) => {
+  saveAward(award: Award): Promise<Award> {
+    return new Promise<Award>((resolve, reject) => {
       this.authHttp
         .put(environment.serverUrl + 'api/awards', award, {headers: contentHeaders})
-        .map((res: Response) => res.json().data as Award[])
+        .map((res: Response) => res.json().data as Award)
         .subscribe(
           data => {
             //console.log(data);

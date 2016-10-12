@@ -23,10 +23,13 @@ awardRouter.use(jwtCheck);
 // ====================================
 awardRouter.route('/')
   .get((request: Request, response: Response) => {
+
+    var userId = request['user']["id"];
+
     debug("GET /awards");
     //debug("connected user : " + JSON.stringify(request['user']));
 
-    _respondWithAwardsList(request, response);
+    _respondWithAwardsList(userId, response);
   })
   // ============================================
   // update an award
@@ -48,7 +51,7 @@ awardRouter.route('/')
       .updateOrCreate(award)
       .then(award => {
         //debug(award);
-        _respondWithAwardsList(request, response);
+        _respondWithAward(userId, award, response);
       })
       .catch(err => {
         console.log(err);
@@ -97,11 +100,34 @@ function _fillAwardForUser(award: Award, user: User): Promise < Award > {
   })
 }
 
-function _respondWithAwardsList(request: Request, response: Response) {
+function _respondWithAward(userId: string, award: Award, response: Response) {
+  User.findById(userId)
+    .then(user => {
+      _fillAwardForUser(award, user)
+        .then(completedAward => {
+          response.json({data: completedAward})
+        })
+        .catch(err => {
+          console.log(err);
+          response.status(500).send("System error " + err);
+        });
+    })
+    .catch(err => {
+      //debug("find catch");
+      if (err == "WRONG_USER") {
+        response.status(401).send("WRONG_USER");
+      } else {
+        console.log(err);
+        response.status(500).send("System error " + err);
+      }
+    });
+}
+
+function _respondWithAwardsList(userId: string, response: Response) {
   Award.find()
     .then(awards => {
       // Search the user
-      User.findById(request['user']["id"])
+      User.findById(userId)
         .then(user => {
           //debug(user);
           // fill each award with users values

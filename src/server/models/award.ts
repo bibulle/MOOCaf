@@ -52,7 +52,7 @@ export default class Award extends IAward {
           awards => {
             //debug(awards);
             resolve(awards.map(f => {
-              f.id = f._id.toString();
+              f.id = f['_id'].toString();
               return f;
             }));
           },
@@ -73,7 +73,7 @@ export default class Award extends IAward {
       //debug("updateOrCreate  id:" + award["_id"]);
       if (award["_id"]) {
         award.updated = new Date();
-        modelIAward.findByIdAndUpdate(award["_id"], award)
+        modelIAward.findByIdAndUpdate(award["_id"], award, {'new': true})
           .lean()
           .exec()
           .then(
