@@ -116,7 +116,8 @@ not-found {
 
 
 .badge .background {
-  fill: rgb(13, 44, 84);
+  /*fill: rgb(13, 44, 84);*/
+  fill: #0D47A1;
 }
 
 .badge .level0 .foreground {
