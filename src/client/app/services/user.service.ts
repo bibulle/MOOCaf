@@ -1,13 +1,14 @@
 // user.service.ts
 import {Injectable} from '@angular/core';
-import {Http} from '@angular/http';
+import {Http, Response} from '@angular/http';
 import {contentHeaders} from "../common/headers";
-import {JwtHelper, tokenNotExpired} from "angular2-jwt";
+import {JwtHelper, tokenNotExpired, AuthHttp} from "angular2-jwt";
 import {Observable, BehaviorSubject} from 'rxjs/Rx';
 import {Logger} from "angular2-logger/app/core/logger";
 import {User} from "../models/user";
 import {environment} from "../environment";
 import {NotificationService} from "./notification.service";
+import {Award} from "../models/award";
 
 @Injectable()
 export class UserService {
@@ -23,6 +24,7 @@ export class UserService {
   private keyTokenId = 'id_token';
 
   constructor(private http: Http,
+              private authHttp: AuthHttp,
               private _logger: Logger,
               private _notifService: NotificationService) {
 
@@ -37,10 +39,17 @@ export class UserService {
     });
   }
 
+  /**
+   * Get the observable on user changes
+   * @returns {Observable<User>}
+   */
   userObservable(): Observable<User> {
     return this.userSubject.distinctUntilKeyChanged('username');
   }
 
+  /**
+   * Check authentication locally (is the jwt not expired)
+   */
   checkAuthent() {
     //console.log("checkAuthent");
     var jwt = localStorage.getItem(this.keyTokenId);
@@ -62,6 +71,12 @@ export class UserService {
 
   }
 
+  /**
+   * Login (and get a JWT token)
+   * @param username
+   * @param password
+   * @returns {Promise<void>}
+   */
   login(username, password): Promise<void> {
     let body = JSON.stringify({username, password});
 
@@ -94,6 +109,9 @@ export class UserService {
     });
   }
 
+  /**
+   * Logout (just remove the JWT token)
+   */
   logout() {
     localStorage.removeItem(this.keyTokenId);
     this.loggedIn = false;
@@ -101,15 +119,15 @@ export class UserService {
   }
 
 
-  // isLoggedIn() {
-  //   this.checkAuthent();
-  //   return this.loggedIn;
-  // }
-  //
-  // getUser() {
-  //   return this.user;
-  // }
-
+  /**
+   * Signup (create a new account)
+   * @param username
+   * @param password
+   * @param firstname
+   * @param lastname
+   * @param email
+   * @returns {Promise<void>}
+   */
   signup(username, password, firstname, lastname, email): Promise<void> {
     let body = JSON.stringify({username, password, firstname, lastname, email});
 
@@ -123,7 +141,7 @@ export class UserService {
         .timeout(3000, new Error('Connection timeout exceeded'))
         .toPromise()
         .then(res => {
-          this._notifService.success("User created", "the user "+firstname+" "+lastname+' has been created');
+          this._notifService.success("User created", "the user " + firstname + " " + lastname + ' has been created');
           resolve();
         })
         .catch(error => {
@@ -134,4 +152,57 @@ export class UserService {
         })
     });
   }
+
+  /**
+   * Get the list a awards
+   * @returns {Promise<Award[]>}
+   */
+  getAwards() {
+    return new Promise<Award[]>((resolve, reject) => {
+      this.authHttp.get(environment.serverUrl + 'api/awards', {headers: contentHeaders})
+        .map((res: Response) => res.json().data as Award[])
+        .subscribe(
+          data => {
+            //console.log(data);
+            resolve(data);
+          },
+          err => {
+            if (err._body && (err._body == "WRONG_USER")) {
+              this.logout();
+              reject("You have been disconnected");
+            } else {
+              reject(err);
+            }
+          },
+        );
+    })
+  }
+
+  /**
+   * save award
+   * @param award
+   * @returns {Promise<Award>}
+   */
+  saveAward(award: Award): Promise<Award> {
+    return new Promise<Award>((resolve, reject) => {
+      this.authHttp
+        .put(environment.serverUrl + 'api/awards', award, {headers: contentHeaders})
+        .map((res: Response) => res.json().data as Award)
+        .subscribe(
+          data => {
+            //console.log(data);
+            resolve(data);
+          },
+          err => {
+            if (err._body && (err._body == "WRONG_USER")) {
+              this.logout();
+              reject("You have been disconnected");
+            } else {
+              reject(err);
+            }
+          },
+        );
+    });
+  }
+
 }

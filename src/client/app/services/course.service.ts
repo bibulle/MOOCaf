@@ -63,27 +63,32 @@ export class CourseService {
    * get the courses for the connected user
    *      The Courses, the progression, favorite and interest of the user
    * @param currentOnly (should only return the "current" course ... thestarted and not yet finished)
+   * @param progressOnly (should only return the "progress" course ... thestarted and finished or not)
    * @returns {Promise<Course[]>}
    */
-  getCourses(currentOnly = false): Promise<Course[]> {
+  getCourses(currentOnly = false, progressOnly = false): Promise<Course[]> {
     return new Promise<Course[]>((resolve, reject) => {
-        this.authHttp.get(this.coursesUrl + "?currentOnly=" + currentOnly)
-          .map((res: Response) => res.json().data as Course[])
-          .subscribe(
-            data => {
-              //console.log(data);
-              data = data.map(course => {
-                CourseService.retrieveDates(course);
-                CourseService.calcBooleans(course);
-                return course
-              });
-              //console.log(data);
-              resolve(data);
-            },
-            err => {
-              reject(err);
-            },
-          )
+        if (currentOnly && progressOnly) {
+          reject("System error : You should choose only once")
+        } else {
+          this.authHttp.get(this.coursesUrl + "?currentOnly=" + currentOnly+ "&progressOnly=" + progressOnly)
+            .map((res: Response) => res.json().data as Course[])
+            .subscribe(
+              data => {
+                //console.log(data);
+                data = data.map(course => {
+                  CourseService.retrieveDates(course);
+                  CourseService.calcBooleans(course);
+                  return course
+                });
+                //console.log(data);
+                resolve(data);
+              },
+              err => {
+                reject(err);
+              },
+            );
+        }
       }
     )
   }
@@ -298,13 +303,15 @@ export class CourseService {
    * add course paragraph
    * @param courseId
    * @param srcSelectedParaNums
+   * @param type
+   * @param subType
    * @returns {Promise<CoursePart>}
    */
   addParagraph(courseId: string, srcSelectedParaNums: number[], type: ParagraphType, subType: ParagraphContentType): Promise<CoursePart> {
 
     let url = `${this.coursesUrl}/${courseId}/para/${srcSelectedParaNums}/add`;
     return this.authHttp
-      .put(url, {type: type, subType:subType}, {headers: contentHeaders})
+      .put(url, {type: type, subType: subType}, {headers: contentHeaders})
       .toPromise()
       .then(res => {
         //console.log(res);
@@ -422,8 +429,8 @@ export class CourseService {
    * Methode to update the new value of the course
    * @param course
    */
-  static calcBooleans(course:Course) {
-    course.new = ((course.dateSeen == null) || ((new Date().getTime() - course.dateSeen.getTime()) < 1000*60));
+  static calcBooleans(course: Course) {
+    course.new = ((course.dateSeen == null) || ((new Date().getTime() - course.dateSeen.getTime()) < 1000 * 60));
     course.done = ((course.dateFollowed != null) && (course.dateFollowedEnd != null));
     course.inProgress = ((course.dateFollowed != null) && (course.dateFollowedEnd == null));
   }

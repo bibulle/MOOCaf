@@ -16,6 +16,7 @@ export class LayoutAlignDirective{
   @HostBinding('class.layout-align-space-around-center')  get layout6() {return this.layoutAlign == 'space-around center'}
   @HostBinding('class.layout-align-space-between')        get layout7() {return this.layoutAlign == 'space-between'}
   @HostBinding('class.layout-align-space-between-center') get layout8() {return this.layoutAlign == 'space-between center'}
+  @HostBinding('class.layout-align-start-start')          get layout9() {return this.layoutAlign == 'start start'}
 
   constructor() {
     //console.log("---------------");

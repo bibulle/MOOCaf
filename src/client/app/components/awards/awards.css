@@ -1,0 +1,24 @@
+.awards {
+  position: relative;
+}
+
+.award-list {
+  overflow: auto;
+  width: 100%;
+}
+
+.award {
+  border: 1px solid #CCC;
+  margin: 5px;
+  padding: 0.5em;
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+  border-radius: 3px;
+}
+
+.edit-awards-buttons {
+  position: absolute;
+  right:25px;
+  top:0;
+}
+

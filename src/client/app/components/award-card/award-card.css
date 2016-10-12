@@ -1,0 +1,42 @@
+h2.next {
+  padding-top: 2em;
+}
+
+.badge {
+  width: 20em;
+  height: 10em;
+
+  position: relative;
+}
+
+.badge md-icon {
+  width: 10em;
+  height: 10em;
+}
+.badge md-icon.over {
+  position: absolute;
+  top:0;
+  left: 0;
+}
+.badge md-icon.under {
+  flex: 0 0 10em
+}
+
+.badge .name {
+  width: 10em;
+  height: 10em;
+}
+
+.badge .name div {
+  font-size: 1.5em;
+  margin: 0.5em;
+}
+
+.edited.badge {
+  width: 50em;
+}
+
+.editor {
+  min-height: 100%;
+  width: 30em;
+}

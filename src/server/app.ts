@@ -9,11 +9,11 @@ var debug = require('debug')('server:server');
 var warn = require('debug')('server:warn');
 
 import mongoose from './models/db';
+
 import {loginRouter} from "./routes/login";
-import {protectedRouter} from "./routes/protected";
-import {anonymousRouter} from "./routes/anonymous";
 import {paragraphRouter} from "./routes/paragraph";
 import {courseRouter} from "./routes/course";
+import {awardRouter} from "./routes/award";
 
 
 // Init Db access
@@ -40,15 +40,13 @@ app.use(bodyParser.json());
 
 // api routes
 //noinspection TypeScriptValidateTypes
-app.use("/api/random-quote", anonymousRouter);
-//noinspection TypeScriptValidateTypes
-app.use("/api/protected", protectedRouter);
+app.use("/users", loginRouter);
 //noinspection TypeScriptValidateTypes
 app.use("/api/paragraph", paragraphRouter);
 //noinspection TypeScriptValidateTypes
 app.use("/api/course", courseRouter);
 //noinspection TypeScriptValidateTypes
-app.use("/users", loginRouter);
+app.use("/api/awards", awardRouter);
 
 //app.use('/client', express.static(join(__dirname, '../client')));
 

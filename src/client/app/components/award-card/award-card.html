@@ -1,0 +1,10 @@
+<div class="badge" title="{{award.description}} ({{100*award.userCount/award.limitCount | number:'1.0-0'}}%)" layout="row" layout-align="start-stretch" [class.edited]="edited">
+  <md-icon class="under level{{award.level}}" svgSrc="img/{{award.imgPath}}"></md-icon>
+  <md-icon class="over  level{{award.level}}" svgSrc="img/{{award.imgPath}}" [style]="clippingZone"></md-icon>
+  <div class="name" layout="row" layout-align="start center">
+    <div flex="100">{{award.name}}</div>
+  </div>
+  <div class="editor" [class.error]="editorInError">
+    <textarea [(ngModel)]="editableJson" (keyup)="editorChange()" (change)="editorChange()"></textarea>
+  </div>
+</div>

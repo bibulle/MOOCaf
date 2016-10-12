@@ -1,3 +1,4 @@
+import {Award} from "./award";
 
 export class User {
 
@@ -8,6 +9,8 @@ export class User {
   lastname: string;
   email: string;
 
+  awards: Award[]
+
   constructor(options) {
 
 
@@ -17,6 +20,8 @@ export class User {
     this.firstname = options.firstname;
     this.lastname = options.lastname;
     this.email = options.email;
+
+    this.awards = options.awards;
 
   }
 
