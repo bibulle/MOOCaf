@@ -14,31 +14,11 @@
   <div class="award-list" layout="row" layout-align="start start" layout-wrap flex="100">
 
     <H2 flex="100">Award earned</H2>
-    <div class="award earned" *ngFor="let award of awards" [class.finished]="award.userCount >= award.limitCount">
-      <div class="badge" *ngIf="award.userCount >= award.limitCount" title="{{award.description}}" layout="row" layout-align="start-stretch">
-        <md-icon class="under level{{award.level}}" svgSrc="img/{{award.imgPath}}"></md-icon>
-        <md-icon class="over  level{{award.level}}" svgSrc="img/{{award.imgPath}}"></md-icon>
-        <div class="name" layout="row" layout-align="start center">
-          <div flex="100">{{award.name}}</div>
-        </div>
-        <div class="editor" [class.error]="award.editorInError">
-          <textarea [(ngModel)]="award.editableJson" (keyup)="editorChange(award)" (change)="editorChange(award)"></textarea>
-        </div>
-      </div>
-    </div>
+    <award-card class="award earned" *ngFor="let award of awardsEarned" [class.finished]="award.userCount >= award.limitCount" [edited]="edited" [award]="award">
+    </award-card>
 
     <H2 class="next" flex="100">Next ones</H2>
-    <div class="award next" *ngFor="let award of awards" title="{{award.name}}" [class.finished]="award.userCount >= award.limitCount">
-      <div class="badge" *ngIf="award.userCount < award.limitCount" title="{{award.description}} ({{100*award.userCount/award.limitCount | number:'1.0-0'}}%)" layout="row" layout-align="start-stretch">
-        <md-icon class="under level{{award.level}}" svgSrc="img/{{award.imgPath}}"></md-icon>
-        <md-icon class="over  level{{award.level}}" svgSrc="img/{{award.imgPath}}" [style]="award.clipping"></md-icon>
-        <div class="name" layout="row" layout-align="start center">
-          <div flex="100">{{award.name}}</div>
-        </div>
-        <div class="editor" [class.error]="award.editorInError">
-          <textarea [(ngModel)]="award.editableJson" (keyup)="editorChange(award)" (change)="editorChange(award)"></textarea>
-        </div>
-      </div>
-    </div>
+    <award-card class="award next"   *ngFor="let award of awardsNotEarned" [class.finished]="award.userCount >= award.limitCount"  [edited]="edited" [award]="award">
+    </award-card>
   </div>
 </md-content>
