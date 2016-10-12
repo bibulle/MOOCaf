@@ -1,8 +1,7 @@
 import Mongoose = require("mongoose");
 import * as _ from 'lodash';
 import UserCourse = require("./UserCourse");
-import Course from "./course";
-var Schema = Mongoose.Schema;
+import UserAward = require("./UserAward");
 
 var debug = require('debug')('server:model:user');
 
@@ -21,10 +20,11 @@ class IUser {
   updated: Date;
 
   courses: { [id: string]: UserCourse };
+  awards: { [id: string]: UserAward };
 
   /**
    * Constructor
-   * @param mongoose.Document<IUser>
+   * @param document
    */
   constructor(document: {}) {
     _.merge(this, document);
@@ -94,7 +94,7 @@ class User extends IUser {
 
   /**
    * Constructor
-   * @param mongoose.Document<IUser>
+   * @param document
    */
   constructor(document: {}) {
     super(document);
@@ -144,15 +144,19 @@ class User extends IUser {
         .exec()
         .then(
           user => {
-            user.id = user._id.toString();
+            if (!user) {
+              reject("WRONG_USER");
+            } else {
+              user.id = user._id.toString();
 
-            this._fillUserWithUserCourses(user)
-              .then(user => {
-                resolve(user);
-              })
-              .catch(err => {
-                reject(err);
-              });
+              this._fillUser(user)
+                .then(user => {
+                  resolve(user);
+                })
+                .catch(err => {
+                  reject(err);
+                });
+            }
 
           },
           err => {
@@ -170,7 +174,7 @@ class User extends IUser {
           user => {
             if (user) {
               user.id = user._id.toString();
-              this._fillUserWithUserCourses(user)
+              this._fillUser(user)
                 .then(user => {
                   resolve(user);
                 })
@@ -199,7 +203,7 @@ class User extends IUser {
           .then(
             user => {
               user.id = user._id.toString();
-              this._fillUserWithUserCourses(user)
+              this._fillUser(user)
                 .then(user => {
                   resolve(user);
                 })
@@ -216,7 +220,7 @@ class User extends IUser {
             user => {
               user = user['_doc'];
               user.id = user._id.toString();
-              this._fillUserWithUserCourses(user)
+              this._fillUser(user)
                 .then(user => {
                   resolve(user);
                 })
@@ -232,12 +236,62 @@ class User extends IUser {
   }
 
 
+  /**
+   * Fill the user with other data
+   * @param user
+   * @returns {Promise<IUser>}
+   * @private
+   */
+  static _fillUser(user: User): Promise < User > {
+    return new Promise < IUser >((resolve, reject) => {
+      this._fillUserWithUserCourses(user)
+        .then(user => {
+          this._fillUserWithUserAwards(user)
+            .then(user => {
+              resolve(user);
+            })
+            .catch(err => {
+              reject(err);
+            });
+
+        })
+        .catch(err => {
+          reject(err);
+        });
+    });
+  }
+
+  /**
+   * Fill the user with user course values
+   * @param user
+   * @returns {Promise<IUser>}
+   * @private
+   */
   static _fillUserWithUserCourses(user: User): Promise < User > {
     return new Promise < IUser >((resolve, reject) => {
       UserCourse.findByUserId(user['id'])
         .then(courses => {
-            user.courses = courses;
-            resolve(user);
+          user.courses = courses;
+          resolve(user);
+        })
+        .catch(err => {
+          reject(err);
+        });
+    });
+  }
+
+  /**
+   * Fill a user with awards values
+   * @param user
+   * @returns {Promise<IUser>}
+   * @private
+   */
+  static _fillUserWithUserAwards(user: User): Promise < User > {
+    return new Promise < IUser >((resolve, reject) => {
+      UserAward.findByUserId(user['id'])
+        .then(awards => {
+          user.awards = awards;
+          resolve(user);
         })
         .catch(err => {
           reject(err);

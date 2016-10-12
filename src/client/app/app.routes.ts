@@ -9,6 +9,7 @@ import {AuthGuard} from "./common/auth.guard";
 import {ClassComponent} from "./components/class/class";
 import {SignupComponent} from "./components/signup/signup";
 import {ProgressionComponent} from "./components/progression/progression";
+import {AwardsComponent} from "./components/awards/awards";
 
 //import { PageComponent } from './page.home/page';
 
@@ -17,14 +18,15 @@ import {ProgressionComponent} from "./components/progression/progression";
 
 export const routes = [
   { path: '',             redirectTo: '/home', pathMatch: 'full' },
-  { path: 'home',         component: HomeComponent,     terminal: true },
+  { path: 'home',         component: HomeComponent,         terminal: true },
   { path: 'login',        component: LoginComponent },
-  { path: 'catalogue',    component: CatalogueComponent, canActivate: [AuthGuard] },
-  { path: 'classes',      component: ClassComponent, canActivate: [AuthGuard] },
-  { path: 'classes/:id',  component: ClassComponent, canActivate: [AuthGuard] },
-  { path: 'progress',     component: ProgressionComponent, canActivate: [AuthGuard] },
-  // Show the 404 page for any routes that don't exist.
+  { path: 'catalogue',    component: CatalogueComponent,    canActivate: [AuthGuard] },
+  { path: 'classes',      component: ClassComponent,        canActivate: [AuthGuard] },
+  { path: 'classes/:id',  component: ClassComponent,        canActivate: [AuthGuard] },
+  { path: 'progress',     component: ProgressionComponent,  canActivate: [AuthGuard] },
+  { path: 'awards',       component: AwardsComponent,       canActivate: [AuthGuard] },
   { path: 'signup',       component: SignupComponent },
+  // Show the 404 page for any routes that don't exist.
   { path: '**',           component: NotFoundComponent }
 ];
 

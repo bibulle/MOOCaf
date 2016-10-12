@@ -59,7 +59,7 @@ textarea:focus, button:focus {
 }
 
 
-home, login, catalogue, class, progression {
+home, login, catalogue, class, progression, awards {
   /*overflow: auto;*/
 
   -webkit-box-flex: 1;
@@ -112,6 +112,44 @@ not-found {
   font-weight: 400;
   line-height: 40px;
 }
+
+
+
+.badge .background {
+  fill: rgb(13, 44, 84);
+}
+
+.badge .level0 .foreground {
+  fill: rgb(205, 127, 50);
+  stroke: rgb(205, 127, 50);
+}
+.badge .level1 .foreground {
+  fill: rgb(192, 192, 192);
+  stroke: rgb(192, 192, 192);
+}
+.badge .level2 .foreground {
+  fill: rgb(255, 215, 0);
+  stroke: rgb(255, 215, 0);
+}
+.badge .foreground {
+  fill: rgb(255, 215, 0);
+  stroke: rgb(255, 215, 0);
+}
+
+.badge .under .background {
+  fill: #e8e8e8;
+}
+
+.badge .under .foreground {
+  fill: #f2f2f2;
+  stroke: #f2f2f2;
+}
+
+
+
+
+
+
 
 .layout-align,
 .layout-align-start-stretch {

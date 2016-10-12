@@ -51,6 +51,7 @@ import {ScrollDirective} from "./directives/scroll-directive";
 import {ScrollService} from "./services/scroll.service";
 import {VisibleDirective} from "./directives/visible-directive";
 import {CourseProgressionCardComponent} from "./components/course-progresssion-card/course-progression-card";
+import {AwardsComponent} from "./components/awards/awards";
 
 let loggerProvider = LOG_LOGGER_PROVIDERS;
 if (environment.production) {
@@ -95,6 +96,7 @@ if (environment.production) {
     ParagraphMarkdownComponent,
     ParagraphFormComponent,
     ProgressionComponent,
+    AwardsComponent,
     FlexDirective,
     LayoutDirective,
     LayoutAlignDirective,

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<svg viewBox="55 63 174 174" xmlns="http://www.w3.org/2000/svg">
+  <ellipse cx="141.505" cy="150.644" rx="79.533" ry="79.533" class="background"/>
+  <path d="M 227.911 150.644 C 227.911 198.09 189.446 236.554 142 236.554 C 94.552 236.554 56.088 198.09 56.088 150.644 C 56.088 103.197 94.552 64.733 142 64.733 C 189.446 64.733 227.911 103.197 227.911 150.644 Z M 142 74.225 C 99.794 74.225 65.58 108.439 65.58 150.644 C 65.58 192.848 99.794 227.062 142 227.062 C 184.204 227.062 218.419 192.848 218.419 150.644 C 218.419 108.439 184.204 74.225 142 74.225 Z" class="foreground"/>
+  <rect x="104.455" y="104.946" width="74.446" height="91.18" class="foreground" style="fill: none; stroke-linejoin: round; stroke-width: 7;"/>
+  <path d="M 113.681 128.117 L 132.56 128.117 M 141.142 126.4 L 148.008 132.408 L 165.6 113.742" class="foreground" style="fill: none; stroke-width: 6; stroke-linecap: round; stroke-linejoin: round;"/>
+  <path d="M 113.681 155.256 L 132.56 155.256 M 141.142 153.539 L 148.008 159.547 L 165.6 140.881" class="foreground" style="fill: none; stroke-width: 6; stroke-linecap: round; stroke-linejoin: round;"/>
+  <path d="M 113.681 182.289 L 132.56 182.289 M 141.142 180.572 L 148.008 186.58 L 165.6 167.914" class="foreground" style="fill: none; stroke-width: 6; stroke-linecap: round; stroke-linejoin: round;"/>
+</svg>

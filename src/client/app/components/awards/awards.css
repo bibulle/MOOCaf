@@ -1,0 +1,54 @@
+.award-list {
+  overflow: auto;
+  width: 100%;
+}
+
+.award {
+  border: 1px solid #CCC;
+  margin: 5px;
+  padding: 0.5em;
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+  border-radius: 3px;
+}
+
+.award.next.finished, .award.earned {
+  display: none;
+}
+.award.earned.finished, .award.next {
+  display: inherit;
+}
+
+h2.next {
+  padding-top: 2em;
+}
+
+.badge {
+  width: 20em;
+  height: 10em;
+
+  position: relative;
+}
+
+.badge md-icon {
+  width: 10em;
+  height: 10em;
+}
+.badge md-icon.over {
+  position: absolute;
+  top:0;
+  left: 0;
+}
+.badge md-icon.under {
+  flex: 0 0 50%
+}
+
+.badge .name {
+  width: 10em;
+  height: 10em;
+}
+
+.badge .name div {
+  font-size: 1.5em;
+  margin: 0.5em;
+}
