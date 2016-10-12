@@ -1,7 +1,7 @@
 import Mongoose = require("mongoose");
 import * as _ from 'lodash';
 import UserCourse = require("./UserCourse");
-import UserAward = require("./UserAward");
+import UserStats = require("./UserStats");
 
 var debug = require('debug')('server:model:user');
 
@@ -20,7 +20,7 @@ class IUser {
   updated: Date;
 
   courses: { [id: string]: UserCourse };
-  awards: { [id: string]: UserAward };
+  stats: { [statKey: string]: UserStats };
 
   /**
    * Constructor
@@ -70,11 +70,11 @@ var _schema: Mongoose.Schema = new Mongoose.Schema({
   },
   created: {
     type: Date,
-    default: Date.now
+    'default': Date.now
   },
   updated: {
     type: Date,
-    default: Date.now
+    'default': Date.now
   }
 
 })
@@ -281,16 +281,16 @@ class User extends IUser {
   }
 
   /**
-   * Fill a user with awards values
+   * Fill a user with stats values
    * @param user
    * @returns {Promise<IUser>}
    * @private
    */
   static _fillUserWithUserAwards(user: User): Promise < User > {
     return new Promise < IUser >((resolve, reject) => {
-      UserAward.findByUserId(user['id'])
-        .then(awards => {
-          user.awards = awards;
+      UserStats.findByUserId(user['id'])
+        .then(stats => {
+          user.stats = stats;
           resolve(user);
         })
         .catch(err => {

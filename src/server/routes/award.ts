@@ -1,11 +1,8 @@
-import {Router, Request, Response, NextFunction} from "express";
-import {sign} from "jsonwebtoken";
+import {Router, Request, Response} from "express";
 import * as jwt from "express-jwt";
-import {randomBytes} from "crypto";
-import {pbkdf2} from "crypto";
 import * as _ from 'lodash';
 
-import {secret, length} from "../config";
+import {secret} from "../config";
 import User = require("../models/user");
 import Award from "../models/award";
 
@@ -34,6 +31,7 @@ awardRouter.route('/')
         // Search the user
         User.findById(request['user']["id"])
           .then(user => {
+            //debug(user);
             // fill each award with users values
             var promises = _.map(awards,
               a => {
@@ -76,14 +74,14 @@ function _fillAwardForUser(award: Award, user: User): Promise < Award > {
   //debug("_fillAwardForUser : " + award["id"] + ", " + user["id"]);
 
 
-  return new Promise < Award >((resolve, reject) => {
+  return new Promise < Award >((resolve) => {
 
     // define the default values
     var userCount = 0;
 
     // get values from the user
-    if (user && user.awards && user.awards[award["id"]]) {
-      userCount = user.awards[award["id"]].userCount;
+    if (user && user.stats && user.stats[award.statKey.toString()]) {
+      userCount = user.stats[award.statKey.toString()].userCount;
     }
 
     // assign the values into the award

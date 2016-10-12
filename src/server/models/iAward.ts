@@ -1,7 +1,8 @@
 import * as _ from "lodash";
 import Mongoose = require("mongoose");
-import {ICoursePart, schemaCoursePart} from "./iCoursePart";
-//var Schema = Mongoose.Schema;
+
+import {StatKey} from "./eStatKey";
+
 var debug = require('debug')('server:model:iaward');
 
 export class IAward {
@@ -21,6 +22,9 @@ export class IAward {
   // Is it a secret (should display a lock until you get it)
   secret: boolean;
 
+  // On what stat are we going to count
+  statKey: StatKey;
+
   // How many things are needed to get the award ?
   limitCount: number;
 
@@ -32,7 +36,7 @@ export class IAward {
 
   /**
    * Constructor
-   * @param mongoose.Document<ICourse>
+   * @param document
    */
   constructor(document: {}) {
     _.merge(this, document);
@@ -67,19 +71,23 @@ var _schema: Mongoose.Schema = new Mongoose.Schema({
     },
     secret: {
       type: Boolean,
-      default: false
+      'default': false
+    },
+    statKey: {
+      type: String,
+      require: true
     },
     limitCount: {
       type: Number,
-      default: 1
+      'default': 1
     },
     created: {
       type: Date,
-      default: Date.now
+      'default': Date.now
     },
     updated: {
       type: Date,
-      default: Date.now
+      'default': Date.now
     }
   })
     .pre('save', function (next) {

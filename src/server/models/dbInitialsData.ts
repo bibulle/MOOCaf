@@ -9,7 +9,8 @@ var async = require('async');
 var debug = require('debug')('server:model:init-db');
 import * as _ from 'lodash';
 import Award from "./award";
-import UserAward = require("./UserAward");
+import UserStats = require("./UserStats");
+import {StatKey} from "./eStatKey";
 
 
 export class DbInitialsData {
@@ -336,6 +337,7 @@ export class DbInitialsData {
                     description: 'You have finished 5 courses',
                     level: 0,
                     imgPath: 'cup_5.svg',
+                    statKey: StatKey.COUNT_FINISHED_COURSE,
                     limitCount: 5
                   },
                   {
@@ -343,6 +345,7 @@ export class DbInitialsData {
                     description: 'You have finished 10 courses',
                     level: 1,
                     imgPath: 'cup_10.svg',
+                    statKey: StatKey.COUNT_FINISHED_COURSE,
                     limitCount: 10
                   },
                   {
@@ -350,6 +353,7 @@ export class DbInitialsData {
                     description: 'You have finished 25 courses',
                     level: 2,
                     imgPath: 'cup_25.svg',
+                    statKey: StatKey.COUNT_FINISHED_COURSE,
                     limitCount: 25
                   },
                   {
@@ -357,6 +361,7 @@ export class DbInitialsData {
                     description: 'You have participated in a survey',
                     level: 1,
                     imgPath: 'question.svg',
+                    statKey: StatKey.COUNT_FINISHED_SURVEY,
                     limitCount: 1
                   },
                   {
@@ -364,6 +369,7 @@ export class DbInitialsData {
                     description: 'You have finished a course in less than 24 hours',
                     level: 2,
                     imgPath: 'time.svg',
+                    statKey: StatKey.MIN_FINISHED_COURSE_DURATION,
                     limitCount: 1
                   },
                   {
@@ -371,6 +377,7 @@ export class DbInitialsData {
                     description: 'You have created 1 course',
                     level: 1,
                     imgPath: 'teacher_1.svg',
+                    statKey: StatKey.COUNT_CREATED_COURSE,
                     limitCount: 1
                   },
                   {
@@ -378,6 +385,7 @@ export class DbInitialsData {
                     description: 'You have created 5 courses',
                     level: 2,
                     imgPath: 'teacher_2.svg',
+                    statKey: StatKey.COUNT_CREATED_COURSE,
                     limitCount: 5
                   },
                   {
@@ -385,6 +393,7 @@ export class DbInitialsData {
                     description: 'You had a 100% good answer',
                     level: 1,
                     imgPath: 'counter.svg',
+                    statKey: StatKey.MAX_PERCENT_GOOD_ANSWER,
                     limitCount: 1
                   },
                   {
@@ -392,6 +401,7 @@ export class DbInitialsData {
                     description: 'You have learned in 5 different categories',
                     level: 2,
                     imgPath: 'book.svg',
+                    statKey: StatKey.COUNT_FINISHED_COURSE_CATEGORIES,
                     limitCount: 5
                   },
                   {
@@ -399,6 +409,7 @@ export class DbInitialsData {
                     description: 'You start 5 courses in parallel',
                     level: 0,
                     imgPath: 'thinking.svg',
+                    statKey: StatKey.MAX_COUNT_STARTED_COURSE_IN_PARALLEL,
                     secret: true,
                     limitCount: 1
                   },
@@ -407,6 +418,7 @@ export class DbInitialsData {
                     description: 'Got all the awards... You should consider working in TECC-SE ?',
                     level: 3,
                     imgPath: 'platinum.svg',
+                    statKey: StatKey.COUNT_AWARDS,
                     limitCount: 10
                   }
                 ];
@@ -547,76 +559,48 @@ export class DbInitialsData {
           // ---------------------------
           // Insert User values for a course
           // ---------------------------
-          UserAward
+          UserStats
             .count()
             .then(count => {
               if (count === 0) {
-                // get course ids
-                Award
-                  .find()
-                  .then(awards => {
-                    let awardsIds = {};
-                    _.forEach(
-                      awards,
-                      a=> {
-                        awardsIds[a.name] = a['id'];
-                      }
-                    );
-                    //debug(awardsIds);
-
-                    // get the user Id
+                // get the user Id
                     User
                       .find()
                       .then(users => {
                         let userId = users[0]['id'];
 
-                        var userAwards = [
+                        var userStats = [
                           {
                             userId: userId,
-                            awardId: awardsIds['Apprentice'],
+                            statKey: StatKey.COUNT_FINISHED_COURSE,
                             userCount: 7,
                           },
                           {
                             userId: userId,
-                            awardId: awardsIds['Schollar'],
-                            userCount: 7,
-                          },
-                          {
-                            userId: userId,
-                            awardId: awardsIds['Expert'],
-                            userCount: 7,
-                          },
-                          {
-                            userId: userId,
-                            awardId: awardsIds['Good boy'],
+                            statKey: StatKey.COUNT_FINISHED_SURVEY,
                             userCount: 1,
                           },
                           {
                             userId: userId,
-                            awardId: awardsIds['Teacher'],
+                            statKey: StatKey.COUNT_CREATED_COURSE,
                             userCount: 2,
                           },
                           {
                             userId: userId,
-                            awardId: awardsIds['Chairman'],
-                            userCount: 2,
-                          },
-                          {
-                            userId: userId,
-                            awardId: awardsIds['Platinum'],
+                            statKey: StatKey.COUNT_AWARDS,
                             userCount: 3,
                           },
                         ];
 
                         async.each(
-                          userAwards,
+                          userStats,
                           (o, callback) => {
-                            var userAward = new UserAward(o);
+                            var userAward = new UserStats(o);
                             //console.log(user);
-                            UserAward
+                            UserStats
                               .updateOrCreate(userAward)
                               .then(userAward => {
-                                debug("UserAward created : " + JSON.stringify(userAward));
+                                debug("UserStats created : " + JSON.stringify(userAward));
                                 callback(null);
                               })
                               .catch(err => {
@@ -631,7 +615,6 @@ export class DbInitialsData {
                       });
 
 
-                  });
               } else {
                 callback();
               }

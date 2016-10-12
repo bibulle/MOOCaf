@@ -1,13 +1,13 @@
 import Mongoose = require("mongoose");
 import * as _ from 'lodash';
-var Schema = Mongoose.Schema;
+import {StatKey} from "./eStatKey";
 
-var debug = require('debug')('server:model:user-award');
+var debug = require('debug')('server:model:user-stats');
 
-class IUserAward {
+class IUserStats {
 
   userId: string;
-  awardId: string;
+  statKey: StatKey;
 
   userCount: number;
 
@@ -20,7 +20,7 @@ class IUserAward {
   }
 }
 
-interface IUserAwardModel extends IUserAward, Mongoose.Document {
+interface IUserStatsModel extends IUserStats, Mongoose.Document {
 }
 
 /**
@@ -32,6 +32,10 @@ var _schema: Mongoose.Schema = new Mongoose.Schema({
   userCount: {
     type: Number,
     'default': 0
+  },
+  statKey: {
+    type: String,
+    require: true
   },
   created: {
     type: Date,
@@ -51,13 +55,13 @@ var _schema: Mongoose.Schema = new Mongoose.Schema({
  * @type {Model<IUser>}
  * @private
  */
-var _model = Mongoose.model < IUserAwardModel >('UserAward', _schema);
+var _model = Mongoose.model < IUserStatsModel >('UserStats', _schema);
 
-class UserAward extends IUserAward {
+class UserStats extends IUserStats {
 
   /**
    * Constructor
-   * @param mongoose.Document<IUser>
+   * @param document
    */
   constructor(document: {}) {
     super(document);
@@ -73,20 +77,19 @@ class UserAward extends IUserAward {
     })
   };
 
-  static findByUserId(userId: string): Promise < { [id: string]: UserAward } > {
-    return new Promise < { [id: string]: UserAward } >((resolve, reject) => {
+  static findByUserId(userId: string): Promise < { [id: string]: UserStats } > {
+    return new Promise < { [id: string]: UserStats } >((resolve, reject) => {
       _model.find({userId: userId})
         .lean()
         .exec()
         .then(
-          (userAwards: UserAward[]) => {
-
+          (userStats: UserStats[]) => {
             var result = {};
 
-            userAwards.forEach(uc => {
+            userStats.forEach(uc => {
               uc['id'] = uc['_id'].toString();
 
-              result[uc.awardId] = uc;
+              result[uc.statKey.toString()] = uc;
             });
 
             resolve(result);
@@ -97,9 +100,9 @@ class UserAward extends IUserAward {
     })
   }
 
-  static findByUserIdAwardId(userId: string, awardId: string): Promise < UserAward > {
-    return new Promise < IUserAward >((resolve, reject) => {
-      _model.findOne({userId: userId, awardId: awardId})
+  static findByUserIdStatKey(userId: string, statKey: string): Promise < UserStats > {
+    return new Promise < IUserStats >((resolve, reject) => {
+      _model.findOne({userId: userId, statKey: statKey})
         .lean()
         .exec()
         .then(
@@ -116,12 +119,12 @@ class UserAward extends IUserAward {
     })
   }
 
-  static updateOrCreate(userAward: UserAward): Promise < UserAward > {
-    return new Promise<IUserAward>((resolve, reject) => {
+  static updateOrCreate(userStat: UserStats): Promise < UserStats > {
+    return new Promise<IUserStats>((resolve, reject) => {
       var obj = {};
-      _.assign(obj, userAward);
+      _.assign(obj, userStat);
       _model.findOneAndUpdate(
-        {userId: userAward.userId, awardId: userAward.awardId},
+        {userId: userStat.userId, statKey: userStat.statKey},
         {$set: obj},
         {upsert: true, 'new': true},
         //{upsert: true, 'new': true, setDefaultsOnInsert: true},
@@ -139,4 +142,4 @@ class UserAward extends IUserAward {
 }
 
 
-export = UserAward;
+export = UserStats;
