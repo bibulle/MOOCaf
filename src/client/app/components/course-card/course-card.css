@@ -96,11 +96,13 @@
   text-shadow: 1px 0px 2px rgba(0, 0, 0, 1);
 }
 .banner.done {
-  background: #1a2dff;
+  background: #1976D2;
+  color: #FFF;
+  text-shadow: none;
 }
 .banner.progress {
-  background: #1cff55;
-  color: #000;
+  background: #009688;
+  color: #FFF;
   text-shadow: none;
 }
 .banner.new {

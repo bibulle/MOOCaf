@@ -5,6 +5,8 @@ import * as _ from 'lodash';
 import {secret} from "../config";
 import User = require("../models/user");
 import Award from "../models/award";
+import {IAward} from "../models/iAward";
+import {StatKey} from "../models/eStatKey";
 
 var debug = require('debug')('server:route:award');
 
@@ -58,8 +60,67 @@ awardRouter.route('/')
         response.status(500).json({status: 500, message: "System error " + err});
       });
 
-  })
-;
+  });
+
+awardRouter.route('/add')
+// ============================================
+// add an award
+// ============================================
+  .put((request: Request, response: Response) => {
+
+    var userId = request['user']["id"];
+
+    debug("PUT /add");
+    //debug(request.body);
+
+    // TODO : Add a check of user right
+
+    // Create a new Award
+    let award = new IAward({
+      name: "A new award",
+      description: "",
+      level: 3,
+      imgPath: "lock.svg",
+      statKey: StatKey.COUNT_FINISHED_COURSE,
+      limitCount: 0,
+      secret: false
+    });
+
+    // save it
+    Award.updateOrCreate(award)
+      .then(() => {
+        _respondWithAwardsList(userId, response);
+      })
+      .catch(err => {
+        console.log(err);
+        response.status(500).json({status: 500, message: "System error " + err});
+      });
+  });
+
+awardRouter.route('/:award_id')
+// ============================================
+// remove an award
+// ============================================
+  .delete((request: Request, response: Response) => {
+
+    var awardId = request.params.award_id;
+    var userId = request['user']["id"];
+
+    debug("DELETE /"+awardId);
+
+    // TODO : Add a check of user right
+
+    // remove it
+    Award.remove(awardId)
+      .then(() => {
+        _respondWithAwardsList(userId, response);
+      })
+      .catch(err => {
+        console.log(err);
+        response.status(500).json({status: 500, message: "System error " + err});
+      });
+  });
+
 
 /**
  * fill award with user data

@@ -4,14 +4,13 @@ import {join} from "path";
 import * as favicon from "serve-favicon";
 var bodyParser = require('body-parser');
 
-import {json, urlencoded} from "body-parser";
+import {json} from "body-parser";
 var debug = require('debug')('server:server');
 var warn = require('debug')('server:warn');
 
 import mongoose from './models/db';
 
 import {loginRouter} from "./routes/login";
-import {paragraphRouter} from "./routes/paragraph";
 import {courseRouter} from "./routes/course";
 import {awardRouter} from "./routes/award";
 
@@ -19,7 +18,7 @@ import {awardRouter} from "./routes/award";
 // Init Db access
 mongoose.init()
   .catch(err => {
-    debug("Starting error... stopping");
+    debug("Starting error... stopping ("+err+")");
     process.exit(-1);
   });
 
@@ -42,11 +41,9 @@ app.use(bodyParser.json());
 //noinspection TypeScriptValidateTypes
 app.use("/users", loginRouter);
 //noinspection TypeScriptValidateTypes
-app.use("/api/paragraph", paragraphRouter);
-//noinspection TypeScriptValidateTypes
 app.use("/api/course", courseRouter);
 //noinspection TypeScriptValidateTypes
-app.use("/api/awards", awardRouter);
+app.use("/api/award", awardRouter);
 
 //app.use('/client', express.static(join(__dirname, '../client')));
 
@@ -60,7 +57,7 @@ if (app.get("env") === "development") {
   app.use(express.static(join(__dirname, '../../node_modules')));
 
   //noinspection TypeScriptValidateTypes
-  app.use(function (err, req: express.Request, res: express.Response, next: express.NextFunction) {
+  app.use(function (err, req: express.Request, res: express.Response, next) {
     res.status(err.status || 500);
     res.json({
       error: err,
@@ -71,19 +68,18 @@ if (app.get("env") === "development") {
 
 // wrong /api => 404
 //noinspection TypeScriptValidateTypes
-app.use('/api', function (req: express.Request, res: express.Response, next) {
+app.use('/api', function (req: express.Request, res: express.Response) {
   //warn("Error 404 Not found : "+req.baseUrl+" "+req.url);
   res.redirect('/404' + req.originalUrl)
 });
 //noinspection TypeScriptValidateTypes
-app.use('/users', function (req: express.Request, res: express.Response, next) {
+app.use('/users', function (req: express.Request, res: express.Response) {
   //warn("Error 404 Not found : "+req.baseUrl+" "+req.originalUrl);
   res.redirect('/404' + req.originalUrl)
 });
 //noinspection TypeScriptValidateTypes
 app.use('/404', function (req: express.Request, res: express.Response, next) {
-
-  res.status(404)
+  res.status(404);
 
   warn("Error 404 Not found : " + req.url);
 
@@ -106,14 +102,14 @@ app.use('/404', function (req: express.Request, res: express.Response, next) {
 
 // other foward to angular
 //noinspection TypeScriptValidateTypes
-app.use(function (req: express.Request, res: express.Response, next) {
+app.use(function (req: express.Request, res: express.Response) {
   res.status(200).sendFile(join(join(__dirname, 'public', 'index.html')));
 });
 
 // production error handler
 // no stacktrace leaked to user
 //noinspection TypeScriptValidateTypes
-app.use(function (err: any, req: express.Request, res: express.Response, next: express.NextFunction) {
+app.use(function (err: any, req: express.Request, res: express.Response) {
   debug(err);
   res.status(err.status || 500);
   res.json({

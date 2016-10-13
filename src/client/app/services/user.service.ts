@@ -34,7 +34,7 @@ export class UserService {
     this.userSubject = new BehaviorSubject<User>(this.user);
 
     let timer = Observable.timer(3 * 1000, 3 * 1000);
-    timer.subscribe(t => {
+    timer.subscribe(() => {
       this.checkAuthent();
     });
   }
@@ -140,7 +140,7 @@ export class UserService {
         )
         .timeout(3000, new Error('Connection timeout exceeded'))
         .toPromise()
-        .then(res => {
+        .then(() => {
           this._notifService.success("User created", "the user " + firstname + " " + lastname + ' has been created');
           resolve();
         })
@@ -159,7 +159,7 @@ export class UserService {
    */
   getAwards() {
     return new Promise<Award[]>((resolve, reject) => {
-      this.authHttp.get(environment.serverUrl + 'api/awards', {headers: contentHeaders})
+      this.authHttp.get(environment.serverUrl + 'api/award', {headers: contentHeaders})
         .map((res: Response) => res.json().data as Award[])
         .subscribe(
           data => {
@@ -186,7 +186,7 @@ export class UserService {
   saveAward(award: Award): Promise<Award> {
     return new Promise<Award>((resolve, reject) => {
       this.authHttp
-        .put(environment.serverUrl + 'api/awards', award, {headers: contentHeaders})
+        .put(environment.serverUrl + 'api/award', award, {headers: contentHeaders})
         .map((res: Response) => res.json().data as Award)
         .subscribe(
           data => {
@@ -204,5 +204,59 @@ export class UserService {
         );
     });
   }
+
+  /**
+   * add an award
+   * @returns {Promise<Award[]>}
+   */
+  addAward(): Promise<Award[]> {
+
+    return new Promise<Award[]>((resolve, reject) => {
+      this.authHttp
+        .put(environment.serverUrl + 'api/award/add', {}, {headers: contentHeaders})
+        .map((res: Response) => res.json().data as Award[])
+        .subscribe(
+          data => {
+            //console.log(data);
+            resolve(data);
+          },
+          err => {
+            if (err._body && (err._body == "WRONG_USER")) {
+              this.logout();
+              reject("You have been disconnected");
+            } else {
+              reject(err);
+            }
+          });
+    })
+  }
+
+  /**
+   * remove an award
+   * @param award
+   * @returns {Promise<Award[]>}
+   */
+  deleteAward(award: Award): Promise<Award[]> {
+
+    return new Promise<Award[]>((resolve, reject) => {
+      this.authHttp
+        .delete(`${environment.serverUrl}api/award/${award.id}`, {headers: contentHeaders})
+        .map((res: Response) => res.json().data as Award[])
+        .subscribe(
+          data => {
+            //console.log(data);
+            resolve(data);
+          },
+          err => {
+            if (err._body && (err._body == "WRONG_USER")) {
+              this.logout();
+              reject("You have been disconnected");
+            } else {
+              reject(err);
+            }
+          });
+    })
+  }
+
 
 }

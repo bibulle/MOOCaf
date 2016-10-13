@@ -15,6 +15,7 @@ import {IParagraph} from "../models/iParagraph";
 import UserCourse = require("../models/UserCourse");
 import {ParagraphType} from "../models/eParagraphType";
 import {ParagraphContentType} from "../models/eParagraphContentType";
+import {ICourse} from "../models/iCourse";
 
 
 const courseRouter: Router = Router();
@@ -49,7 +50,7 @@ courseRouter.route('/')
     }
 
     Course.find()
-      .then(courses => {
+      .then((courses: ICourse[]) => {
         //debug(courses);
         // Search the user
         User.findById(request['user']["id"])
@@ -58,7 +59,7 @@ courseRouter.route('/')
             var promises = _.map(courses,
               p => _fillCourseForUser(p, user));
             Promise.all(promises)
-              .then(completedCourses => {
+              .then((completedCourses: ICourse[]) => {
 
                 // filter if we only need the currents one
                 if (currentOnly) {
@@ -137,7 +138,7 @@ courseRouter.route('/:course_id/userValues')
 // ====================================
   .put((request: Request, response: Response) => {
 
-    var courseId = request.params.course_id;
+    var courseId = request.params['course_id'];
 
     debug("PUT /" + courseId + "/userValues");
 
@@ -152,7 +153,7 @@ courseRouter.route('/:course_id/userValues')
     // debug(userCourse);
 
     UserCourse.updateOrCreate(userCourse)
-      .then(userCourse => {
+      .then(() => {
         // console.log("2-----");
         // debug(userCourse);
 
@@ -172,8 +173,8 @@ courseRouter.route('/:course_id/para/:paragraphNums')
 // ============================================
   .put((request: Request, response: Response) => {
 
-    var courseId = request.params.course_id;
-    var paragraphNums = JSON.parse("[" + request.params.paragraphNums + "]");
+    var courseId = request.params['course_id'];
+    var paragraphNums = JSON.parse("[" + request.params['paragraphNums'] + "]");
     var userId = request['user']["id"];
 
     debug("PUT /" + courseId + "/para/" + paragraphNums);
@@ -201,14 +202,13 @@ courseRouter.route('/:course_id/para/:paragraphNums')
           part.contents.splice(paraIndex, 0, paragraph);
         } else {
           // replace the para
-          // TODO : should be moved later ?
           part.contents.splice(paraIndex, 1, paragraph);
         }
 
         // Save the course
         Course
           .updateOrCreate(course)
-          .then(course => {
+          .then(() => {
             //debug(course);
             _respondWithCourseParagraph(courseId, paragraph['_id'], paragraphNums, userId, response);
           })
@@ -225,12 +225,12 @@ courseRouter.route('/:course_id/para/:paragraphNums')
 
   })
   // ============================================
-  // delete a course paragraph
+  // remove a course paragraph
   // ============================================
   .delete((request: Request, response: Response) => {
 
-    var courseId = request.params.course_id;
-    var paragraphNums = JSON.parse("[" + request.params.paragraphNums + "]");
+    var courseId = request.params['course_id'];
+    var paragraphNums = JSON.parse("[" + request.params['paragraphNums'] + "]");
     var userId = request['user']["id"];
 
     debug("DEL /" + courseId + "/para/" + paragraphNums);
@@ -257,7 +257,7 @@ courseRouter.route('/:course_id/para/:paragraphNums')
         // Save the course
         Course
           .updateOrCreate(course)
-          .then(course => {
+          .then(() => {
             //debug(course);
             _respondWithCoursePart(courseId, null, paragraphNums.slice(0, -1), userId, response);
           })
@@ -280,14 +280,14 @@ courseRouter.route('/:course_id/para/:srcParaNums/move')
 // ============================================
   .put((request: Request, response: Response) => {
 
-    var courseId = request.params.course_id;
-    var srcParaNums = JSON.parse("[" + request.params.srcParaNums + "]");
+    var courseId = request.params['course_id'];
+    var srcParaNums = JSON.parse("[" + request.params['srcParaNums'] + "]");
     var userId = request['user']["id"];
 
     debug("PUT /" + courseId + "/para/" + srcParaNums + "/move");
     //debug(request.body);
 
-    var trgParaNum = request.body.trgParaNum;
+    var trgParaNum = request.body['trgParaNum'];
     //debug(trgParaNum);
 
     // TODO : Add a check of user right
@@ -318,7 +318,7 @@ courseRouter.route('/:course_id/para/:srcParaNums/move')
         // Save the course
         Course
           .updateOrCreate(course)
-          .then(course => {
+          .then(() => {
             //debug(course);
             _respondWithCoursePart(courseId, null, srcParaNums.slice(0, -1), userId, response);
           })
@@ -341,15 +341,15 @@ courseRouter.route('/:course_id/para/:trgParaNums/add')
 // ============================================
   .put((request: Request, response: Response) => {
 
-    var courseId = request.params.course_id;
-    var trgParaNums = JSON.parse("[" + request.params.trgParaNums + "]");
+    var courseId = request.params['course_id'];
+    var trgParaNums = JSON.parse("[" + request.params['trgParaNum'] + "]");
     var userId = request['user']["id"];
 
     debug("PUT /" + courseId + "/para/" + trgParaNums + "/add");
     //debug(request.body);
 
     let type:ParagraphType = request.body.type;
-    let subType:ParagraphContentType = request.body.subType;
+    let subType:ParagraphContentType = request.body['subType'];
 
     // TODO : Add a check of user right
 
@@ -427,7 +427,7 @@ courseRouter.route('/:course_id/para/:trgParaNums/add')
         // Save the course
         Course
           .updateOrCreate(course)
-          .then(course => {
+          .then(() => {
             //debug(course);
             _respondWithCoursePart(courseId, null, trgParaNums.slice(0, -1), userId, response);
           })
@@ -450,8 +450,8 @@ courseRouter.route('/:course_id/part/:partNums')
 // ============================================
   .put((request: Request, response: Response) => {
 
-    var courseId = request.params.course_id;
-    var partNums = JSON.parse("[" + request.params.partNums + "]");
+    var courseId = request.params['course_id'];
+    var partNums = JSON.parse("[" + request.params['partNums'] + "]");
     var userId = request['user']["id"];
 
     debug("PUT /" + courseId + "/part/" + partNums);
@@ -481,14 +481,13 @@ courseRouter.route('/:course_id/part/:partNums')
           parentParts.splice(partIndex, 0, coursePart);
         } else {
           // replace the page
-          // TODO : should be moved later ?
           parentParts.splice(partIndex, 1, coursePart);
         }
 
         // Save the course
         Course
           .updateOrCreate(course)
-          .then(course => {
+          .then(() => {
             //debug(course);
             _respondWithCoursePart(courseId, coursePart['_id'], partNums, userId, response);
           })
@@ -505,12 +504,12 @@ courseRouter.route('/:course_id/part/:partNums')
 
   })
   // ============================================
-  // delete a course part (a page)
+  // remove a course part (a page)
   // ============================================
   .delete((request: Request, response: Response) => {
 
-    var courseId = request.params.course_id;
-    var partNums = JSON.parse("[" + request.params.partNums + "]");
+    var courseId = request.params['course_id'];
+    var partNums = JSON.parse("[" + request.params['partNums'] + "]");
     var userId = request['user']["id"];
 
     debug("DEL /" + courseId + "/part/" + partNums);
@@ -537,7 +536,7 @@ courseRouter.route('/:course_id/part/:partNums')
         // Save the course
         Course
           .updateOrCreate(course)
-          .then(course => {
+          .then(() => {
             //debug(course);
             _respondWithCourse(courseId, userId, response);
           })
@@ -560,8 +559,8 @@ courseRouter.route('/:course_id/part/:srcPartNums/move')
 // ============================================
   .put((request: Request, response: Response) => {
 
-    var courseId = request.params.course_id;
-    var srcPartNums = JSON.parse("[" + request.params.srcPartNums + "]");
+    var courseId = request.params['course_id'];
+    var srcPartNums = JSON.parse("[" + request.params['srcPartNums'] + "]");
     var userId = request['user']["id"];
 
     debug("PUT /" + courseId + "/part/" + srcPartNums + "/move");
@@ -602,7 +601,7 @@ courseRouter.route('/:course_id/part/:srcPartNums/move')
         // Save the course
         Course
           .updateOrCreate(course)
-          .then(course => {
+          .then(() => {
             //debug(course);
             _respondWithCourse(courseId, userId, response);
           })
@@ -625,8 +624,8 @@ courseRouter.route('/:course_id/part/:trgPartNums/add')
 // ============================================
   .put((request: Request, response: Response) => {
 
-    var courseId = request.params.course_id;
-    var trgPartNums = JSON.parse("[" + request.params.trgPartNums + "]");
+    var courseId = request.params['course_id'];
+    var trgPartNums = JSON.parse("[" + request.params['trgPartNums'] + "]");
     var userId = request['user']["id"];
 
     debug("PUT /" + courseId + "/part/" + trgPartNums + "/add");
@@ -670,7 +669,7 @@ courseRouter.route('/:course_id/part/:trgPartNums/add')
         // Save the course
         Course
           .updateOrCreate(course)
-          .then(course => {
+          .then(() => {
             //debug(course);
             _respondWithCourse(courseId, userId, response);
           })
@@ -693,8 +692,8 @@ courseRouter.route('/:course_id/:paragraph_id/userChoice')
 // ============================================
   .put((request: Request, response: Response) => {
 
-    var courseId = request.params.course_id;
-    var paragraphId = request.params.paragraph_id;
+    var courseId = request.params['course_id'];
+    var paragraphId = request.params['paragraph_id'];
     var userId = request['user']["id"];
 
     debug("PUT /" + courseId + "/" + paragraphId + "/userChoice");
@@ -704,8 +703,7 @@ courseRouter.route('/:course_id/:paragraph_id/userChoice')
     //debug(userChoice);
 
     // Search the userValues
-    UserCourse
-      .findByUserIdCourseId(userId, courseId)
+    UserCourse.findByUserIdCourseId(userId, courseId)
       .then(userCourse => {
         //debug(userCourse);
         //debug(userCourse.userChoices[paragraphId]);
@@ -728,7 +726,7 @@ courseRouter.route('/:course_id/:paragraph_id/userChoice')
 
         UserCourse
           .updateOrCreate(userCourse)
-          .then(userCourse => {
+          .then(() => {
             //debug(userCourse);
             _respondWithCourseParagraph(courseId, paragraphId, null, userId, response);
           })
@@ -751,8 +749,8 @@ courseRouter.route('/:course_id/:paragraph_id/userChoice/check')
 // ============================================
   .put((request: Request, response: Response) => {
 
-    var courseId = request.params.course_id;
-    var paragraphId = request.params.paragraph_id;
+    var courseId = request.params['course_id'];
+    var paragraphId = request.params['paragraph_id'];
     var userId = request['user']["id"];
 
     debug("PUT /" + courseId + "/" + paragraphId + "/userChoice/check'");
@@ -803,7 +801,7 @@ courseRouter.route('/:course_id/:paragraph_id/userChoice/check')
                 // save it to Db
                 UserCourse
                   .updateOrCreate(userCourse)
-                  .then(userCourse => {
+                  .then(() => {
                     //debug(userCourse);
 
                     _respondWithCourseParagraph(courseId, paragraphId, null, request['user']["id"], response);
@@ -878,7 +876,7 @@ function _fillCourseForUser(course: Course, user: User): Promise < Course > {
       // define the default values
       var isFavorite = false;
       var interest = 0;
-      var dateSeen = null;
+      var dateSeen:Date = null;
       var isNew = null;
       var dateFollowed = null;
       var dateFollowedEnd = null;
@@ -942,7 +940,7 @@ function _fillCourseForUser(course: Course, user: User): Promise < Course > {
  * @param response
  * @private
  */
-function _respondWithCourse(courseId: string, userId: string, response) {
+function _respondWithCourse(courseId: string, userId: string, response: Response) {
   //debug("_respondWithCourse : " + courseId + ", " + userId);
   Course.findById(courseId)
     .then(course => {
@@ -984,7 +982,7 @@ function _respondWithCourse(courseId: string, userId: string, response) {
  * @param response
  * @private
  */
-function _respondWithCourseParagraph(courseId: string, paragraphId: string, paragraphNums: number[], userId: string, response) {
+function _respondWithCourseParagraph(courseId: string, paragraphId: string, paragraphNums: number[], userId: string, response: Response) {
   //debug("_respondWithCourse : " + courseId + ", " + userId);
   Course.findById(courseId)
     .then(course => {
@@ -1038,7 +1036,7 @@ function _respondWithCourseParagraph(courseId: string, paragraphId: string, para
  * @param response
  * @private
  */
-function _respondWithCoursePart(courseId: string, coursePartId: string, partNums: number[], userId: string, response) {
+function _respondWithCoursePart(courseId: string, coursePartId: string, partNums: number[], userId: string, response: Response) {
   //debug("_respondWithCoursePart : " + courseId + ", " + coursePartId+ ", " + partNums);
   Course.findById(courseId)
     .then(course => {

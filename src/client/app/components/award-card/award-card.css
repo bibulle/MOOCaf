@@ -1,7 +1,3 @@
-h2.next {
-  padding-top: 2em;
-}
-
 .badge {
   width: 20em;
   height: 10em;
@@ -9,7 +5,7 @@ h2.next {
   position: relative;
 }
 
-.badge md-icon {
+.badge md-icon.over, .badge md-icon.under {
   width: 10em;
   height: 10em;
 }
@@ -39,4 +35,38 @@ h2.next {
 .editor {
   min-height: 100%;
   width: 30em;
+}
+
+.award-card-buttons {
+  position: absolute;
+  right: 6px;
+  top: 0;
+  z-index: 20;
+}
+
+.award-card-buttons .warning {
+  display: none;
+  position: absolute;
+  top: -0.8em;
+  left: 0.4em;
+  font-size: 3em;
+}
+
+.award-card-buttons .md-warn .warning {
+  display: inherit;
+}
+
+.award-card-buttons .material-icons {
+  font-size: 18px;
+}
+
+.award-card-buttons md-icon {
+  width: 18px;
+  height: 18px;
+}
+
+.award-card-buttons [md-icon-button] {
+  width: 30px;
+  height: 30px;
+  line-height: 18px;
 }

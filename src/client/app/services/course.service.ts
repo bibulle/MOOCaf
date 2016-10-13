@@ -201,7 +201,7 @@ export class CourseService {
   }
 
   /**
-   * delete course part
+   * remove course part
    * @param courseId
    * @param srcSelectedPartNums
    * @returns {Promise<Course>}
@@ -281,7 +281,7 @@ export class CourseService {
   }
 
   /**
-   * delete course paragraph
+   * remove course paragraph
    * @param courseId
    * @param srcSelectedParaNums
    * @returns {Promise<CoursePart>}
