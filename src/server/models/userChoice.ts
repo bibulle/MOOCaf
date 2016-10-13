@@ -1,4 +1,6 @@
 import Mongoose = require("mongoose");
+var Schema = Mongoose.Schema;
+
 import * as _ from 'lodash';
 
 var debug = require('debug')('server:model:userChoice');
@@ -48,7 +50,7 @@ var _schema: Mongoose.Schema = new Mongoose.Schema({
     default: null
   },
   userChoice: {
-    type: Mongoose.Schema.Types.Mixed,
+    type: Schema.Types.Mixed,
     require: true
   },
   created: {

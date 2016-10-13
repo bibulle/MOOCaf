@@ -11,7 +11,6 @@ var warn = require('debug')('server:warn');
 import mongoose from './models/db';
 
 import {loginRouter} from "./routes/login";
-import {paragraphRouter} from "./routes/paragraph";
 import {courseRouter} from "./routes/course";
 import {awardRouter} from "./routes/award";
 
@@ -41,8 +40,6 @@ app.use(bodyParser.json());
 // api routes
 //noinspection TypeScriptValidateTypes
 app.use("/users", loginRouter);
-//noinspection TypeScriptValidateTypes
-app.use("/api/paragraph", paragraphRouter);
 //noinspection TypeScriptValidateTypes
 app.use("/api/course", courseRouter);
 //noinspection TypeScriptValidateTypes
