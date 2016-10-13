@@ -202,7 +202,6 @@ courseRouter.route('/:course_id/para/:paragraphNums')
           part.contents.splice(paraIndex, 0, paragraph);
         } else {
           // replace the para
-          // TODO : should be moved later ?
           part.contents.splice(paraIndex, 1, paragraph);
         }
 
@@ -482,7 +481,6 @@ courseRouter.route('/:course_id/part/:partNums')
           parentParts.splice(partIndex, 0, coursePart);
         } else {
           // replace the page
-          // TODO : should be moved later ?
           parentParts.splice(partIndex, 1, coursePart);
         }
 
