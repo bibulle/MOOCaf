@@ -52,7 +52,7 @@ export default class Award extends IAward {
           awards => {
             //debug(awards);
             resolve(awards.map(f => {
-              f.id = f['_id'].toString();
+              f['id'] = f['_id'].toString();
               return f;
             }));
           },
@@ -67,6 +67,11 @@ export default class Award extends IAward {
     })
   }
 
+  /**
+   * update or create an awrd (depending of id or not)
+   * @param award
+   * @returns {Promise<IAward>}
+   */
   static updateOrCreate(award: IAward): Promise < IAward > {
     return new Promise < IAward >((resolve, reject) => {
 
@@ -97,6 +102,31 @@ export default class Award extends IAward {
             });
       }
 
+    })
+  }
+
+  /**
+   * Delete an awards
+   * @param awardId
+   * @returns {Promise<void>}
+   */
+  static remove(awardId: string): Promise < void > {
+    //debug("remove");
+    return new Promise < void >((resolve, reject) => {
+
+      // Do the search
+      modelIAward.remove({_id: awardId})
+        .lean()
+        .exec()
+        .then(
+          () => {
+            resolve();
+          },
+          err => {
+            debug("remove " + err);
+            reject(err);
+          })
+      ;
     })
   }
 

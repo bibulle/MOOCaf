@@ -1,5 +1,4 @@
 import {Component} from "@angular/core";
-import {Subject} from "rxjs/Subject";
 import {Logger} from "angular2-logger/core";
 import {NotificationService} from "../../services/notification.service";
 import {UserService} from "../../services/user.service";
@@ -14,7 +13,9 @@ import {Award} from "../../models/award";
 
 export class AwardsComponent {
 
+  //noinspection JSMismatchedCollectionQueryUpdate
   private awardsEarned: Award[];
+  //noinspection JSMismatchedCollectionQueryUpdate
   private awardsNotEarned: Award[];
 
   edited: boolean = false;
@@ -28,13 +29,7 @@ export class AwardsComponent {
 
     this._userService.getAwards()
       .then(awards => {
-
-        this.awardsEarned = this._sort(awards.filter(a => {
-          return a.limitCount <= a.userCount;
-        }));
-        this.awardsNotEarned = this._sort(awards.filter(a => {
-          return a.limitCount >  a.userCount;
-        }));
+        this._filterAwards(awards);
 
       })
       .catch(err => {
@@ -48,7 +43,54 @@ export class AwardsComponent {
     this.edited = !this.edited;
   }
 
+  /**
+   * Add an award
+   * @private
+   */
+  addAward() {
+    this._userService.addAward()
+      .then(awards => {
+        this._notificationService.message("All your modifications have been saved...");
 
+        this.onAwardsChange(awards);
+
+      })
+      .catch(error => {
+        this._logger.error(error);
+        this._notificationService.error("System error !!", "Error saving you changes !!\n\t" + (error.message || error.error || error));
+      });
+  }
+
+  /**
+   * THe award list has changed
+   * @param awards
+   */
+  onAwardsChange(awards: Award[]) {
+    this._filterAwards(awards);
+
+  }
+
+
+  /**
+   * Filter awards between the two lists (earned an d next)
+   * @param awards
+   * @private
+   */
+  private _filterAwards(awards: Award[]) {
+    this.awardsEarned = this._sort(awards.filter(a => {
+      return a.limitCount <= a.userCount;
+    }));
+    this.awardsNotEarned = this._sort(awards.filter(a => {
+      return a.limitCount > a.userCount;
+    }));
+  }
+
+  /**
+   * Sort the awards
+   * @param awards
+   * @returns {Award[]}
+   * @private
+   */
   private _sort(awards: Award[]) {
     return awards.sort((a, b) => {
 

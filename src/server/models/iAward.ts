@@ -59,7 +59,7 @@ var _schema: Mongoose.Schema = new Mongoose.Schema({
     },
     description: {
       type: String,
-      require: true
+      require: false
     },
     level: {
       type: Number,

@@ -14,11 +14,11 @@
   <div class="award-list" layout="row" layout-align="start start" layout-wrap flex="100">
 
     <H2 flex="100">Award earned</H2>
-    <award-card class="award earned" *ngFor="let award of awardsEarned" [class.finished]="award.userCount >= award.limitCount" [edited]="edited" [award]="award">
+    <award-card class="award earned" *ngFor="let award of awardsEarned"    [class.finished]="award.userCount >= award.limitCount" [edited]="edited" [award]="award" (notifyAwardsChange)='onAwardsChange($event)'>
     </award-card>
 
     <H2 class="next" flex="100">Next ones</H2>
-    <award-card class="award next"   *ngFor="let award of awardsNotEarned" [class.finished]="award.userCount >= award.limitCount"  [edited]="edited" [award]="award">
+    <award-card class="award next"   *ngFor="let award of awardsNotEarned" [class.finished]="award.userCount >= award.limitCount"  [edited]="edited" [award]="award" (notifyAwardsChange)='onAwardsChange($event)'>
     </award-card>
   </div>
 </md-content>

@@ -1,4 +1,4 @@
-import {Component, Input} from "@angular/core";
+import {Component, Input, Output, EventEmitter} from "@angular/core";
 import {Subject} from "rxjs/Subject";
 import {Logger} from "angular2-logger/core";
 import {NotificationService} from "../../services/notification.service";
@@ -23,10 +23,17 @@ export class AwardCardComponent {
 
   clippingZone: SafeStyle;
 
+
+  @Output()
+  notifyAwardsChange: EventEmitter<Award[]> = new EventEmitter<Award[]>();
+
+
+  private deleteAwardClicked: boolean = false;
+
   editableJson: string;
   editorInError = false;
 
-  // The previous Json value
+  // The previous Json value for the editor
   private _previousJson = "";
 
 
@@ -152,6 +159,32 @@ export class AwardCardComponent {
 
     }
   }
+
+  /**
+   * remove this award
+   */
+  deleteAward() {
+    if (!this.deleteAwardClicked) {
+      this.deleteAwardClicked = true;
+      setTimeout(() => {
+          this.deleteAwardClicked = false;
+        },
+        3000);
+    } else {
+      this.deleteAwardClicked = false;
+      this._userService.deleteAward(this.award)
+        .then(awards => {
+          this._notificationService.message("All your modifications have been saved...");
+
+          this.notifyAwardsChange.emit(awards)
+        })
+        .catch(error => {
+          this._logger.error(error);
+          this._notificationService.error("System error !!", "Error saving you changes !!\n\t" + (error.message || error.error || error));
+        });
+    }
+  }
+
 
 
   /**
