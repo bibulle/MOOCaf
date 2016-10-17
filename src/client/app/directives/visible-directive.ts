@@ -56,6 +56,7 @@ export class VisibleDirective implements OnInit, OnDestroy {
 
           this.visibilityChange.emit(ret);
         });
+      this._scrollService.launchFakeEvent(this.scrollDetectorId);
     }
   }
 

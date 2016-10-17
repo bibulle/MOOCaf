@@ -12,7 +12,7 @@ import {ParagraphType} from "../models/paragraph-type.enum";
 import {ParagraphContentType} from "../models/paragraph-content-type.enum";
 
 @Injectable()
-export class CourseService {
+export class  CourseService {
 
   private coursesUrl = environment.serverUrl + 'api/course';
 
