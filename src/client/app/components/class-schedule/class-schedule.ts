@@ -1,6 +1,6 @@
 import {Component, Input, EventEmitter, Output, OnInit, OnChanges, SimpleChanges} from "@angular/core";
 import {Router} from "@angular/router";
-import {Logger} from "angular2-logger/core";
+//import {Logger} from "angular2-logger/core";
 import {Course} from "../../models/course";
 
 @Component({
@@ -18,18 +18,22 @@ export class ClassScheduleComponent implements OnInit, OnChanges {
   notifySelectedPart: EventEmitter<number[]> = new EventEmitter<number[]>();
 
   @Input()
-  selectedPartNums = [0];
+  selectedPartNums;
   openedPart = [];
 
   constructor(public router: Router,
-              private _logger: Logger) {
+              //private _logger: Logger
+  ) {
 
   }
 
   ngOnInit() {
-    this.notifySelectedPart.emit([0]);
+
+    this.notifySelectedPart.emit(this.selectedPartNums);
+    //this._logger.debug(this.course)
   }
 
+  //noinspection JSUnusedGlobalSymbols
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['selectedPartNums']) {
       let change = changes['selectedPartNums'];
@@ -71,4 +75,5 @@ export class ClassScheduleComponent implements OnInit, OnChanges {
   isSelected(levels: number[]) {
     return (this.selectedPartNums.toString() == levels.toString());
   }
+
 }

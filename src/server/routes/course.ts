@@ -728,7 +728,7 @@ courseRouter.route('/:course_id/:paragraph_id/userChoice')
           .then((userCourse) => {
             UserCourse
               .updateOrCreate(userCourse)
-              .then((userCourse) => {
+              .then(() => {
                 _respondWithCourseParagraph(courseId, paragraphId, null, userId, response)
               })
               .catch(err => {
@@ -814,7 +814,7 @@ courseRouter.route('/:course_id/:paragraph_id/userChoice/check')
                   .then((userCourse) => {
                     UserCourse
                       .updateOrCreate(userCourse)
-                      .then((userCourse) => {
+                      .then(() => {
 
                         _respondWithCourseParagraph(courseId, paragraphId, null, request['user']["id"], response);
                       })
@@ -913,22 +913,37 @@ function _fillCourseForUser(course: Course, user: User): Promise < Course > {
           isNew = ((dateSeen == null) || ((new Date().getTime() - dateSeen.getTime()) < 1000 * 60));
         }
 
-        // add user choices
+        // add user choices for the paragraphs
         if (user.courses[course["id"]].userChoices) {
-
           _.forIn(user.courses[course["id"]].userChoices, (value, paragraphId) => {
-            let p = _searchParagraphById(paragraphId, course.parts);
-            if (p) {
+            let paragraph = _searchParagraphById(paragraphId, course.parts);
+            if (paragraph) {
               //console.log(p);
-              p.userChoice = value.userChoice;
-              p.userCheckCount = value.userCheckCount;
-              p.userCheckOK = value.userCheckOK;
-              p.userDone = value.userDone;
+              paragraph.userChoice = value.userChoice;
+              paragraph.userCheckCount = value.userCheckCount;
+              paragraph.userCheckOK = value.userCheckOK;
+              paragraph.userDone = value.userDone;
 
               // remove the answer to not spoil !!
-              if (!user.isAdmin && (value.userCheckCount == null) || (value.userCheckCount < p.maxCheckCount)) {
-                p.answer = null;
+              if (!user.isAdmin && (value.userCheckCount == null) || (value.userCheckCount < paragraph.maxCheckCount)) {
+                paragraph.answer = null;
               }
+            }
+          })
+        }
+
+        // add user things about parts
+        if (user.courses[course["id"]].userParts) {
+          _.forIn(user.courses[course["id"]].userParts, (value, partId) => {
+            let part = _searchPartById(partId, course.parts);
+            if (part) {
+              //console.log(p);
+              part.lastDone = value.lastDone;
+              part.percentFollowed = (value.countRead+value.countCheckOk+value.countCheckKo)/value.countParagraph;
+              part.countRead = value.countRead;
+              part.countCheckOk = value.countCheckOk;
+              part.countCheckKo = value.countCheckKo;
+              part.countParagraph = value.countParagraph;
             }
           })
         }
