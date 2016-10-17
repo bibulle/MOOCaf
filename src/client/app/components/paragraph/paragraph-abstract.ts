@@ -74,6 +74,22 @@ export abstract class ParagraphAbstract {
 
   }
 
+  /**
+   * Set this paragraph as done ("read for a markdown" or "checked for a Form" or ...)
+   */
+  setParagraphAsDone() {
+    //this._logger.debug("setParagraphAsDone : "+this.paragraphNums+" -> "+this.data.userDone);
+    if (!this.data.userDone) {
+      this.data.userDone = new Date();
+      this._courseService.saveUserChoice(this.courseId, this.data)
+        .then(() => {
+          //;
+        })
+        .catch(err => {
+          this._notificationService.error("Error saving your choice", err.status + " : " + err.message);
+        });
+    }
+  }
 
 
   static markdownToHTML(markdown: any) {

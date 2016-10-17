@@ -7,6 +7,7 @@ import {ParagraphAbstract} from "../paragraph/paragraph-abstract";
 import {NotificationService} from "../../services/notification.service";
 import {Logger} from "angular2-logger/core";
 import {CourseService} from "../../services/course.service";
+import {VisibilityEvent} from "../../directives/visible-directive";
 
 @Component({
   moduleId: module.id,
@@ -64,4 +65,22 @@ export class ParagraphMarkdownComponent extends ParagraphAbstract implements OnI
         .next(this.data);
     }
   }
+
+  /**
+   * THis markdown visibility change... has it been seen ?
+   * @param event
+   */
+  visibilityChange(event:VisibilityEvent) {
+    //this._logger.debug("visibilityChange");
+
+    // Is it visible ?
+    if (event.bottomVisible) {
+
+      this.setParagraphAsDone();
+
+    }
+  }
+
+
+
 }

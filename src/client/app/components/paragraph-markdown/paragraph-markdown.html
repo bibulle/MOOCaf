@@ -1,4 +1,4 @@
-<div class="paragraph" layout="row" layout-align="start stretch">
+<div class="paragraph" layout="row" layout-align="start stretch" [class.raised]="!data.userDone"  (visibilityChange)="visibilityChange($event)">
   <div class="display" flex="100" layout="row" layout-align="start stretch">
     <div class="buttons" flex="20"></div>
     <div class="content_box" flex="80">

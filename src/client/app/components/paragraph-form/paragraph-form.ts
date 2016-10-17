@@ -145,6 +145,7 @@ export class ParagraphFormComponent extends ParagraphAbstract implements OnInit 
         this.data.userCheckCount = modifiedParagraph.userCheckCount;
         this.data.userCheckOK = modifiedParagraph.userCheckOK;
         this.data.answer = modifiedParagraph.answer;
+        this.data.userDone = modifiedParagraph.userDone;
       })
       .catch(error => {
         this._logger.error(error);

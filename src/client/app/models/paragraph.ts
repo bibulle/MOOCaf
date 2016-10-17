@@ -14,16 +14,22 @@ export class Paragraph {
   // The markdown rawContent
   public content: any[] = new Array<ParagraphContent>();
 
+  // Answer needed
+  answer: any;
+  // How many try allowed
+  maxCheckCount: number;
+
+  // Is this paragraph considered as "done" for this user
+  userDone: Date;
+
   // The user previous choice
   userChoice: any;
-  answer: any;
 
   // If the user choice ok(true), ko(false) or undefined
   userCheckOK: boolean;
 
   // Check done and max
   userCheckCount: number;
-  maxCheckCount: number;
 
   // Used to get access of the enum in the template
   paragraphContentType = ParagraphContentType;

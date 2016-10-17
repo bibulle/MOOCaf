@@ -16,6 +16,7 @@ import UserCourse = require("../models/UserCourse");
 import {ParagraphType} from "../models/eParagraphType";
 import {ParagraphContentType} from "../models/eParagraphContentType";
 import {ICourse} from "../models/iCourse";
+import IUserPart = require("../models/iUserParts");
 
 
 const courseRouter: Router = Router();
@@ -149,12 +150,10 @@ courseRouter.route('/:course_id/userValues')
     userCourse.userId = request['user']["id"];
     userCourse.courseId = courseId;
 
-    // console.log("1-----");
     // debug(userCourse);
 
     UserCourse.updateOrCreate(userCourse)
       .then(() => {
-        // console.log("2-----");
         // debug(userCourse);
 
         _respondWithCourse(courseId, request['user']["id"], response);
@@ -342,14 +341,14 @@ courseRouter.route('/:course_id/para/:trgParaNums/add')
   .put((request: Request, response: Response) => {
 
     var courseId = request.params['course_id'];
-    var trgParaNums = JSON.parse("[" + request.params['trgParaNum'] + "]");
+    var trgParaNums = JSON.parse("[" + request.params['trgParaNums'] + "]");
     var userId = request['user']["id"];
 
     debug("PUT /" + courseId + "/para/" + trgParaNums + "/add");
     //debug(request.body);
 
-    let type:ParagraphType = request.body.type;
-    let subType:ParagraphContentType = request.body['subType'];
+    let type: ParagraphType = request.body.type;
+    let subType: ParagraphContentType = request.body['subType'];
 
     // TODO : Add a check of user right
 
@@ -378,13 +377,13 @@ courseRouter.route('/:course_id/para/:trgParaNums/add')
         let trgParaIndex = trgParaNums[trgParaNums.length - 1];
 
         // create a new paragraph
-        let paragraph:IParagraph;
+        let paragraph: IParagraph;
         if (type == ParagraphType.MarkDown) {
           paragraph = new IParagraph({
             type: type,
             content: 'content'
           });
-        } else if (subType ==   ParagraphContentType.Text) {
+        } else if (subType == ParagraphContentType.Text) {
           paragraph = new IParagraph({
             type: type,
             content: {
@@ -395,7 +394,7 @@ courseRouter.route('/:course_id/para/:trgParaNums/add')
             maxCheckCount: 3,
             answer: 'answer'
           });
-        } else if (subType ==   ParagraphContentType.Radio) {
+        } else if (subType == ParagraphContentType.Radio) {
           paragraph = new IParagraph({
             type: type,
             content: {
@@ -724,24 +723,31 @@ courseRouter.route('/:course_id/:paragraph_id/userChoice')
         userCourse.userChoices[paragraphId].updated = new Date();
         //debug(userCourse.userChoices[paragraphId]);
 
-        UserCourse
-          .updateOrCreate(userCourse)
-          .then(() => {
-            //debug(userCourse);
-            _respondWithCourseParagraph(courseId, paragraphId, null, userId, response);
+
+        _calcProgression(userCourse)
+          .then((userCourse) => {
+            UserCourse
+              .updateOrCreate(userCourse)
+              .then((userCourse) => {
+                _respondWithCourseParagraph(courseId, paragraphId, null, userId, response)
+              })
+              .catch(err => {
+                console.log(err);
+                response.status(500).json({status: 500, message: "System error " + err});
+              });
           })
           .catch(err => {
             console.log(err);
             response.status(500).json({status: 500, message: "System error " + err});
-          })
-
+          });
       })
       .catch(err => {
         console.log(err);
         response.status(500).json({status: 500, message: "System error " + err});
       });
 
-  });
+  })
+;
 
 courseRouter.route('/:course_id/:paragraph_id/userChoice/check')
 // ============================================
@@ -788,7 +794,7 @@ courseRouter.route('/:course_id/:paragraph_id/userChoice/check')
               // check the user choice
               if (paragraph.maxCheckCount <= userCourse.userChoices[paragraphId].userCheckCount) {
                 // Too many try, won't be saved
-                response.status(401).json({status: 401, message: "To many try"});
+                response.status(401).json({status: 401, message: "Too many try"});
               } else if (userCourse.userChoices[paragraphId].userCheckOK === true) {
                 // Answer already correct
                 response.status(401).json({status: 401, message: "Answer already correct"});
@@ -798,13 +804,24 @@ courseRouter.route('/:course_id/:paragraph_id/userChoice/check')
                 userCourse.userChoices[paragraphId].userCheckCount += 1;
                 userCourse.userChoices[paragraphId].updated = new Date();
 
-                // save it to Db
-                UserCourse
-                  .updateOrCreate(userCourse)
-                  .then(() => {
-                    //debug(userCourse);
+                // if done, set it
+                if ((userCourse.userChoices[paragraphId].userCheckOK === true) || (paragraph.maxCheckCount <= userCourse.userChoices[paragraphId].userCheckCount)) {
+                  userCourse.userChoices[paragraphId].userDone = new Date();
+                }
 
-                    _respondWithCourseParagraph(courseId, paragraphId, null, request['user']["id"], response);
+                // save it to Db
+                _calcProgression(userCourse)
+                  .then((userCourse) => {
+                    UserCourse
+                      .updateOrCreate(userCourse)
+                      .then((userCourse) => {
+
+                        _respondWithCourseParagraph(courseId, paragraphId, null, request['user']["id"], response);
+                      })
+                      .catch(err => {
+                        console.log(err);
+                        response.status(500).json({status: 500, message: "System error " + err});
+                      })
                   })
                   .catch(err => {
                     console.log(err);
@@ -876,7 +893,7 @@ function _fillCourseForUser(course: Course, user: User): Promise < Course > {
       // define the default values
       var isFavorite = false;
       var interest = 0;
-      var dateSeen:Date = null;
+      var dateSeen: Date = null;
       var isNew = null;
       var dateFollowed = null;
       var dateFollowedEnd = null;
@@ -906,6 +923,7 @@ function _fillCourseForUser(course: Course, user: User): Promise < Course > {
               p.userChoice = value.userChoice;
               p.userCheckCount = value.userCheckCount;
               p.userCheckOK = value.userCheckOK;
+              p.userDone = value.userDone;
 
               // remove the answer to not spoil !!
               if (!user.isAdmin && (value.userCheckCount == null) || (value.userCheckCount < p.maxCheckCount)) {
@@ -933,6 +951,108 @@ function _fillCourseForUser(course: Course, user: User): Promise < Course > {
     }
   })
 }
+
+/**
+ * Calc progression and stats for a user
+ * @param userCourse
+ * @private
+ */
+function _calcProgression(userCourse: UserCourse): Promise<UserCourse> {
+
+  let courseId = userCourse.courseId;
+
+  if (userCourse.userParts == null) {
+    userCourse.userParts = {};
+  }
+
+  return new Promise <UserCourse>((resolve, reject) => {
+    Course.findById(courseId)
+      .then(course => {
+
+        let courseCounts = _calcProgressionOnParts(course.parts, userCourse);
+
+        // something as been done
+        if (courseCounts.lastDone != null) {
+          // Let's start the course
+          if (!userCourse.dateFollowed) {
+            userCourse.dateFollowed = courseCounts.lastDone;
+          }
+          // Calculate the percent done
+          userCourse.percentFollowed = (courseCounts.countRead + courseCounts.countCheckOk + courseCounts.countCheckKo) / (courseCounts.countParagraph);
+
+          // Let's end it
+          if (userCourse.percentFollowed >= 1) {
+            userCourse.dateFollowedEnd = courseCounts.lastDone;
+          }
+        }
+
+        resolve(userCourse);
+      })
+      .catch(err => {
+        console.log(err);
+        reject("System error " + err);
+      });
+
+  });
+}
+
+function _calcProgressionOnParts(parts: ICoursePart[], userCourse: UserCourse): IUserPart {
+
+  let ret = new IUserPart();
+  ret.countParagraph = 0;
+  ret.countCheckOk = 0;
+  ret.countCheckKo = 0;
+  ret.countRead = 0;
+
+
+  _.forEach(parts, (part) => {
+
+    let partId = part['_id'];
+
+    // calculate on sub-parts
+    userCourse.userParts[partId] = _calcProgressionOnParts(part.parts, userCourse);
+
+
+    // add calculation on content
+    _.forEach(part.contents, (paragraph) => {
+
+      let paragraphId = paragraph['_id'];
+
+      userCourse.userParts[partId].countParagraph++;
+
+      if (userCourse.userChoices[paragraphId] && userCourse.userChoices[paragraphId].userDone) {
+        if (userCourse.userChoices[paragraphId].userCheckOK === true) {
+          userCourse.userParts[partId].countCheckOk++;
+        } else if (userCourse.userChoices[paragraphId].userCheckOK === false) {
+          userCourse.userParts[partId].countCheckKo++;
+        } else {
+          userCourse.userParts[partId].countRead++;
+        }
+
+        if (!userCourse.userParts[partId].lastDone || (userCourse.userParts[partId].lastDone < userCourse.userChoices[paragraphId].userDone)) {
+          userCourse.userParts[partId].lastDone = userCourse.userChoices[paragraphId].userDone;
+        }
+      }
+    });
+
+    // add to the parent part
+    ret.countParagraph += userCourse.userParts[partId].countParagraph;
+    ret.countCheckOk += userCourse.userParts[partId].countCheckOk;
+    ret.countCheckKo += userCourse.userParts[partId].countCheckKo;
+    ret.countRead += userCourse.userParts[partId].countRead;
+
+    if (!ret.lastDone || (ret.lastDone < userCourse.userParts[partId].lastDone)) {
+      ret.lastDone = userCourse.userParts[partId].lastDone;
+    }
+
+  });
+
+  // debug(userCourse.userParts);
+
+  return ret;
+
+}
+
 /**
  * Get a course (filled) by Id
  * @param courseId

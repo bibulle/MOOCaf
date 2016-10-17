@@ -7,6 +7,7 @@ import {NotificationService} from "../../services/notification.service";
 import {CourseService} from "../../services/course.service";
 import {CoursePart} from "../../models/course";
 import {ParagraphContentType} from "../../models/paragraph-content-type.enum";
+import {VisibilityEvent} from "../../directives/visible-directive";
 
 @Component({
   moduleId: module.id,
@@ -175,4 +176,5 @@ export class ParagraphComponent implements OnInit {
         });
     }
   }
+
 }

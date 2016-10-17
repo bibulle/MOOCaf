@@ -363,7 +363,8 @@ export class CourseService {
   saveUserChoice(courseId: string, paragraph: Paragraph): Promise<Paragraph> {
 
     var userChoice = {
-      userChoice: paragraph.userChoice
+      userChoice: paragraph.userChoice,
+      userDone: paragraph.userDone
     };
 
     let url = `${this.coursesUrl}/${courseId}/${paragraph['_id']}/userChoice`;

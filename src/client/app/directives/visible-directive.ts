@@ -32,29 +32,36 @@ export class VisibleDirective implements OnInit, OnDestroy {
     if (!this.scrollDetectorId) {
       this._logger.error("'is-visible' component with no parents 'scroll-detector' !!'", this._el);
     } else {
+      // Subscribe to scroll events
       this.subscription = this._scrollService.getObservable(this.scrollDetectorId).subscribe(
-        (data:ScrollDetectorData) => {
-          //console.log(this.el);
+        (data: ScrollDetectorData) => {
+
+          var elementTop = 0;
+          let el = this._el.nativeElement;
+          while (el && (el != data.element)) {
+            elementTop += el.offsetTop;
+            el = el.offsetParent;
+          }
+          //this._logger.debug('----'+elementTop);
 
           var elementHeight = this._el.nativeElement.offsetHeight;
-          var elementTop = this._el.nativeElement.offsetTop;
           var elementBottom = elementTop + elementHeight;
 
           var heightVisible = Math.min(elementHeight, Math.max(0, Math.min(elementBottom - data.scrollTop, data.scrollBottom - elementTop)));
 
           var ret = new VisibilityEvent();
           ret.percentVisible = heightVisible / elementHeight;
-          ret.topVisible = (data.scrollTop < elementTop) && (elementTop < data.scrollBottom);
-          ret.bottomVisible = (data.scrollTop < elementBottom) && (elementBottom < data.scrollBottom);
+          ret.topVisible = (data.scrollTop <= elementTop) && (elementTop <= data.scrollBottom);
+          ret.bottomVisible = (data.scrollTop <= elementBottom) && (elementBottom <= data.scrollBottom);
 
           this.visibilityChange.emit(ret);
-          //console.log(ret);
         });
     }
   }
 
   ngOnDestroy() {
     if (this.subscription) {
+      //this._logger.debug("unsubscribe");
       this.subscription.unsubscribe()
     }
   }

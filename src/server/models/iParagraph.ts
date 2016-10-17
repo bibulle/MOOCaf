@@ -25,6 +25,8 @@ export class IParagraph {
   userCheckOK: boolean;
   // Check done by the user  (won't be in the model because coming from the user)
   userCheckCount: number;
+  // the user has done this paragraph  (won't be in the model because coming from the user)
+  userDone: Date;
 
   created: Date;
   updated: Date;

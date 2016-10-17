@@ -3,6 +3,7 @@ import * as _ from 'lodash';
 var Schema = Mongoose.Schema;
 
 import IUserChoices = require("./iUserChoices");
+import IUserParts = require("./iUserParts");
 
 var debug = require('debug')('server:model:user-course');
 
@@ -20,6 +21,7 @@ class IUserCourse {
   percentFollowed: number;
 
   userChoices: { [id: string]: IUserChoices };
+  userParts: { [id: string]: IUserParts };
 
   /**
    * Constructor
@@ -78,7 +80,12 @@ var _schema: Mongoose.Schema = new Mongoose.Schema({
   userChoices: {
     type: Schema.Types.Mixed,
     require: false
-  }})
+  },
+  userParts: {
+    type: Schema.Types.Mixed,
+    require: false
+  }
+})
   .pre('save', function (next) {
     this.updated = new Date();
     next();
@@ -167,6 +174,8 @@ class UserCourse extends IUserCourse {
           if (error) {
             reject(error);
           } else {
+            result = result['_doc'];
+            result.id = result._id.toString();
             resolve(result);
           }
         }
