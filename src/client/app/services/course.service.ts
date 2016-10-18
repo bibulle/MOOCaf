@@ -12,7 +12,7 @@ import {ParagraphType} from "../models/paragraph-type.enum";
 import {ParagraphContentType} from "../models/paragraph-content-type.enum";
 
 @Injectable()
-export class CourseService {
+export class  CourseService {
 
   private coursesUrl = environment.serverUrl + 'api/course';
 
@@ -102,6 +102,9 @@ export class CourseService {
     return this.authHttp.get(`${this.coursesUrl}/${uid}`)
       .toPromise()
       .then(response => {
+        // check if something change in current course thing
+        this.checkCurrentCourse();
+
         var course = response.json().data as Course;
         CourseService.retrieveDates(course);
         CourseService.calcBooleans(course);
@@ -340,10 +343,7 @@ export class CourseService {
       .put(url, userChoice, {headers: contentHeaders})
       .toPromise()
       .then(res => {
-        //console.log('======');
-        //console.log(res);
-        //console.log('======');
-        //this._service.success("Saved", "your change have been saved");
+        // check if something change in current course thing
         this.checkCurrentCourse();
 
         var course = res.json().data as Course;
@@ -363,7 +363,8 @@ export class CourseService {
   saveUserChoice(courseId: string, paragraph: Paragraph): Promise<Paragraph> {
 
     var userChoice = {
-      userChoice: paragraph.userChoice
+      userChoice: paragraph.userChoice,
+      userDone: paragraph.userDone
     };
 
     let url = `${this.coursesUrl}/${courseId}/${paragraph['_id']}/userChoice`;
@@ -371,10 +372,9 @@ export class CourseService {
       .put(url, userChoice, {headers: contentHeaders})
       .toPromise()
       .then(res => {
-        //console.log('======');
-        //console.log(res);
-        //console.log('======');
-        //this._service.success("Saved", "your change have been saved");
+        // check if something change in current course thing
+        this.checkCurrentCourse();
+
         return res.json().data;
       })
       .catch(error => this.handleError(error, this._logger));
@@ -397,8 +397,9 @@ export class CourseService {
       .put(url, userChoice, {headers: contentHeaders})
       .toPromise()
       .then(res => {
-        //console.log(res.json().data);
-        //this._service.success("Saved", "your change have been saved");
+        // check if something change in current course thing
+        this.checkCurrentCourse();
+
         return res.json().data;
       })
       .catch(error => this.handleError(error, this._logger));

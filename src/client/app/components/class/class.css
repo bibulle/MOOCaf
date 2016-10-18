@@ -27,6 +27,7 @@
 
 .content {
   overflow: auto;
+  position: relative;
 }
 
 

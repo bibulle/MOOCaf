@@ -16,7 +16,6 @@ export class ScrollDirective implements OnInit, OnDestroy {
   constructor (private _logger : Logger,
                private _scrollService : ScrollService,
                private el: ElementRef) {
-
   }
 
   @Input('scroll-detector')
@@ -26,7 +25,6 @@ export class ScrollDirective implements OnInit, OnDestroy {
 
   @HostListener('scroll', ['$event'])
   onScroll() {
-    //console.log('scrolling  ');
     if (this.subjectScroll) {
       this.subjectScroll.next(new ScrollDetectorData(this.el.nativeElement));
     }
@@ -40,6 +38,7 @@ export class ScrollDirective implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
+    // this._logger.debug("ScrollDirective ngOnInit");
     if (!this.scrollDetectorId) {
       return this._logger.error('scroll-detector: Missing id.');
     }
@@ -48,11 +47,12 @@ export class ScrollDirective implements OnInit, OnDestroy {
       this._logger.error('scroll-detector: duplicate id "' + this.scrollDetectorId + '". Instance will be skipped!');
     } else {
       this.subjectScroll = new Subject<ScrollDetectorData>();
-      this._scrollService.setObservable(this.scrollDetectorId, this.subjectScroll);
+      this._scrollService.setObservable(this.scrollDetectorId, this.subjectScroll, this);
     }
   }
 
   ngAfterViewChecked() {
+    // this._logger.debug("ScrollDirective ngAfterViewChecked");
     if (!this._firstDone && this.el.nativeElement.offsetHeight != 0) {
       this._firstDone = true;
       if (this.subjectScroll) {
@@ -62,6 +62,7 @@ export class ScrollDirective implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
+    // this._logger.debug("ScrollDirective ngOnDestroy");
     this._scrollService.deleteObservable(this.scrollDetectorId);
   }
 
@@ -72,11 +73,12 @@ export class ScrollDetectorData {
   scrollTop: number;
   scrollBottom: number;
   scrollHeight: number;
+  element: any;
 
   constructor(el : any) {
     this.scrollHeight = el.offsetHeight;
-    this.scrollTop    = el.scrollTop + el.offsetTop;
+    this.scrollTop    = el.scrollTop; // + el.offsetTop;
     this.scrollBottom = this.scrollTop + this.scrollHeight;
-
+    this.element = el;
   }
 }

@@ -12,6 +12,7 @@ class IUserChoice {
   userCheckCount: number;
   userCheckOK: boolean;
   userChoice: any;
+  userDone: Date;
   created: Date;
   updated: Date;
 
@@ -52,6 +53,10 @@ var _schema: Mongoose.Schema = new Mongoose.Schema({
   userChoice: {
     type: Schema.Types.Mixed,
     require: true
+  },
+  userDone: {
+    type: Date,
+    default: null
   },
   created: {
     type: Date,

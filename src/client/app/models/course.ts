@@ -19,7 +19,7 @@ export class Course {
   isFavorite: boolean;
   interest: number;
   dateSeen: Date;
-  new: boolean;
+  'new': boolean;
   dateFollowed: Date;
   dateFollowedEnd: Date;
   done: boolean;
@@ -38,6 +38,13 @@ export class CoursePart {
   parts: CoursePart[];
 
   contents: Paragraph[];
+
+  percentFollowed: number;
+  lastDone: Date;
+  countParagraph :number;
+  countRead :number;
+  countCheckOk: number;
+  countCheckKo: number;
 
   constructor(option) {
     this.title = option.title;

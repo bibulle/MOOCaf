@@ -1,4 +1,4 @@
-import {Component, Input} from "@angular/core";
+import {Component} from "@angular/core";
 import {Router, ActivatedRoute, Params} from "@angular/router";
 
 import {Logger} from "angular2-logger/core";
@@ -110,6 +110,8 @@ export class ClassComponent {
             this.course = course;
             //console.log(course);
 
+            // calculate the part to select (the first not finished)
+            this.selectedPartNums = this._getFirstPartNotFinished(this.course.parts) || [0];
 
             // Action defined when editor is edited
             if (!this.subjectEditor) {
@@ -153,7 +155,7 @@ export class ClassComponent {
 
   /**
    * The selected part content change
-   * @param selectedPartNums:number[]
+   * @param selectedPart:CoursePart
    */
   onNotifySelectedPartContent(selectedPart: CoursePart) {
     //this._logger.debug("onNotifySelectedPartContent "+selectedPart);
@@ -221,12 +223,12 @@ export class ClassComponent {
   }
 
   moveUp() {
-    this._logger.debug("moveUp");
+    //this._logger.debug("moveUp");
     this._move(-1);
   }
 
   moveDown() {
-    this._logger.debug("moveDown");
+    //this._logger.debug("moveDown");
     this._move(+1);
   }
 
@@ -323,5 +325,46 @@ export class ClassComponent {
         });
     }
   }
+
+  /**
+   * Get the first not finished part (if some)
+   * @param parts
+   * @returns number[] or null
+   * @private
+   */
+  _getFirstPartNotFinished(parts: CoursePart[]): number[] {
+
+    let ret = null;
+
+    if (!parts) {
+      return ret;
+    }
+    parts.forEach((part, index) => {
+      if (!ret) {
+        // check on content of the part (percent followed is counted with children)
+        let paraCount = 0;
+        let paraDoneCount = 0;
+        part.contents.forEach(paragraph => {
+            paraCount++;
+            if (paragraph.userDone) {
+              paraDoneCount++;
+            }
+          }
+        );
+        if (paraCount >  paraDoneCount) {
+          ret = [index];
+        } else {
+          let subRet = this._getFirstPartNotFinished(part.parts);
+          if (subRet) {
+            ret = [index].concat(subRet);
+          }
+        }
+      }
+    });
+
+    return ret;
+
+  }
+
 
 }
