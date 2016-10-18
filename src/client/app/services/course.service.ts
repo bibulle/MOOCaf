@@ -102,6 +102,9 @@ export class  CourseService {
     return this.authHttp.get(`${this.coursesUrl}/${uid}`)
       .toPromise()
       .then(response => {
+        // check if something change in current course thing
+        this.checkCurrentCourse();
+
         var course = response.json().data as Course;
         CourseService.retrieveDates(course);
         CourseService.calcBooleans(course);
@@ -340,10 +343,7 @@ export class  CourseService {
       .put(url, userChoice, {headers: contentHeaders})
       .toPromise()
       .then(res => {
-        //console.log('======');
-        //console.log(res);
-        //console.log('======');
-        //this._service.success("Saved", "your change have been saved");
+        // check if something change in current course thing
         this.checkCurrentCourse();
 
         var course = res.json().data as Course;
@@ -372,10 +372,9 @@ export class  CourseService {
       .put(url, userChoice, {headers: contentHeaders})
       .toPromise()
       .then(res => {
-        //console.log('======');
-        //console.log(res);
-        //console.log('======');
-        //this._service.success("Saved", "your change have been saved");
+        // check if something change in current course thing
+        this.checkCurrentCourse();
+
         return res.json().data;
       })
       .catch(error => this.handleError(error, this._logger));
@@ -398,8 +397,9 @@ export class  CourseService {
       .put(url, userChoice, {headers: contentHeaders})
       .toPromise()
       .then(res => {
-        //console.log(res.json().data);
-        //this._service.success("Saved", "your change have been saved");
+        // check if something change in current course thing
+        this.checkCurrentCourse();
+
         return res.json().data;
       })
       .catch(error => this.handleError(error, this._logger));
