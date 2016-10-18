@@ -1,12 +1,11 @@
-import {Router, Request, Response, NextFunction} from "express";
+import {Router, Request, Response} from "express";
 import {sign} from "jsonwebtoken";
-import {randomBytes} from "crypto";
-import {pbkdf2} from "crypto";
-import * as _ from 'lodash';
+import {randomBytes, pbkdf2} from "crypto";
+import * as _ from "lodash";
 
 import {secret, length} from "../config";
+import StatService from "../service/statService";
 import User = require("../models/user");
-import Award from "../models/award";
 
 var debug = require('debug')('server:route:login');
 
@@ -85,6 +84,8 @@ loginRouter.route('/login')
           debug("401 : The username or password don't match : 1");
           return response.status(401).send("The username or password don't match");
         }
+
+        StatService.calcStatsUser(user['id']);
 
         pbkdf2(request.body.password, user.salt, 10000, length, function (err, hash) {
           if (err) {

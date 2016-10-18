@@ -17,6 +17,8 @@ import {ParagraphType} from "../models/eParagraphType";
 import {ParagraphContentType} from "../models/eParagraphContentType";
 import {ICourse} from "../models/iCourse";
 import IUserPart = require("../models/iUserParts");
+import CourseService from "../service/courseService";
+import StatService from "../service/statService";
 
 
 const courseRouter: Router = Router();
@@ -50,46 +52,12 @@ courseRouter.route('/')
       progressOnly = (request.query['progressOnly'] === "true");
     }
 
-    Course.find()
-      .then((courses: ICourse[]) => {
-        //debug(courses);
-        // Search the user
-        User.findById(request['user']["id"])
-          .then(user => {
-            // fill each paragraph with users values
-            var promises = _.map(courses,
-              p => _fillCourseForUser(p, user));
-            Promise.all(promises)
-              .then((completedCourses: ICourse[]) => {
-
-                // filter if we only need the currents one
-                if (currentOnly) {
-                  completedCourses = completedCourses
-                    .filter(f => {
-                      return (f.dateFollowed && !f.dateFollowedEnd)
-                    })
-                } else if (progressOnly) {
-                  completedCourses = completedCourses
-                    .filter(f => {
-                      return (f.dateFollowed)
-                    })
-                }
-
-                response.json({data: completedCourses})
-              })
-              .catch(err => {
-                console.log(err);
-                response.status(500).send("System error " + err);
-              });
-          })
-          .catch(err => {
-            //debug("find catch");
-            console.log(err);
-            response.status(500).send("System error " + err);
-          });
-      })
+    CourseService.getCourses(request['user']["id"], currentOnly, progressOnly)
+      .then((completedCourses: ICourse[]) => {
+          response.json({data: completedCourses});
+        }
+      )
       .catch(err => {
-        //debug("find catch");
         console.log(err);
         response.status(500).send("System error " + err);
       });
@@ -156,6 +124,8 @@ courseRouter.route('/:course_id/userValues')
       .then(() => {
         // debug(userCourse);
 
+        StatService.calcStatsUser(request['user']["id"]);
+
         _respondWithCourse(courseId, request['user']["id"], response);
 
       })
@@ -191,7 +161,7 @@ courseRouter.route('/:course_id/para/:paragraphNums')
         //debug(userCourse);
         //debug(userCourse.userChoices[paragraphId]);
 
-        let part = _searchPartByPath(paragraphNums.slice(0, -1), course.parts);
+        let part = CourseService.searchPartByPath(paragraphNums.slice(0, -1), course.parts);
         part.contents = part.contents || [];
 
         let paraIndex = paragraphNums[paragraphNums.length - 1];
@@ -245,7 +215,7 @@ courseRouter.route('/:course_id/para/:paragraphNums')
 
         let parentParts = course.parts;
         if (parentPartNums.length > 0) {
-          parentParts = _searchPartByPath(parentPartNums, parentParts).parts;
+          parentParts = CourseService.searchPartByPath(parentPartNums, parentParts).parts;
         }
         let parentPart = parentParts[paragraphNums[paragraphNums.length - 2]];
         let paraIndex = paragraphNums[paragraphNums.length - 1];
@@ -300,7 +270,7 @@ courseRouter.route('/:course_id/para/:srcParaNums/move')
         let srcParentPartNums = srcParaNums.slice(0, -2);
         let srcParentParts = course.parts;
         if (srcParentPartNums.length > 0) {
-          srcParentParts = _searchPartByPath(srcParentPartNums, srcParentParts).parts;
+          srcParentParts = CourseService.searchPartByPath(srcParentPartNums, srcParentParts).parts;
         }
         let srcParentPart = srcParentParts[srcParaNums[srcParaNums.length - 2]];
         let srcParaIndex = srcParaNums[srcParaNums.length - 1];
@@ -364,7 +334,7 @@ courseRouter.route('/:course_id/para/:trgParaNums/add')
         }
         let trgParentParts = course.parts;
         if (trgParentPartNums.length > 0) {
-          let part = _searchPartByPath(trgParentPartNums, trgParentParts);
+          let part = CourseService.searchPartByPath(trgParentPartNums, trgParentParts);
           if (part.parts == null) {
             part.parts = [];
           }
@@ -470,7 +440,7 @@ courseRouter.route('/:course_id/part/:partNums')
 
         let parentParts = course.parts;
         if (parentPartNums.length > 0) {
-          parentParts = _searchPartByPath(parentPartNums, parentParts).parts;
+          parentParts = CourseService.searchPartByPath(parentPartNums, parentParts).parts;
         }
 
         let partIndex = partNums[partNums.length - 1];
@@ -524,7 +494,7 @@ courseRouter.route('/:course_id/part/:partNums')
 
         let parentParts = course.parts;
         if (parentPartNums.length > 0) {
-          parentParts = _searchPartByPath(parentPartNums, parentParts).parts;
+          parentParts = CourseService.searchPartByPath(parentPartNums, parentParts).parts;
         }
 
         let partIndex = partNums[partNums.length - 1];
@@ -579,7 +549,7 @@ courseRouter.route('/:course_id/part/:srcPartNums/move')
         let srcParentPartNums = srcPartNums.slice(0, -1);
         let srcParentParts = course.parts;
         if (srcParentPartNums.length > 0) {
-          srcParentParts = _searchPartByPath(srcParentPartNums, srcParentParts).parts;
+          srcParentParts = CourseService.searchPartByPath(srcParentPartNums, srcParentParts).parts;
         }
         let srcPartIndex = srcPartNums[srcPartNums.length - 1];
 
@@ -587,7 +557,7 @@ courseRouter.route('/:course_id/part/:srcPartNums/move')
         let trgParentPartNums = trgPartNums.slice(0, -1);
         let trgParentParts = course.parts;
         if (trgParentPartNums.length > 0) {
-          trgParentParts = _searchPartByPath(trgParentPartNums, trgParentParts).parts;
+          trgParentParts = CourseService.searchPartByPath(trgParentPartNums, trgParentParts).parts;
         }
         let trgPartIndex = trgPartNums[trgPartNums.length - 1];
 
@@ -644,7 +614,7 @@ courseRouter.route('/:course_id/part/:trgPartNums/add')
         }
         let trgParentParts = course.parts;
         if (trgParentPartNums.length > 0) {
-          let part = _searchPartByPath(trgParentPartNums, trgParentParts);
+          let part = CourseService.searchPartByPath(trgParentPartNums, trgParentParts);
           if (part.parts == null) {
             part.parts = [];
           }
@@ -724,11 +694,14 @@ courseRouter.route('/:course_id/:paragraph_id/userChoice')
         //debug(userCourse.userChoices[paragraphId]);
 
 
-        _calcProgression(userCourse)
+        CourseService.calcProgression(userCourse)
           .then((userCourse) => {
             UserCourse
               .updateOrCreate(userCourse)
               .then(() => {
+
+                StatService.calcStatsUser(userId);
+
                 _respondWithCourseParagraph(courseId, paragraphId, null, userId, response)
               })
               .catch(err => {
@@ -789,7 +762,7 @@ courseRouter.route('/:course_id/:paragraph_id/userChoice/check')
         // get the paragraph
         Course.findById(courseId)
           .then(course => {
-            let paragraph = _searchParagraphById(paragraphId, course.parts);
+            let paragraph = CourseService.searchParagraphById(paragraphId, course.parts);
             if (paragraph != null) {
               // check the user choice
               if (paragraph.maxCheckCount <= userCourse.userChoices[paragraphId].userCheckCount) {
@@ -810,11 +783,13 @@ courseRouter.route('/:course_id/:paragraph_id/userChoice/check')
                 }
 
                 // save it to Db
-                _calcProgression(userCourse)
+                CourseService.calcProgression(userCourse)
                   .then((userCourse) => {
                     UserCourse
                       .updateOrCreate(userCourse)
                       .then(() => {
+
+                        StatService.calcStatsUser(userId);
 
                         _respondWithCourseParagraph(courseId, paragraphId, null, request['user']["id"], response);
                       })
@@ -847,228 +822,6 @@ courseRouter.route('/:course_id/:paragraph_id/userChoice/check')
   });
 
 /**
- * fill course with user data
- * @param course
- * @param user (from Db, not from token... should be full)
- * @returns {Promise<Course>}
- * @private
- */
-function _fillCourseForUser(course: Course, user: User): Promise < Course > {
-  //debug("_fillCourseForUser : " + course["id"] + ", " + user["id"]);
-
-
-  return new Promise < Course >((resolve, reject) => {
-
-
-    // as every course go there before being sen did just some verification
-    // if no page... add one
-    if (!course.parts) {
-      course.parts = [];
-    }
-    if (course.parts.length == 0) {
-      course.parts.push(new ICoursePart({
-        title: "Not yet defined",
-        parts: [],
-        contents: []
-      }));
-      // Save the course
-      Course
-        .updateOrCreate(course)
-        .then(course => {
-          //debug(course);
-          _fillCourseForUser(course, user)
-            .then(course => {
-              resolve(course);
-            })
-            .catch(err => {
-              reject(err);
-            });
-        })
-        .catch(err => {
-          console.log(err);
-          reject(err);
-        })
-    } else {
-
-      // define the default values
-      var isFavorite = false;
-      var interest = 0;
-      var dateSeen: Date = null;
-      var isNew = null;
-      var dateFollowed = null;
-      var dateFollowedEnd = null;
-      var percentFollowed = 0;
-
-      // get values from the user
-      if (user && user.courses && user.courses[course["id"]]) {
-        isFavorite = user.courses[course["id"]].isFavorite;
-        interest = user.courses[course["id"]].interest;
-        dateSeen = user.courses[course["id"]].dateSeen;
-        isNew = user.courses[course["id"]].new;
-        dateFollowed = user.courses[course["id"]].dateFollowed;
-        dateFollowedEnd = user.courses[course["id"]].dateFollowedEnd;
-        percentFollowed = user.courses[course["id"]].percentFollowed;
-
-        if (dateSeen && isNew) {
-          isNew = ((dateSeen == null) || ((new Date().getTime() - dateSeen.getTime()) < 1000 * 60));
-        }
-
-        // add user choices for the paragraphs
-        if (user.courses[course["id"]].userChoices) {
-          _.forIn(user.courses[course["id"]].userChoices, (value, paragraphId) => {
-            let paragraph = _searchParagraphById(paragraphId, course.parts);
-            if (paragraph) {
-              //console.log(p);
-              paragraph.userChoice = value.userChoice;
-              paragraph.userCheckCount = value.userCheckCount;
-              paragraph.userCheckOK = value.userCheckOK;
-              paragraph.userDone = value.userDone;
-
-              // remove the answer to not spoil !!
-              if (!user.isAdmin && (value.userCheckCount == null) || (value.userCheckCount < paragraph.maxCheckCount)) {
-                paragraph.answer = null;
-              }
-            }
-          })
-        }
-
-        // add user things about parts
-        if (user.courses[course["id"]].userParts) {
-          _.forIn(user.courses[course["id"]].userParts, (value, partId) => {
-            let part = _searchPartById(partId, course.parts);
-            if (part) {
-              //console.log(p);
-              part.lastDone = value.lastDone;
-              part.percentFollowed = (value.countRead+value.countCheckOk+value.countCheckKo)/value.countParagraph;
-              part.countRead = value.countRead;
-              part.countCheckOk = value.countCheckOk;
-              part.countCheckKo = value.countCheckKo;
-              part.countParagraph = value.countParagraph;
-            }
-          })
-        }
-      }
-
-      // assign the values into the course
-      _.assign(course, {
-        isFavorite: isFavorite,
-        interest: interest,
-        dateSeen: dateSeen,
-        'new': isNew,
-        dateFollowed: dateFollowed,
-        dateFollowedEnd: dateFollowedEnd,
-        percentFollowed: percentFollowed,
-        id: course['_id']
-      });
-
-      resolve(course);
-
-    }
-  })
-}
-
-/**
- * Calc progression and stats for a user
- * @param userCourse
- * @private
- */
-function _calcProgression(userCourse: UserCourse): Promise<UserCourse> {
-
-  let courseId = userCourse.courseId;
-
-  if (userCourse.userParts == null) {
-    userCourse.userParts = {};
-  }
-
-  return new Promise <UserCourse>((resolve, reject) => {
-    Course.findById(courseId)
-      .then(course => {
-
-        let courseCounts = _calcProgressionOnParts(course.parts, userCourse);
-
-        // something as been done
-        if (courseCounts.lastDone != null) {
-          // Let's start the course
-          if (!userCourse.dateFollowed) {
-            userCourse.dateFollowed = courseCounts.lastDone;
-          }
-          // Calculate the percent done
-          userCourse.percentFollowed = (courseCounts.countRead + courseCounts.countCheckOk + courseCounts.countCheckKo) / (courseCounts.countParagraph);
-
-          // Let's end it
-          if (userCourse.percentFollowed >= 1) {
-            userCourse.dateFollowedEnd = courseCounts.lastDone;
-          }
-        }
-
-        resolve(userCourse);
-      })
-      .catch(err => {
-        console.log(err);
-        reject("System error " + err);
-      });
-
-  });
-}
-
-function _calcProgressionOnParts(parts: ICoursePart[], userCourse: UserCourse): IUserPart {
-
-  let ret = new IUserPart();
-  ret.countParagraph = 0;
-  ret.countCheckOk = 0;
-  ret.countCheckKo = 0;
-  ret.countRead = 0;
-
-
-  _.forEach(parts, (part) => {
-
-    let partId = part['_id'];
-
-    // calculate on sub-parts
-    userCourse.userParts[partId] = _calcProgressionOnParts(part.parts, userCourse);
-
-
-    // add calculation on content
-    _.forEach(part.contents, (paragraph) => {
-
-      let paragraphId = paragraph['_id'];
-
-      userCourse.userParts[partId].countParagraph++;
-
-      if (userCourse.userChoices[paragraphId] && userCourse.userChoices[paragraphId].userDone) {
-        if (userCourse.userChoices[paragraphId].userCheckOK === true) {
-          userCourse.userParts[partId].countCheckOk++;
-        } else if (userCourse.userChoices[paragraphId].userCheckOK === false) {
-          userCourse.userParts[partId].countCheckKo++;
-        } else {
-          userCourse.userParts[partId].countRead++;
-        }
-
-        if (!userCourse.userParts[partId].lastDone || (userCourse.userParts[partId].lastDone < userCourse.userChoices[paragraphId].userDone)) {
-          userCourse.userParts[partId].lastDone = userCourse.userChoices[paragraphId].userDone;
-        }
-      }
-    });
-
-    // add to the parent part
-    ret.countParagraph += userCourse.userParts[partId].countParagraph;
-    ret.countCheckOk += userCourse.userParts[partId].countCheckOk;
-    ret.countCheckKo += userCourse.userParts[partId].countCheckKo;
-    ret.countRead += userCourse.userParts[partId].countRead;
-
-    if (!ret.lastDone || (ret.lastDone < userCourse.userParts[partId].lastDone)) {
-      ret.lastDone = userCourse.userParts[partId].lastDone;
-    }
-
-  });
-
-  // debug(userCourse.userParts);
-
-  return ret;
-
-}
-
-/**
  * Get a course (filled) by Id
  * @param courseId
  * @param userId
@@ -1083,7 +836,7 @@ function _respondWithCourse(courseId: string, userId: string, response: Response
       User.findById(userId)
         .then(user => {
           if (course) {
-            _fillCourseForUser(course, user)
+            CourseService.fillCourseForUser(course, user)
               .then(cou => {
                 //debug(cou);
                 response.json({data: cou})
@@ -1126,14 +879,14 @@ function _respondWithCourseParagraph(courseId: string, paragraphId: string, para
       User.findById(userId)
         .then(user => {
           if (course) {
-            _fillCourseForUser(course, user)
+            CourseService.fillCourseForUser(course, user)
               .then(cou => {
                 // search for the paragraph
                 let para: IParagraph;
                 if (paragraphId) {
-                  para = _searchParagraphById(paragraphId, cou.parts);
+                  para = CourseService.searchParagraphById(paragraphId, cou.parts);
                 } else {
-                  para = _searchParagraphByPath(paragraphNums, cou.parts);
+                  para = CourseService.searchParagraphByPath(paragraphNums, cou.parts);
                 }
 
                 if (para != null) {
@@ -1180,14 +933,14 @@ function _respondWithCoursePart(courseId: string, coursePartId: string, partNums
       User.findById(userId)
         .then(user => {
           if (course) {
-            _fillCourseForUser(course, user)
+            CourseService.fillCourseForUser(course, user)
               .then(cou => {
                 // search for the part
                 let part: ICoursePart;
                 if (coursePartId) {
-                  part = _searchPartById(coursePartId, cou.parts);
+                  part = CourseService.searchPartById(coursePartId, cou.parts);
                 } else {
-                  part = _searchPartByPath(partNums, cou.parts);
+                  part = CourseService.searchPartByPath(partNums, cou.parts);
                 }
 
                 if (part != null) {
@@ -1216,96 +969,6 @@ function _respondWithCoursePart(courseId: string, coursePartId: string, partNums
 
 }
 
-/**
- * Search for a paragraphe within course parts
- * @param paragraphId
- * @param courseParts
- * @returns  the earched paragraph
- */
-function _searchParagraphById(paragraphId: string, courseParts: ICoursePart[]): IParagraph {
-
-  let returnedParagraph: IParagraph = null;
-
-  if (courseParts == null) {
-    return null;
-  }
-
-  courseParts.forEach(part => {
-    if (part.contents != null) {
-      part.contents.forEach(para => {
-        if (paragraphId == para['_id']) {
-          returnedParagraph = para;
-        }
-      });
-    }
-    if (returnedParagraph == null) {
-      returnedParagraph = _searchParagraphById(paragraphId, part.parts);
-    }
-  });
-
-  return returnedParagraph;
-
-}
-
-/**
- * Search for a paragraph within course parts
- * @param paragraphNums
- * @param courseParts
- * @returns  the earched paragraph
- */
-function _searchParagraphByPath(paragraphNums: number[], courseParts: ICoursePart[]): IParagraph {
-
-  let part = _searchPartByPath(paragraphNums.slice(0, -1), courseParts);
-
-  let paraIndex = paragraphNums[paragraphNums.length - 1];
-
-  return part.contents[paraIndex];
-}
-
-/**
- * Search for a part within course parts
- * @param partId
- * @param courseParts
- * @returns  the earched paragraph
- */
-function _searchPartById(partId: string, courseParts: ICoursePart[]): ICoursePart {
-
-  let returnedPart: ICoursePart = null;
-
-  if (courseParts == null) {
-    return null;
-  }
-
-  courseParts.forEach(part => {
-    if (!returnedPart) {
-      if (partId == part['_id']) {
-        returnedPart = part;
-      } else {
-        returnedPart = _searchPartById(partId, part.parts);
-        if (returnedPart) {
-        }
-      }
-    }
-  });
-
-  return returnedPart;
-}
-
-/**
- * Search for a part within course parts
- * @param partNums
- * @param courseParts
- * @returns  the earched paragraph
- */
-function _searchPartByPath(partNums: number[], courseParts: ICoursePart[]): ICoursePart {
-
-  let part = courseParts[partNums[0]];
-  for (let i = 1; i < partNums.length; i++) {
-    part = part.parts[partNums[i]];
-  }
-
-  return part;
-}
 
 
 export {courseRouter}
