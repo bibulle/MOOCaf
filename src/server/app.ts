@@ -3,6 +3,7 @@ import * as express from "express";
 import {join} from "path";
 import * as favicon from "serve-favicon";
 var bodyParser = require('body-parser');
+var cors = require('cors');
 
 import {json} from "body-parser";
 var debug = require('debug')('server:server');
@@ -36,6 +37,21 @@ app.use(express.static(join(__dirname, 'public')));
 app.use(bodyParser.urlencoded({extended: true}));
 //noinspection TypeScriptValidateTypes
 app.use(bodyParser.json());
+
+// cors stuff
+var originsWhitelist = [
+  'http://localhost:4200',      //this is my front-end url for development
+  'http://www.myproductionurl.com'
+];
+var corsOptions = {
+  origin: function(origin, callback){
+    var isWhitelisted = originsWhitelist.indexOf(origin) !== -1;
+    callback(null, isWhitelisted);
+  },
+  credentials:true
+}
+//noinspection TypeScriptValidateTypes
+app.use(cors(corsOptions));
 
 // api routes
 //noinspection TypeScriptValidateTypes

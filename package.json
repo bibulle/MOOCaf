@@ -46,6 +46,7 @@
     "body-parser": "^1.15.2",
     "bootstrap": "^3.3.6",
     "core-js": "^2.4.1",
+    "cors": "^2.8.1",
     "debug": "^2.2.0",
     "express": "^4.14.0",
     "express-jwt": "^3.4.0",
