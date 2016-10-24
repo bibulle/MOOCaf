@@ -1,0 +1,49 @@
+<div class="main-layout" layout="row" flex="100">
+  <div layout="column" flex="100">
+
+    <!-- Header -->
+    <div layout="row" class="header">
+      <div layout="row" flex="100" layout-align="start stretch">
+        <div layout="row" flex="50" layout-align="start center">
+          <md-icon svgSrc="img/logo.svg" class="logo"></md-icon>
+          <div class="text-logo">MOOCer</div>
+        </div>
+        <div class="notificationMessage" [class.show]="showMessage" [class.hide]="!showMessage">{{notificationMessage}}</div>
+        <div layout="row" flex="50" layout-align="end center">
+          <profile-button></profile-button>
+          <about-button></about-button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Toolbar -->
+    <md-toolbar color="primary">
+      <button  md-button class="md-icon-button" aria-label="Home"            title="Home"            routerLinkActive="active" routerLink="/home"     >
+        <md-icon>home</md-icon> <span>Home</span>
+      </button>
+      <button  md-button class="md-icon-button" aria-label="Class catalogue" title="Class catalogue" routerLinkActive="active" routerLink="/catalogue">
+        <md-icon>store</md-icon> <span>Catalogue</span>
+      </button>
+      <button  md-button class="md-icon-button" aria-label="Classes"         title="Classes"         routerLinkActive="active" routerLink="/class"    *ngIf="countCurrentCourses == 1">
+        <md-icon>school</md-icon> <span>Current class</span>
+      </button>
+      <button  md-button class="md-icon-button" aria-label="Classes"         title="Classes"         routerLinkActive="active" routerLink="/class"    *ngIf="countCurrentCourses > 1">
+        <md-icon>school</md-icon> <span>Current classes</span>
+      </button>
+
+      <span class="fill-remaining-space"></span>
+
+      <button  md-button class="md-icon-button" aria-label="Progression"     title="Progression"     routerLinkActive="active" routerLink="/progress">
+        <md-icon>dashboard</md-icon> <span>Progression</span>
+      </button>
+      <button  md-button class="md-icon-button" aria-label="Awards"          title="Awards"          routerLinkActive="active" routerLink="/awards">
+        <md-icon>cake</md-icon> <span>Awards</span>
+      </button>
+    </md-toolbar>
+
+    <!-- Main content -->
+    <router-outlet></router-outlet>
+  </div>
+</div>
+
+<simple-notification [options]="notificationsOptions"></simple-notification>

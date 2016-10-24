@@ -1,0 +1,71 @@
+<div class="class md-content" flex="100" layout="column" layout-align="start stretch" *ngIf="course">
+  <md-sidenav-layout flex="100">
+
+    <md-sidenav #schedule (open)="scheduleButton.focus()" [opened]="true" mode="side" align="start">
+      <class-schedule [course]="course" (notifySelectedPart)='onNotifySelectedPartNum($event)'
+                      [selectedPartNums]="selectedPartNums" layout="row"
+                      layout-align="start stretch"></class-schedule>
+    </md-sidenav>
+    <div layout="column" layout-align="start stretch" class="sidenavContent" [class.edited]="edited">
+      <button #scheduleButton class="toggleSchedule md-primary" md-icon-button (click)="schedule.toggle()">
+        <md-icon>menu</md-icon>
+      </button>
+      <div class="content-part-buttons">
+        <button md-icon-button (click)="moveUp()" class="md-primary"
+                *ngIf="edited && (selectedPartNums[selectedPartNums.length-1] != 0)" title="Move up">
+          <md-icon>arrow_upward</md-icon>
+        </button>
+        <button md-icon-button (click)="moveDown()" class="md-primary" *ngIf="edited && !selectedPartIsLast"
+                title="Move down">
+          <md-icon>arrow_downward</md-icon>
+        </button>
+        <button md-icon-button (click)="addPageChild()" class="md-primary" *ngIf="edited && (selectedPartLevel < 2)"
+                title="Add a child page">
+          <md-icon>playlist_add</md-icon>
+        </button>
+        <button md-icon-button (click)="addPageSibling()" class="md-primary" *ngIf="edited"
+                title="Add a sibling page">
+          <md-icon>note_add</md-icon>
+        </button>
+        <button md-icon-button (click)="deletePage()" class="md-primary" [class.md-warn]="deletePartClicked"
+                *ngIf="edited" title="Delete page">
+          <md-icon class="delete">delete</md-icon>
+          <md-icon class="warning">announcement</md-icon>
+        </button>
+        <button md-icon-button (click)="toggleEditMode()" [class.md-accent]="edited" [class.md-primary]="!edited"
+                title="Edit page">
+          <md-icon>edit</md-icon>
+        </button>
+      </div>
+
+      <!--Title-->
+      <div class="courseTitle" layout="row" layout-align="start stretch">
+        <H1 flex="100">{{course.name}}</H1>
+        <div class="editor" flex="100">&nbsp;</div>
+      </div>
+      <!--Header-->
+      <div class="part_header" layout="row" layout-align="start stretch">
+        <h3 flex="100">{{selectedPart.title}}</h3>
+        <div class="editor" flex="100" [class.error]="editorInError">
+          <textarea [(ngModel)]="selectedPart.title" (keyup)="editorChange()" (change)="editorChange()"></textarea>
+        </div>
+      </div>
+
+      <!--Content-->
+      <div class="content" layout="column" layout-align="start stretch" scroll-detector="paragraph-list">
+        <!--Page navigation-->
+        <!--<div class="page-navigation" *ngIf="selectedPartLevel > 1">Pages navigation....</div>-->
+        <!--Page-->
+        <div class="page" layout="column" layout-align="start stretch">
+          <paragraph *ngFor="let paragraph of selectedPart.contents; let i = index" [data]="paragraph"
+                     [courseId]="course.id" [selectedPartNums]="selectedPartNums" [paragraphNum]="i"
+                     [paragraphCount]="selectedPart.contents.length"
+                     [edited]="edited"
+                     (notifySelectedPart)='onNotifySelectedPartContent($event)'></paragraph>
+        </div>
+      </div>
+
+    </div>
+  </md-sidenav-layout>
+</div>
+
