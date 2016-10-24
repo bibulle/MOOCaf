@@ -1,0 +1,61 @@
+
+.header {
+  min-height: 70px;
+  height: 100px;
+}
+
+.logo {
+  display: block;
+  width: 100px;
+  height: 80px;
+  margin-left: 20px;
+  margin-right: 5px;
+}
+.text-logo {
+  font-size: 40px;
+  font-weight: bold;
+  margin-bottom: 14px;
+}
+
+.fill-remaining-space {
+  flex: 1 1 auto;
+}
+
+simple-notifications >>> div.simple-notification-wrapper {
+  width: 40%;
+}
+
+md-icon {
+  /*padding-top: 15px;*/
+}
+
+about-button md-icon {
+  color: white;
+  vertical-align: text-bottom;
+}
+
+md-toolbar span {
+  vertical-align: super;
+}
+md-toolbar button {
+  padding-top: 6px;
+}
+
+.notificationMessage {
+  position: absolute;
+  top: 50px;
+  left: 300px;
+  text-align: center;
+  font-size: 0.8em;
+}
+.notificationMessage.hide {
+  color: rgba(0,0,0,0.0);
+  animation: notif-anim 2s ease;
+}
+.notificationMessage.show {
+  color: rgba(0,0,0,0.6);
+}
+@keyframes notif-anim {
+  0%   {color: rgba(0,0,0,0.6);}
+  100% {color: rgba(0,0,0,0.0);}
+}
