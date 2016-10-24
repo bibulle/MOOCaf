@@ -2,13 +2,21 @@
 //import * as Mongoose from 'mongoose';
 const dbInitialsData_1 = require("./dbInitialsData");
 var Mongoose = require('mongoose');
+var cfenv = require('cfenv');
 var debug = require('debug')('server:model:db');
 var db = {
     init() {
         return new Promise((resolve, reject) => {
             debug('init...');
             Mongoose.Promise = global.Promise;
-            const mongoose = Mongoose.connect("mongodb://127.0.0.1/mydb", null, error => {
+            var appEnv = cfenv.getAppEnv();
+            var mongoLabUrl = appEnv.getServiceURL('MOOCERer-database');
+            if (mongoLabUrl == null) {
+                //local or prod development
+                mongoLabUrl = 'mongodb://localhost/MOOCer';
+            }
+            debug('        connection to : ' + mongoLabUrl);
+            const mongoose = Mongoose.connect(mongoLabUrl, null, error => {
                 if (error) {
                     debug("Init error 1 : " + error);
                     //console.log(error);
