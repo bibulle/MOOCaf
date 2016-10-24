@@ -3,7 +3,8 @@
   "version": "1.0.0",
   "description": "",
   "scripts": {
-    "start": "tsc -p ./src && concurrently \"tsc -w -p ./src\" \"DEBUG=server:* nodemon ./src/bin/www\" ",
+    "start": "node ./src/bin/www",
+    "devel": "tsc -p ./src && concurrently \"tsc -w -p ./src\" \"DEBUG=server:* nodemon ./src/bin/www\" ",
     "tsc": "tsc"
   },
   "private": true,
@@ -30,6 +31,7 @@
   "dependencies": {
     "async": "^2.1.2",
     "body-parser": "^1.15.2",
+    "cfenv": "^1.0.3",
     "cors": "^2.8.1",
     "debug": "^2.2.0",
     "express": "^4.14.0",
