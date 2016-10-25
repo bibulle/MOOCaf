@@ -1,4 +1,4 @@
 export const environment = {
   production: true,
-  serverUrl: 'http://localhost:4000/',
+  serverUrl: 'https://moocaf-backend.tls.cloud.airfrance.fr/',
 };
