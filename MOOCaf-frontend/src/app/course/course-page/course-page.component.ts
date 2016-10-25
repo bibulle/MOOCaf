@@ -292,7 +292,7 @@ export class CoursePageComponent implements OnInit {
 
     let ret = null;
 
-    if (!parts) {
+    if (!parts || (parts == null)) {
       return ret;
     }
     parts.forEach((part, index) => {

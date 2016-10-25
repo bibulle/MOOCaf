@@ -16,9 +16,9 @@
     <div class="followed" *ngIf="(course.dateFollowed != null)">
       <div>
         <div class="followed_1" [style.width.em]="7*course.percentFollowed">
-          <div class="followed_1_1">{{course.percentFollowed | percent}} done</div>
+          <div class="followed_1_1">{{course.percentFollowed | percent:'1.0-0'}} done</div>
         </div>
-        <div class="followed_2">{{course.percentFollowed | percent}} done</div>
+        <div class="followed_2">{{course.percentFollowed | percent:'1.0-0'}} done</div>
       </div>
     </div>
     <span class="favorite">
