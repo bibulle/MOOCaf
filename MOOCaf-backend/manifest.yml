@@ -5,10 +5,11 @@ applications:
   instances: 1
   path: .
   buildpack: nodejs_buildpack
-  domain: tls.cloud.airfrance.fr
   command: npm install && DEBUG=server:* node ./src/bin/www
   routes:
   - route: moocaf-backend.tls.cloud.airfrance.fr
+  env:
+    frontend: https://moocaf-frontend.tls.cloud.airfrance.fr
   services:
   - MOOCERer-database
   #cf cups MOOCERer-database -p '{ "uri": "mongodb://10.71.68.173:27017/MOOCer" }'

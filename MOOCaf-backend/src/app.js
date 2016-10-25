@@ -1,6 +1,7 @@
 "use strict";
 const express = require("express");
 const path_1 = require("path");
+var cfenv = require('cfenv');
 var bodyParser = require('body-parser');
 var cors = require('cors');
 var debug = require('debug')('server:server');
@@ -30,11 +31,15 @@ app.use(bodyParser.json());
 // cors stuff
 var originsWhitelist = [
     'http://localhost:4200',
-    'http://www.myproductionurl.com'
+    process.env.frontend
 ];
 var corsOptions = {
     origin: function (origin, callback) {
+        debug("--------");
+        debug(origin);
+        debug(originsWhitelist);
         var isWhitelisted = originsWhitelist.indexOf(origin) !== -1;
+        debug(isWhitelisted);
         callback(null, isWhitelisted);
     },
     credentials: true

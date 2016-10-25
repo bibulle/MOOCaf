@@ -1,6 +1,6 @@
 import * as express from "express";
 import {join} from "path";
-import * as favicon from "serve-favicon";
+var cfenv = require('cfenv');
 var bodyParser = require('body-parser');
 var cors = require('cors');
 
@@ -36,14 +36,19 @@ app.use(bodyParser.urlencoded({extended: true}));
 //noinspection TypeScriptValidateTypes
 app.use(bodyParser.json());
 
+
 // cors stuff
 var originsWhitelist = [
   'http://localhost:4200',      //this is my front-end url for development
-  'http://www.myproductionurl.com'
+  process.env.frontend
 ];
 var corsOptions = {
   origin: function(origin, callback){
+    debug("--------");
+    debug(origin);
+    debug(originsWhitelist);
     var isWhitelisted = originsWhitelist.indexOf(origin) !== -1;
+    debug(isWhitelisted);
     callback(null, isWhitelisted);
   },
   credentials:true
