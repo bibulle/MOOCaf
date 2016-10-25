@@ -29,17 +29,13 @@ app.use(bodyParser.urlencoded({ extended: true }));
 //noinspection TypeScriptValidateTypes
 app.use(bodyParser.json());
 // cors stuff
-var originsWhitelist = [
-    'http://localhost:4200',
-    process.env.frontend
-];
+var originsWhiteList = ['http://localhost:4200'];
+if (process.env['frontend']) {
+    originsWhiteList = JSON.parse(process.env['frontend']);
+}
 var corsOptions = {
     origin: function (origin, callback) {
-        debug("--------");
-        debug(origin);
-        debug(originsWhitelist);
-        var isWhitelisted = originsWhitelist.indexOf(origin) !== -1;
-        debug(isWhitelisted);
+        var isWhitelisted = originsWhiteList.indexOf(origin) !== -1;
         callback(null, isWhitelisted);
     },
     credentials: true

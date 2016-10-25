@@ -9,7 +9,7 @@ applications:
   routes:
   - route: moocaf-backend.tls.cloud.airfrance.fr
   env:
-    frontend: https://moocaf-frontend.tls.cloud.airfrance.fr
+    frontend: [ "https://moocaf-frontend.tls.cloud.airfrance.fr", "https://moocaf.tls.cloud.airfrance.fr"]
   services:
   - MOOCERer-database
   #cf cups MOOCERer-database -p '{ "uri": "mongodb://10.71.68.173:27017/MOOCer" }'
