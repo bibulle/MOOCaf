@@ -1,18 +1,18 @@
-import {Injectable} from "@angular/core";
-import {Response} from "@angular/http";
-import {Logger} from "angular2-logger/app/core/logger";
-import {Observable, BehaviorSubject} from "rxjs/Rx";
-import {environment} from "../../environments/environment";
-import {AuthHttp} from "angular2-jwt";
-import {UserService} from "../user/user.service";
-import {Course, CoursePart} from "./course";
-import {CommonHeaders} from "../shared/common-headers";
-import {Paragraph} from "../paragraph/paragraph";
-import {ParagraphType} from "../paragraph/paragraph-type.enum";
-import {ParagraphContentType} from "../paragraph/paragraph-content-type.enum";
+import { Injectable } from "@angular/core";
+import { Response } from "@angular/http";
+import { Logger } from "angular2-logger/app/core/logger";
+import { Observable, BehaviorSubject } from "rxjs/Rx";
+import { environment } from "../../environments/environment";
+import { AuthHttp } from "angular2-jwt";
+import { UserService } from "../user/user.service";
+import { Course, CoursePart } from "./course";
+import { CommonHeaders } from "../shared/common-headers";
+import { Paragraph } from "../paragraph/paragraph";
+import { ParagraphType } from "../paragraph/paragraph-type.enum";
+import { ParagraphContentType } from "../paragraph/paragraph-content-type.enum";
 
 @Injectable()
-export class  CourseService {
+export class CourseService {
 
   private coursesUrl = environment.serverUrl + 'api/course';
 
@@ -49,14 +49,14 @@ export class  CourseService {
    */
   private checkCurrentCourse() {
     this.getCourses(true)
-      .then(lst => {
-        this.currentCourseCountSubject.next(lst.length);
-      })
-      .catch(err => {
-          this._logger.debug(err);
-          this.currentCourseCountSubject.next(0);
-        }
-      )
+        .then(lst => {
+          this.currentCourseCountSubject.next(lst.length);
+        })
+        .catch(err => {
+            this._logger.debug(err);
+            this.currentCourseCountSubject.next(0);
+          }
+        )
   }
 
   /**
@@ -71,23 +71,50 @@ export class  CourseService {
         if (currentOnly && progressOnly) {
           reject("System error : You should choose only once")
         } else {
-          this.authHttp.get(this.coursesUrl + "?currentOnly=" + currentOnly+ "&progressOnly=" + progressOnly)
-            .map((res: Response) => res.json().data as Course[])
-            .subscribe(
-              data => {
-                //console.log(data);
-                data = data.map(course => {
-                  CourseService.retrieveDates(course);
-                  CourseService.calcBooleans(course);
-                  return course
-                });
-                //console.log(data);
-                resolve(data);
-              },
-              err => {
-                reject(err);
-              },
-            );
+          this.authHttp.get(this.coursesUrl + "?currentOnly=" + currentOnly + "&progressOnly=" + progressOnly)
+              .map((res: Response) => res.json().data as Course[])
+              .subscribe(
+                data => {
+                  //console.log(data);
+                  data = data.map(course => {
+                    CourseService.retrieveDates(course);
+                    CourseService.calcBooleans(course);
+                    return course
+                  });
+                  //console.log(data);
+                  resolve(data);
+                },
+                err => {
+                  reject(err);
+                },
+              );
+        }
+      }
+    )
+  }
+
+  addCourse(currentOnly = false, progressOnly = false): Promise<Course[]> {
+    return new Promise<Course[]>((resolve, reject) => {
+        if (currentOnly && progressOnly) {
+          reject("System error : You should choose only once")
+        } else {
+          this.authHttp.get(this.coursesUrl + "/add" + "?currentOnly=" + currentOnly + "&progressOnly=" + progressOnly)
+              .map((res: Response) => res.json().data as Course[])
+              .subscribe(
+                data => {
+                  //console.log(data);
+                  data = data.map(course => {
+                    CourseService.retrieveDates(course);
+                    CourseService.calcBooleans(course);
+                    return course
+                  });
+                  //console.log(data);
+                  resolve(data);
+                },
+                err => {
+                  reject(err);
+                },
+              );
         }
       }
     )
@@ -100,17 +127,17 @@ export class  CourseService {
    */
   getCourse(uid: string): Promise < Course > {
     return this.authHttp.get(`${this.coursesUrl}/${uid}`)
-      .toPromise()
-      .then(response => {
-        // check if something change in current course thing
-        this.checkCurrentCourse();
+               .toPromise()
+               .then(response => {
+                 // check if something change in current course thing
+                 this.checkCurrentCourse();
 
-        var course = response.json().data as Course;
-        CourseService.retrieveDates(course);
-        CourseService.calcBooleans(course);
-        return course;
-      })
-      .catch(error => this.handleError(error, this._logger));
+                 var course = response.json().data as Course;
+                 CourseService.retrieveDates(course);
+                 CourseService.calcBooleans(course);
+                 return course;
+               })
+               .catch(error => this.handleError(error, this._logger));
   }
 
   /**
@@ -133,31 +160,30 @@ export class  CourseService {
    * @returns Promise<Course>
    */
 // Add new Paragraph
-  private
-  post(course: Course): Promise < Course > {
+  private post(course: Course): Promise < Course > {
     return this.authHttp
-      .post(this.coursesUrl, JSON.stringify(course), {headers: CommonHeaders.contentHeaders})
-      .toPromise()
-      .then(res => {
-        //this._service.success("Saved", "your change have been saved");
-        var course = res.json().data as Course;
-        CourseService.retrieveDates(course);
-        CourseService.calcBooleans(course);
-        return course;
-      })
-      .catch(error => this.handleError(error, this._logger));
+               .post(this.coursesUrl, JSON.stringify(course), {headers: CommonHeaders.contentHeaders})
+               .toPromise()
+               .then(res => {
+                 //this._service.success("Saved", "your change have been saved");
+                 var course = res.json().data as Course;
+                 CourseService.retrieveDates(course);
+                 CourseService.calcBooleans(course);
+                 return course;
+               })
+               .catch(error => this.handleError(error, this._logger));
   }
 
 // Update existing Course
   private put(course: Course): Promise < Course > {
     let url = `${this.coursesUrl}/${course.id}`;
     return this.authHttp
-      .put(url, JSON.stringify(course), {headers: CommonHeaders.contentHeaders})
-      .toPromise()
-      .then(() => {
-        //this._service.success("Saved", "your change have been saved");
-        return course
-      });
+               .put(url, JSON.stringify(course), {headers: CommonHeaders.contentHeaders})
+               .toPromise()
+               .then(() => {
+                 //this._service.success("Saved", "your change have been saved");
+                 return course
+               });
 //.catch(error => this.handleError(error, this._logger));
   }
 
@@ -174,13 +200,13 @@ export class  CourseService {
 
     let url = `${this.coursesUrl}/${courseId}/part/${selectedPartNums}`;
     return this.authHttp
-      .put(url, coursePart, {headers: CommonHeaders.contentHeaders})
-      .toPromise()
-      .then(res => {
-        //console.log(res);
-        return res.json().data;
-      })
-      .catch(error => this.handleError(error, this._logger));
+               .put(url, coursePart, {headers: CommonHeaders.contentHeaders})
+               .toPromise()
+               .then(res => {
+                 //console.log(res);
+                 return res.json().data;
+               })
+               .catch(error => this.handleError(error, this._logger));
   }
 
   /**
@@ -194,13 +220,13 @@ export class  CourseService {
 
     let url = `${this.coursesUrl}/${courseId}/part/${srcSelectedPartNums}/move`;
     return this.authHttp
-      .put(url, trgSelectedPartNums, {headers: CommonHeaders.contentHeaders})
-      .toPromise()
-      .then(res => {
-        //console.log(res);
-        return res.json().data;
-      })
-      .catch(error => this.handleError(error, this._logger));
+               .put(url, trgSelectedPartNums, {headers: CommonHeaders.contentHeaders})
+               .toPromise()
+               .then(res => {
+                 //console.log(res);
+                 return res.json().data;
+               })
+               .catch(error => this.handleError(error, this._logger));
   }
 
   /**
@@ -213,13 +239,13 @@ export class  CourseService {
 
     let url = `${this.coursesUrl}/${courseId}/part/${srcSelectedPartNums}`;
     return this.authHttp
-      .delete(url, {headers: CommonHeaders.contentHeaders})
-      .toPromise()
-      .then(res => {
-        //console.log(res);
-        return res.json().data;
-      })
-      .catch(error => this.handleError(error, this._logger));
+               .delete(url, {headers: CommonHeaders.contentHeaders})
+               .toPromise()
+               .then(res => {
+                 //console.log(res);
+                 return res.json().data;
+               })
+               .catch(error => this.handleError(error, this._logger));
   }
 
   /**
@@ -232,13 +258,13 @@ export class  CourseService {
 
     let url = `${this.coursesUrl}/${courseId}/part/${srcSelectedPartNums}/add`;
     return this.authHttp
-      .put(url, {}, {headers: CommonHeaders.contentHeaders})
-      .toPromise()
-      .then(res => {
-        //console.log(res);
-        return res.json().data;
-      })
-      .catch(error => this.handleError(error, this._logger));
+               .put(url, {}, {headers: CommonHeaders.contentHeaders})
+               .toPromise()
+               .then(res => {
+                 //console.log(res);
+                 return res.json().data;
+               })
+               .catch(error => this.handleError(error, this._logger));
   }
 
   /**
@@ -254,13 +280,13 @@ export class  CourseService {
 
     let url = `${this.coursesUrl}/${courseId}/para/${paragraphNums}`;
     return this.authHttp
-      .put(url, paragraph, {headers: CommonHeaders.contentHeaders})
-      .toPromise()
-      .then(res => {
-        //console.log(res);
-        return res.json().data;
-      })
-      .catch(error => this.handleError(error, this._logger));
+               .put(url, paragraph, {headers: CommonHeaders.contentHeaders})
+               .toPromise()
+               .then(res => {
+                 //console.log(res);
+                 return res.json().data;
+               })
+               .catch(error => this.handleError(error, this._logger));
   }
 
   /**
@@ -274,13 +300,13 @@ export class  CourseService {
 
     let url = `${this.coursesUrl}/${courseId}/para/${srcSelectedParaNums}/move`;
     return this.authHttp
-      .put(url, {trgParaNum: trgSelectedParaNum}, {headers: CommonHeaders.contentHeaders})
-      .toPromise()
-      .then(res => {
-        //console.log(res);
-        return res.json().data;
-      })
-      .catch(error => this.handleError(error, this._logger));
+               .put(url, {trgParaNum: trgSelectedParaNum}, {headers: CommonHeaders.contentHeaders})
+               .toPromise()
+               .then(res => {
+                 //console.log(res);
+                 return res.json().data;
+               })
+               .catch(error => this.handleError(error, this._logger));
   }
 
   /**
@@ -293,13 +319,13 @@ export class  CourseService {
 
     let url = `${this.coursesUrl}/${courseId}/para/${srcSelectedParaNums}`;
     return this.authHttp
-      .delete(url, {headers: CommonHeaders.contentHeaders})
-      .toPromise()
-      .then(res => {
-        //console.log(res);
-        return res.json().data;
-      })
-      .catch(error => this.handleError(error, this._logger));
+               .delete(url, {headers: CommonHeaders.contentHeaders})
+               .toPromise()
+               .then(res => {
+                 //console.log(res);
+                 return res.json().data;
+               })
+               .catch(error => this.handleError(error, this._logger));
   }
 
   /**
@@ -314,13 +340,13 @@ export class  CourseService {
 
     let url = `${this.coursesUrl}/${courseId}/para/${srcSelectedParaNums}/add`;
     return this.authHttp
-      .put(url, {type: type, subType: subType}, {headers: CommonHeaders.contentHeaders})
-      .toPromise()
-      .then(res => {
-        //console.log(res);
-        return res.json().data;
-      })
-      .catch(error => this.handleError(error, this._logger));
+               .put(url, {type: type, subType: subType}, {headers: CommonHeaders.contentHeaders})
+               .toPromise()
+               .then(res => {
+                 //console.log(res);
+                 return res.json().data;
+               })
+               .catch(error => this.handleError(error, this._logger));
   }
 
   /**
@@ -340,18 +366,18 @@ export class  CourseService {
 
     let url = `${this.coursesUrl}/${course.id}/userValues`;
     return this.authHttp
-      .put(url, userChoice, {headers: CommonHeaders.contentHeaders})
-      .toPromise()
-      .then(res => {
-        // check if something change in current course thing
-        this.checkCurrentCourse();
+               .put(url, userChoice, {headers: CommonHeaders.contentHeaders})
+               .toPromise()
+               .then(res => {
+                 // check if something change in current course thing
+                 this.checkCurrentCourse();
 
-        var course = res.json().data as Course;
-        CourseService.retrieveDates(course);
-        CourseService.calcBooleans(course);
-        return course;
-      })
-      .catch(error => this.handleError(error, this._logger));
+                 var course = res.json().data as Course;
+                 CourseService.retrieveDates(course);
+                 CourseService.calcBooleans(course);
+                 return course;
+               })
+               .catch(error => this.handleError(error, this._logger));
   }
 
   /**
@@ -369,15 +395,15 @@ export class  CourseService {
 
     let url = `${this.coursesUrl}/${courseId}/${paragraph['_id']}/userChoice`;
     return this.authHttp
-      .put(url, userChoice, {headers: CommonHeaders.contentHeaders})
-      .toPromise()
-      .then(res => {
-        // check if something change in current course thing
-        this.checkCurrentCourse();
+               .put(url, userChoice, {headers: CommonHeaders.contentHeaders})
+               .toPromise()
+               .then(res => {
+                 // check if something change in current course thing
+                 this.checkCurrentCourse();
 
-        return res.json().data;
-      })
-      .catch(error => this.handleError(error, this._logger));
+                 return res.json().data;
+               })
+               .catch(error => this.handleError(error, this._logger));
   }
 
   /**
@@ -394,15 +420,15 @@ export class  CourseService {
 
     let url = `${this.coursesUrl}/${courseId}/${paragraph['_id']}/userchoice/check`;
     return this.authHttp
-      .put(url, userChoice, {headers: CommonHeaders.contentHeaders})
-      .toPromise()
-      .then(res => {
-        // check if something change in current course thing
-        this.checkCurrentCourse();
+               .put(url, userChoice, {headers: CommonHeaders.contentHeaders})
+               .toPromise()
+               .then(res => {
+                 // check if something change in current course thing
+                 this.checkCurrentCourse();
 
-        return res.json().data;
-      })
-      .catch(error => this.handleError(error, this._logger));
+                 return res.json().data;
+               })
+               .catch(error => this.handleError(error, this._logger));
   }
 
 

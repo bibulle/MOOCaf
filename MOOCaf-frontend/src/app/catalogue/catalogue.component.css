@@ -41,3 +41,23 @@
   display: flex;
 }
 
+.content-part-buttons {
+  position: absolute;
+  right:0;
+  top:0;
+  z-index: 100;
+}
+
+.content-part-buttons .warning {
+  display: none;
+  position: absolute;
+  top: -0.8em;
+  left: 0.4em;
+  font-size: 3em;
+}
+
+.content-part-buttons .md-warn .warning {
+  display: inherit;
+}
+
+

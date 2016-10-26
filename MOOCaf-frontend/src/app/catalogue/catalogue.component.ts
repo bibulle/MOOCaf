@@ -32,6 +32,8 @@ export class CatalogueComponent implements OnInit {
   // Show only current courses for this user
   private onlyCurrent = false;
 
+  edited: boolean = false;
+
   constructor(private _logger: Logger,
               private _courseService: CourseService,
               private _notificationService: NotificationService,
@@ -77,6 +79,10 @@ export class CatalogueComponent implements OnInit {
   }
 
 
+  toggleEditMode() {
+    this.edited = !this.edited;
+  }
+
   toggleFollowed() {
     this.filter.followed = (this.filter.followed + 1) % 3;
     this.filterList();
@@ -91,6 +97,22 @@ export class CatalogueComponent implements OnInit {
     this.filter.sort = (this.filter.sort + 1) % 6;
     this.filter.sortType = Math.floor(this.filter.sort / 2);
     this.filterList();
+  }
+
+
+  addCourse() {
+      //this._logger.debug("addCourse");
+
+      this._courseService.addCourse(this.onlyCurrent)
+          .then(courses => {
+            this.courses = courses;
+            this.previousFilterJson="";
+            this.filterList();
+          })
+          .catch(error => {
+            this._logger.error(error);
+            this._notificationService.error("System error !!", "Error saving you changes !!\n\t" + (error.message || error.error || error));
+          });
   }
 
   /**
