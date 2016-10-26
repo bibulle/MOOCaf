@@ -1,3 +1,33 @@
+.course-card-content {
+  position: relative;
+  box-shadow: 0 2px 1px -1px rgba(0, 0, 0, 0.2), 0 1px 1px 0 rgba(0, 0, 0, 0.14), 0 1px 3px 0 rgba(0, 0, 0, 0.12);
+  transition: box-shadow 280ms cubic-bezier(0.4, 0, 0.2, 1);
+  will-change: box-shadow;
+  border-radius: 2px;
+  background: white;
+  color: black;
+
+  margin-top: 8px;
+  margin-bottom: 8px;
+  margin-left: 8px;
+}
+
+.course {
+  cursor: pointer;
+  /*margin-top: 8px;*/
+  /*margin-bottom: 8px;*/
+  /*margin-left: 8px;*/
+
+  box-shadow: none;
+  transition: none;
+  will-change: inherit;
+
+  height: 100%
+}
+.course:hover {
+  background-color: rgba(0,0,0,0.12);
+}
+
 .course md-card-title {
   margin-bottom: 5px;
 }
@@ -13,7 +43,7 @@
   /*margin-bottom: 8px;*/
   margin-left: -5px;
   position: absolute;
-  bottom: 0px;
+  bottom: 0;
 }
 
 .course .note > div {
@@ -42,7 +72,7 @@
 }
 .course .favorite button {
   min-width: inherit;
-  padding: 0px;
+  padding: 0;
   line-height: inherit;
 }
 
@@ -71,12 +101,57 @@
   height: 1.3em;
 }
 
-.course {
-  cursor: pointer;
+/* ============== */
+
+.editor {
+  display: none;
+  margin: 6px;
+  padding: 5px;
+  border: 1px solid #CCC;
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+  border-radius: 3px;
 }
-.course:hover {
-  background-color: rgba(0,0,0,0.12);
+
+.edited .editor {
+  display: flex;
 }
+
+.course-card-buttons {
+  position: absolute;
+  right: 8px;
+  top: 9px;
+  z-index: 20;
+}
+
+.course-card-buttons .warning {
+  display: none;
+  position: absolute;
+  top: -11px;
+  left: 13px;
+  font-size: 3em;
+}
+
+.course-card-buttons .md-warn .warning {
+  display: inherit;
+}
+
+.course-card-buttons .material-icons {
+  font-size: 18px;
+}
+
+.course-card-buttons md-icon {
+  width: 18px;
+  height: 18px;
+}
+
+.course-card-buttons [md-icon-button] {
+  width: 30px;
+  height: 30px;
+  line-height: 18px;
+}
+
+/* ============== */
 
 .clipping-banner {
   overflow: hidden;
@@ -95,7 +170,7 @@
   transform: rotate(30deg);
   width: 15em;
   text-align: center;
-  text-shadow: 1px 0px 2px rgba(0, 0, 0, 1);
+  text-shadow: 1px 0 2px rgba(0, 0, 0, 1);
 }
 .banner.done {
   background: #1976D2;
@@ -122,17 +197,17 @@
 }
 
 @-webkit-keyframes AnimationName {
-  0%{background-position:0% 50%}
+  0%{background-position:0 50%}
   15%{background-position:100% 50%}
   100%{background-position:100% 50%}
 }
 @-moz-keyframes AnimationName {
-  0%{background-position:0% 50%}
+  0%{background-position:0 50%}
   15%{background-position:100% 50%}
   100%{background-position:100% 50%}
 }
 @keyframes AnimationName {
-  0%{background-position:0% 50%}
+  0%{background-position:0 50%}
   15%{background-position:100% 50%}
   100%{background-position:100% 50%}
 }

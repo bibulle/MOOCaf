@@ -20,12 +20,12 @@ export class CourseService {
 
   constructor(private _logger: Logger,
               private authHttp: AuthHttp,
-              private userService: UserService) {
+              private _userService: UserService) {
 
     this.currentCourseCountSubject = new BehaviorSubject<number>(0);
 
     // Subscribe to user changes to know if there is a current class
-    this.userService.userObservable().subscribe(
+    this._userService.userObservable().subscribe(
       user => {
         if (user.username) {
           this.checkCurrentCourse();
@@ -85,7 +85,12 @@ export class CourseService {
                   resolve(data);
                 },
                 err => {
-                  reject(err);
+                  if (err._body && (err._body == "WRONG_USER")) {
+                    this._userService.logout();
+                    reject("You have been disconnected");
+                  } else {
+                    reject(err);
+                  }
                 },
               );
         }
@@ -112,13 +117,44 @@ export class CourseService {
                   resolve(data);
                 },
                 err => {
-                  reject(err);
+                  if (err._body && (err._body == "WRONG_USER")) {
+                    this._userService.logout();
+                    reject("You have been disconnected");
+                  } else {
+                    reject(err);
+                  }
                 },
               );
         }
       }
     )
   }
+
+  /**
+   * remove a course
+   * @param course
+   * @returns {Promise<Course[]>}
+   */
+  deleteCourse(course: Course): Promise<void> {
+
+    return new Promise<Course[]>((resolve, reject) => {
+      this.authHttp
+          .delete(`${this.coursesUrl}/${course.id}`, {headers: CommonHeaders.contentHeaders})
+          .subscribe(
+            () => {
+              resolve();
+            },
+            err => {
+              if (err._body && (err._body == "WRONG_USER")) {
+                this._userService.logout();
+                reject("You have been disconnected");
+              } else {
+                reject(err);
+              }
+            });
+    })
+  }
+
 
   /**
    * get A course for the connected user
@@ -141,13 +177,25 @@ export class CourseService {
   }
 
   /**
+   * reset a course (remove all users values and choices about this course)
+   * @returns {Promise<Course>}
+   */
+  resetCourse(uid: string): Promise < void > {
+    return this.authHttp.get(`${this.coursesUrl}/${uid}/reset`)
+               .toPromise()
+               .then(response => {
+                 return response;
+               })
+               .catch(error => this.handleError(error, this._logger));
+  }
+
+  /**
    * Save a course
    * @param course
    * @returns Promise<Course>
    */
-  save(course: Course): Promise < Course > {
-    if (course.id
-    ) {
+  saveCourse(course: Course): Promise < Course > {
+    if (course.id) {
       return this.put(course);
     }
     return this.post(course);
@@ -439,7 +487,7 @@ export class CourseService {
     //logger.error(error);
     //console.log('======');
 
-    this.userService.checkAuthent();
+    this._userService.checkAuthent();
 
     if (typeof error.json === "function") {
       error = error.json()
@@ -457,8 +505,11 @@ export class CourseService {
    * @param course
    */
   static calcBooleans(course: Course) {
-    course.new = ((course.dateSeen == null) || ((new Date().getTime() - course.dateSeen.getTime()) < 1000 * 60));
+    // still new during half a minute after being seen
+    course.new = ((course.dateSeen == null) || ((new Date().getTime() - course.dateSeen.getTime()) < 1000 * 30));
+    // Done if there is a "date followed end"
     course.done = ((course.dateFollowed != null) && (course.dateFollowedEnd != null));
+    // In progress if there is a "date followed" and no "date followed end"
     course.inProgress = ((course.dateFollowed != null) && (course.dateFollowedEnd == null));
   }
 

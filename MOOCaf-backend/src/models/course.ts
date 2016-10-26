@@ -1,18 +1,13 @@
-import * as _ from "lodash";
 import db from "./db";
-import {ParagraphType} from "./eParagraphType";
-import {ParagraphContentType} from "./eParagraphContentType";
-import {ICourse, modelICourse} from "./iCourse";
+import { ICourse, modelICourse } from "./iCourse";
 import Mongoose = require("mongoose");
-import {IParagraph} from "./iParagraph";
-var Schema = Mongoose.Schema;
 var debug = require('debug')('server:model:course');
 
 export default class Course extends ICourse {
 
   /**
    * Constructor
-   * @param mongoose.Document<ICourse>
+   * @param document
    */
   constructor(document: {}) {
     super(document);
@@ -61,7 +56,7 @@ export default class Course extends ICourse {
             }));
           },
           err => {
-            // debug("find " + err);
+            debug("find " + err);
             db.init();
             this.find()
               .then(result => resolve(result))
@@ -120,6 +115,32 @@ export default class Course extends ICourse {
 
     })
   }
+
+  /**
+   * Delete a course
+   * @param courseId
+   * @returns {Promise<void>}
+   */
+  static remove(courseId: string): Promise < void > {
+    //debug("remove");
+    return new Promise < void >((resolve, reject) => {
+
+      // Do the search
+      modelICourse.remove({_id: courseId})
+                 .lean()
+                 .exec()
+                 .then(
+                   () => {
+                     resolve();
+                   },
+                   err => {
+                     debug("remove " + err);
+                     reject(err);
+                   })
+      ;
+    })
+  }
+
 
 
 }

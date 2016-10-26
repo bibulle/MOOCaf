@@ -302,6 +302,8 @@ export default class CourseService {
             // Let's end it
             if (userCourse.percentFollowed >= 1) {
               userCourse.dateFollowedEnd = courseCounts.lastDone;
+            } else {
+              userCourse.dateFollowedEnd = null;
             }
           }
 

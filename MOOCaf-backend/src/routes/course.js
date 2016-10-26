@@ -80,6 +80,44 @@ courseRouter.route('/:course_id')
         console.log(err);
         response.status(500).send("System error " + err);
     });
+})
+    .delete((request, response) => {
+    let courseId = request.params['course_id'];
+    debug("DELETE /" + courseId);
+    // TODO : Add a check of user right
+    // remove it
+    course_1.default.remove(courseId)
+        .then(() => {
+        UserCourse.removeByCourseId(courseId)
+            .then(() => {
+            statService_1.default.calcStatsUser(request['user']["id"]);
+            response.status(200).json({ status: 200, message: "Delete done " });
+        })
+            .catch(err => {
+            console.log(err);
+            response.status(500).json({ status: 500, message: "System error " + err });
+        });
+    })
+        .catch(err => {
+        console.log(err);
+        response.status(500).json({ status: 500, message: "System error " + err });
+    });
+});
+courseRouter.route('/:course_id/reset')
+    .get((request, response) => {
+    var courseId = request.params['course_id'];
+    debug("GET /" + courseId + "/reset");
+    // TODO : Add a check of user right
+    UserCourse.removeByCourseId(courseId)
+        .then(() => {
+        // debug(userCourse);
+        statService_1.default.calcStatsUser(request['user']["id"]);
+        response.status(200).json({ status: 200, message: "Reset done " });
+    })
+        .catch(err => {
+        console.log(err);
+        response.status(500).json({ status: 500, message: "System error " + err });
+    });
 });
 courseRouter.route('/:course_id/userValues')
     .put((request, response) => {
@@ -658,6 +696,7 @@ function _respondWithCoursesList(request, response) {
     if (request.query['progressOnly']) {
         progressOnly = (request.query['progressOnly'] === "true");
     }
+    debug("_respondWithCoursesList " + currentOnly + " " + progressOnly);
     courseService_1.default.getCourses(request['user']["id"], currentOnly, progressOnly)
         .then((completedCourses) => {
         response.json({ data: completedCourses });

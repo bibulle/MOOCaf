@@ -1,6 +1,6 @@
 .menu {
-  /*max-height: 4em;*/
-  /*min-height: 2em;*/
+  max-height: 3em;
+  min-height: 3em;
 }
 
 .menu button {
@@ -60,4 +60,6 @@
   display: inherit;
 }
 
-
+course-card {
+  /*margin: 8px;*/
+}

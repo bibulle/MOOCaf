@@ -103,8 +103,64 @@ courseRouter.route('/:course_id')
                       response.status(500).send("System error " + err);
                     });
 
+            })
+            // ============================================
+            // remove an course
+            // ============================================
+            .delete((request: Request, response: Response) => {
+
+              let courseId = request.params['course_id'];
+
+              debug("DELETE /" + courseId);
+
+              // TODO : Add a check of user right
+
+              // remove it
+              Course.remove(courseId)
+                   .then(() => {
+                     UserCourse.removeByCourseId(courseId)
+                               .then(() => {
+                                 StatService.calcStatsUser(request['user']["id"]);
+                                 response.status(200).json({status: 200, message: "Delete done "});
+                               })
+                               .catch(err => {
+                                 console.log(err);
+                                 response.status(500).json({status: 500, message: "System error " + err});
+                               });
+                   })
+                   .catch(err => {
+                     console.log(err);
+                     response.status(500).json({status: 500, message: "System error " + err});
+                   });
             });
 
+
+courseRouter.route('/:course_id/reset')
+            // ====================================
+            // reset a course
+            // ====================================
+            .get((request: Request, response: Response) => {
+
+              var courseId = request.params['course_id'];
+
+              debug("GET /" + courseId + "/reset");
+
+              // TODO : Add a check of user right
+
+              UserCourse.removeByCourseId(courseId)
+                        .then(() => {
+                          // debug(userCourse);
+
+                          StatService.calcStatsUser(request['user']["id"]);
+
+                          response.status(200).json({status: 200, message: "Reset done "});
+                        })
+                        .catch(err => {
+                          console.log(err);
+                          response.status(500).json({status: 500, message: "System error " + err});
+                        });
+
+            });
 
 courseRouter.route('/:course_id/userValues')
             // ====================================
@@ -842,6 +898,7 @@ function _respondWithCoursesList(request: Request, response: Response) {
     progressOnly = (request.query['progressOnly'] === "true");
   }
 
+  debug("_respondWithCoursesList "+currentOnly+" "+progressOnly);
   CourseService.getCourses(request['user']["id"], currentOnly, progressOnly)
                .then((completedCourses: ICourse[]) => {
                    response.json({data: completedCourses});

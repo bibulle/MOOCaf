@@ -76,7 +76,7 @@ var _model = Mongoose.model('UserCourse', _schema);
 class UserCourse extends IUserCourse {
     /**
      * Constructor
-     * @param mongoose.Document<IUser>
+     * @param document
      */
     constructor(document) {
         super(document);
@@ -137,6 +137,26 @@ class UserCourse extends IUserCourse {
                     result['id'] = result._id.toString();
                     resolve(result);
                 }
+            });
+        });
+    }
+    /**
+     * Delete all userCourses for a course
+     * @returns {Promise<void>}
+     * @param courseId
+     */
+    static removeByCourseId(courseId) {
+        //debug("remove");
+        return new Promise((resolve, reject) => {
+            // Do the search
+            _model.remove({ courseId: courseId })
+                .lean()
+                .exec()
+                .then(() => {
+                resolve();
+            }, err => {
+                debug("remove " + err);
+                reject(err);
             });
         });
     }
