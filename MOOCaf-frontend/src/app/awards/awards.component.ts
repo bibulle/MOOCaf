@@ -6,6 +6,7 @@ import { NotificationService } from "../widget/notification/notification.service
 
 import { Award } from "./award";
 import { AwardService } from "./award.service";
+import { UserService } from "../user/user.service";
 
 @Component({
   selector: 'awards',
@@ -20,13 +21,22 @@ export class AwardsComponent implements OnInit {
   private awardsNotEarned: Award[];
 
   private edited: boolean = false;
+  private userIsAdmin: boolean = false;
 
   constructor(private _logger: Logger,
               private _notificationService: NotificationService,
-              private _awardService: AwardService) {
+              private _awardService: AwardService,
+              private _userService: UserService) {
   }
 
   ngOnInit() {
+    // check user right
+    this._userService.userObservable().subscribe(
+      () => {
+        this.userIsAdmin = this._userService.isAdmin();
+      });
+
+
     this._awardService.getAwards()
         .then(awards => {
           this._filterAwards(awards);

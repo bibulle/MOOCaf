@@ -5,6 +5,7 @@ import { Logger } from "angular2-logger/core";
 import { CourseService } from "../course/course.service";
 import { NotificationService } from "../widget/notification/notification.service";
 import { ActivatedRoute, Router } from "@angular/router";
+import { UserService } from "../user/user.service";
 
 @Component({
   selector: 'catalogue',
@@ -24,6 +25,9 @@ export class CatalogueComponent implements OnInit {
   private courses: Course[];
   sortedCourses: Course[];
 
+  private edited: boolean = false;
+
+  private userIsAdmin: boolean = false;
 
   // The queue to manage user choices
   private subjectFilter: Subject<{}>;
@@ -32,18 +36,23 @@ export class CatalogueComponent implements OnInit {
   // Show only current courses for this user
   private onlyCurrent = false;
 
-  edited: boolean = false;
-
   constructor(private _logger: Logger,
               private _courseService: CourseService,
               private _notificationService: NotificationService,
               public router: Router,
-              private route: ActivatedRoute) {
+              private route: ActivatedRoute,
+              private _userService: UserService) {
   }
 
   ngOnInit() {
 
     this.onlyCurrent = this.route.snapshot.data['onlyCurrent'];
+
+    // check user right
+    this._userService.userObservable().subscribe(
+      () => {
+        this.userIsAdmin = this._userService.isAdmin();
+      });
 
     // Apply UI changes
     if (!this.subjectFilter) {
@@ -86,18 +95,18 @@ export class CatalogueComponent implements OnInit {
 
 
   addCourse() {
-      //this._logger.debug("addCourse");
+    //this._logger.debug("addCourse");
 
-      this._courseService.addCourse(this.onlyCurrent)
-          .then(courses => {
-            this.courses = courses;
-            this.previousFilterJson="";
-            this.filterList();
-          })
-          .catch(error => {
-            this._logger.error(error);
-            this._notificationService.error("System error !!", "Error saving you changes !!\n\t" + (error.message || error.error || error));
-          });
+    this._courseService.addCourse(this.onlyCurrent)
+        .then(courses => {
+          this.courses = courses;
+          this.previousFilterJson = "";
+          this.filterList();
+        })
+        .catch(error => {
+          this._logger.error(error);
+          this._notificationService.error("System error !!", "Error saving you changes !!\n\t" + (error.message || error.error || error));
+        });
   }
 
   /**
@@ -129,8 +138,6 @@ export class CatalogueComponent implements OnInit {
           this._notificationService.error("Error", err)
         });
   }
-
-
 
 
   /**
