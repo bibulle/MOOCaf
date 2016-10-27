@@ -1,6 +1,6 @@
 <div class="md-content awards" flex="100" layout="column" layout-align="start stretch" [class.edited]="edited">
 
-  <div class="edit-awards-buttons">
+  <div class="edit-awards-buttons" *ngIf="userIsAdmin">
     <button md-icon-button (click)="addAward()" class="md-primary" *ngIf="edited"
             title="Add an award">
       <md-icon>add</md-icon>
