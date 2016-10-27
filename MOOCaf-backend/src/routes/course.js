@@ -34,17 +34,22 @@ courseRouter.route('/')
     .get((request, response) => {
     //debug("GET /");
     //debug("connected user : " + JSON.stringify(request['user']));
-    var currentOnly = false;
-    var progressOnly = false;
-    if (request.query['currentOnly']) {
-        currentOnly = (request.query['currentOnly'] === "true");
-    }
-    if (request.query['progressOnly']) {
-        progressOnly = (request.query['progressOnly'] === "true");
-    }
-    courseService_1.default.getCourses(request['user']["id"], currentOnly, progressOnly)
-        .then((completedCourses) => {
-        response.json({ data: completedCourses });
+    _respondWithCoursesList(request, response);
+});
+// ====================================
+// route add a new course
+// ====================================
+courseRouter.route('/add')
+    .get((request, response) => {
+    //debug("GET /add");
+    //debug("connected user : " + JSON.stringify(request['user']));
+    var newCourse = new course_1.default({
+        name: "new Course",
+        description: "Course description",
+    });
+    course_1.default.updateOrCreate(newCourse)
+        .then(() => {
+        _respondWithCoursesList(request, response);
     })
         .catch(err => {
         console.log(err);
@@ -74,6 +79,44 @@ courseRouter.route('/:course_id')
         .catch(err => {
         console.log(err);
         response.status(500).send("System error " + err);
+    });
+})
+    .delete((request, response) => {
+    let courseId = request.params['course_id'];
+    debug("DELETE /" + courseId);
+    // TODO : Add a check of user right
+    // remove it
+    course_1.default.remove(courseId)
+        .then(() => {
+        UserCourse.removeByCourseId(courseId)
+            .then(() => {
+            statService_1.default.calcStatsUser(request['user']["id"]);
+            response.status(200).json({ status: 200, message: "Delete done " });
+        })
+            .catch(err => {
+            console.log(err);
+            response.status(500).json({ status: 500, message: "System error " + err });
+        });
+    })
+        .catch(err => {
+        console.log(err);
+        response.status(500).json({ status: 500, message: "System error " + err });
+    });
+});
+courseRouter.route('/:course_id/reset')
+    .get((request, response) => {
+    var courseId = request.params['course_id'];
+    debug("GET /" + courseId + "/reset");
+    // TODO : Add a check of user right
+    UserCourse.removeByCourseId(courseId)
+        .then(() => {
+        // debug(userCourse);
+        statService_1.default.calcStatsUser(request['user']["id"]);
+        response.status(200).json({ status: 200, message: "Reset done " });
+    })
+        .catch(err => {
+        console.log(err);
+        response.status(500).json({ status: 500, message: "System error " + err });
     });
 });
 courseRouter.route('/:course_id/userValues')
@@ -638,6 +681,31 @@ courseRouter.route('/:course_id/:paragraph_id/userChoice/check')
         response.status(500).json({ status: 500, message: "System error " + err });
     });
 });
+/**
+ * Get the courses list (for this user)
+ * @param request
+ * @param response
+ * @private
+ */
+function _respondWithCoursesList(request, response) {
+    var currentOnly = false;
+    var progressOnly = false;
+    if (request.query['currentOnly']) {
+        currentOnly = (request.query['currentOnly'] === "true");
+    }
+    if (request.query['progressOnly']) {
+        progressOnly = (request.query['progressOnly'] === "true");
+    }
+    //debug("_respondWithCoursesList "+currentOnly+" "+progressOnly);
+    courseService_1.default.getCourses(request['user']["id"], currentOnly, progressOnly)
+        .then((completedCourses) => {
+        response.json({ data: completedCourses });
+    })
+        .catch(err => {
+        console.log(err);
+        response.status(500).send("System error " + err);
+    });
+}
 /**
  * Get a course (filled) by Id
  * @param courseId

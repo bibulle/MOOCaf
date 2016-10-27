@@ -76,6 +76,7 @@ home, login, catalogue, course-page, progression, awards {
   -webkit-box-direction: normal;
   flex-direction: row;
   display: flex;
+  position: relative;
 }
 
 not-found {

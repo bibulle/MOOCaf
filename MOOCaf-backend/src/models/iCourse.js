@@ -28,6 +28,10 @@ var _schema = new Mongoose.Schema({
         type: String,
         require: false
     },
+    publishDate: {
+        type: Date,
+        require: false
+    },
     note: {
         type: Number,
         require: false

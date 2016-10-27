@@ -1,4 +1,14 @@
 <div class="catalogue md-content" flex="100" layout="column" layout-align="start stretch">
+  <div class="content-part-buttons">
+    <button md-icon-button (click)="addCourse()" class="md-primary" *ngIf="edited"
+            title="Add a course">
+      <md-icon>add</md-icon>
+    </button>
+    <button md-icon-button (click)="toggleEditMode()" [class.md-accent]="edited" [class.md-primary]="!edited"
+            title="Edit page">
+      <md-icon>edit</md-icon>
+    </button>
+  </div>
   <div class="menu" layout="row" layout-align="start center">
     <div flex="100" layout="row" layout-align="start center">
       <div flex="50" layout="row" layout-align="center center">
@@ -23,7 +33,7 @@
       </div>
     </div>
   </div>
-  <div class="catalogue-list" layout="row" layout-wrap layout-align="space-around" layout-margin scroll-detector="catalogue-list">
-    <course-card class="course" flex="30" *ngFor="let course of sortedCourses"  [course]="course"></course-card>
+  <div class="catalogue-list" layout="row" layout-wrap layout-align="space-around" scroll-detector="catalogue-list">
+    <course-card layout-margin class="course" flex="{{edited ? 50 : 30}}" *ngFor="let course of sortedCourses" [course]="course" [edited]="edited" (notifyCoursesChange)='onCoursesChange($event)'></course-card>
   </div>
 </div>

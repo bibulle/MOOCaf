@@ -1,13 +1,11 @@
 "use strict";
 const db_1 = require("./db");
 const iCourse_1 = require("./iCourse");
-const Mongoose = require("mongoose");
-var Schema = Mongoose.Schema;
 var debug = require('debug')('server:model:course');
 class Course extends iCourse_1.ICourse {
     /**
      * Constructor
-     * @param mongoose.Document<ICourse>
+     * @param document
      */
     constructor(document) {
         super(document);
@@ -50,7 +48,7 @@ class Course extends iCourse_1.ICourse {
                     return f;
                 }));
             }, err => {
-                // debug("find " + err);
+                debug("find " + err);
                 db_1.default.init();
                 this.find()
                     .then(result => resolve(result))
@@ -97,6 +95,26 @@ class Course extends iCourse_1.ICourse {
                     reject(err);
                 });
             }
+        });
+    }
+    /**
+     * Delete a course
+     * @param courseId
+     * @returns {Promise<void>}
+     */
+    static remove(courseId) {
+        //debug("remove");
+        return new Promise((resolve, reject) => {
+            // Do the search
+            iCourse_1.modelICourse.remove({ _id: courseId })
+                .lean()
+                .exec()
+                .then(() => {
+                resolve();
+            }, err => {
+                debug("remove " + err);
+                reject(err);
+            });
         });
     }
 }

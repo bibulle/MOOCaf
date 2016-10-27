@@ -1,34 +1,76 @@
+.course-card-content {
+  position: relative;
+  box-shadow: 0 2px 1px -1px rgba(0, 0, 0, 0.2), 0 1px 1px 0 rgba(0, 0, 0, 0.14), 0 1px 3px 0 rgba(0, 0, 0, 0.12);
+  transition: box-shadow 280ms cubic-bezier(0.4, 0, 0.2, 1);
+  will-change: box-shadow;
+  border-radius: 2px;
+  background: white;
+  color: black;
+
+  margin-top: 8px;
+  margin-bottom: 8px;
+  margin-left: 8px;
+}
+
+.course {
+  cursor: pointer;
+  /*margin-top: 8px;*/
+  /*margin-bottom: 8px;*/
+  /*margin-left: 8px;*/
+
+  box-shadow: none;
+  transition: none;
+  will-change: inherit;
+
+  height: 100%
+}
+
+.course:hover {
+  background-color: rgba(0, 0, 0, 0.12);
+}
+
 .course md-card-title {
   margin-bottom: 5px;
 }
+.course  .publish-date, .published .course .created-date {
+  display: none;
+}
+.course  .created-date, .published .course .publish-date {
+  display: inherit;
+}
+
 .course md-card-subtitle {
   text-align: right;
   font-size: 0.7em;
   margin-top: -1em;
   margin-right: 6em;
 }
+
 .course .md-card-footer {
   width: 100%;
   padding-right: 38px;
   /*margin-bottom: 8px;*/
   margin-left: -5px;
   position: absolute;
-  bottom: 0px;
+  bottom: 0;
 }
 
 .course .note > div {
   width: 7.5em;
 }
+
 .course .note .note_1 {
   position: absolute;
   height: 1.5em;
   overflow: hidden;
 }
+
 .course .note .note_1_1 {
   width: 7.5em;
   color: #FFF099;
   height: 1.5em;
 }
+
 .course .note .note_2 {
   color: #EDEDED;
 }
@@ -37,12 +79,14 @@
   color: #EDEDED;
   z-index: 20;
 }
+
 .course .favorite .favorite {
   color: #cccccc;
 }
+
 .course .favorite button {
   min-width: inherit;
-  padding: 0px;
+  padding: 0;
   line-height: inherit;
 }
 
@@ -50,33 +94,98 @@
   padding-bottom: 2px;
   font-size: 0.8em;
 }
+
 .course .followed > div {
   width: 7em;
   text-align: center;
   background-color: #CCCCCC;
 }
+
 .course .followed .followed_1 {
   position: absolute;
   overflow: hidden;
 }
+
 .course .followed .followed_1_1 {
   width: 7em;
   height: 1.3em;
   background-color: #999999;
   color: #CCCCCC;
 }
+
 .course .followed .followed_2 {
   background-color: #CCCCCC;
   color: #999999;
   height: 1.3em;
 }
 
-.course {
-  cursor: pointer;
+/* ============== */
+
+.editor {
+  display: none;
+  margin: 6px;
+  padding: 5px;
+  border: 1px solid #CCC;
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+  border-radius: 3px;
 }
-.course:hover {
-  background-color: rgba(0,0,0,0.12);
+
+.edited .editor {
+  display: flex;
 }
+
+.course-card-buttons {
+  position: absolute;
+  right: 8px;
+  top: 9px;
+  z-index: 20;
+}
+
+.course-card-buttons .warning {
+  display: none;
+  position: absolute;
+  top: -11px;
+  left: 13px;
+  font-size: 3em;
+}
+
+.course-card-buttons .md-warn .warning {
+  display: inherit;
+}
+
+.course-card-buttons .material-icons {
+  font-size: 18px;
+}
+
+.course-card-buttons md-icon {
+  width: 18px;
+  height: 18px;
+}
+
+.course-card-buttons [md-icon-button] {
+  width: 30px;
+  height: 30px;
+  line-height: 18px;
+}
+
+.course-card-buttons .clear {
+  display: none;
+  position: absolute;
+  right: 9px;
+  top: 1px;
+  font-size: 24px;
+}
+
+.published .course-card-buttons .clear {
+  display: inherit;
+}
+
+.published .course-card-buttons .publish {
+  color: #CCCCCC;
+}
+
+/* ============== */
 
 .clipping-banner {
   overflow: hidden;
@@ -86,33 +195,43 @@
   bottom: 0;
   left: 0;
 }
+
 .banner {
-  color:  white;
+  color: white;
   position: absolute;
-  top: 1em;
-  right: -5em;
+  top: 1.2em;
+  right: -4.8em;
 
   transform: rotate(30deg);
   width: 15em;
   text-align: center;
-  text-shadow: 1px 0px 2px rgba(0, 0, 0, 1);
+  text-shadow: 1px 0 2px rgba(0, 0, 0, 1);
 }
+
 .banner.done {
   background: #1976D2;
   color: #FFF;
   text-shadow: none;
 }
+
+.banner.not-published {
+  background: #CCC;
+  color: #FFF;
+  /*text-shadow: none;*/
+}
+
 .banner.progress {
   background: #009688;
   color: #FFF;
   text-shadow: none;
 }
+
 .banner.new {
   background: #ff3019; /* Old browsers */
-  background: -moz-linear-gradient(left,  #ff3019 0%, #ff3019 32%, #ede9a6 49%, #ede9a6 49%, #ff3019 66%, #ff3019 100%); /* FF3.6-15 */
-  background: -webkit-linear-gradient(left,  #ff3019 0%,#ff3019 32%,#ede9a6 49%,#ede9a6 49%,#ff3019 66%,#ff3019 100%); /* Chrome10-25,Safari5.1-6 */
-  background: linear-gradient(to right,  #ff3019 0%,#ff3019 32%,#ede9a6 49%,#ede9a6 49%,#ff3019 66%,#ff3019 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
-  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ff3019', endColorstr='#ff3019',GradientType=1 ); /* IE6-9 */
+  background: -moz-linear-gradient(left, #ff3019 0%, #ff3019 32%, #ede9a6 49%, #ede9a6 49%, #ff3019 66%, #ff3019 100%); /* FF3.6-15 */
+  background: -webkit-linear-gradient(left, #ff3019 0%, #ff3019 32%, #ede9a6 49%, #ede9a6 49%, #ff3019 66%, #ff3019 100%); /* Chrome10-25,Safari5.1-6 */
+  background: linear-gradient(to right, #ff3019 0%, #ff3019 32%, #ede9a6 49%, #ede9a6 49%, #ff3019 66%, #ff3019 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ff3019', endColorstr='#ff3019', GradientType=1); /* IE6-9 */
 
   background-size: 200% 200%;
 
@@ -122,17 +241,37 @@
 }
 
 @-webkit-keyframes AnimationName {
-  0%{background-position:0% 50%}
-  15%{background-position:100% 50%}
-  100%{background-position:100% 50%}
+  0% {
+    background-position: 0 50%
+  }
+  15% {
+    background-position: 100% 50%
+  }
+  100% {
+    background-position: 100% 50%
+  }
 }
+
 @-moz-keyframes AnimationName {
-  0%{background-position:0% 50%}
-  15%{background-position:100% 50%}
-  100%{background-position:100% 50%}
+  0% {
+    background-position: 0 50%
+  }
+  15% {
+    background-position: 100% 50%
+  }
+  100% {
+    background-position: 100% 50%
+  }
 }
+
 @keyframes AnimationName {
-  0%{background-position:0% 50%}
-  15%{background-position:100% 50%}
-  100%{background-position:100% 50%}
+  0% {
+    background-position: 0 50%
+  }
+  15% {
+    background-position: 100% 50%
+  }
+  100% {
+    background-position: 100% 50%
+  }
 }

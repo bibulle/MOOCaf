@@ -32,6 +32,8 @@ export class CatalogueComponent implements OnInit {
   // Show only current courses for this user
   private onlyCurrent = false;
 
+  edited: boolean = false;
+
   constructor(private _logger: Logger,
               private _courseService: CourseService,
               private _notificationService: NotificationService,
@@ -57,25 +59,14 @@ export class CatalogueComponent implements OnInit {
             }
           );
     }
-
-    this._courseService.getCourses(this.onlyCurrent)
-        .then(courses => {
-          if (this.onlyCurrent && (courses.length == 0)) {
-            this.router.navigate(['catalogue']);
-          } else if (this.onlyCurrent && (courses.length == 1)) {
-            this.router.navigate(['class', courses[0].id]);
-          } else {
-            this.courses = courses;
-            this.filterList();
-          }
-        })
-        .catch(err => {
-          this._notificationService.error("Error", err)
-        });
+    this._getCourses();
 
 
   }
 
+  toggleEditMode() {
+    this.edited = !this.edited;
+  }
 
   toggleFollowed() {
     this.filter.followed = (this.filter.followed + 1) % 3;
@@ -92,6 +83,55 @@ export class CatalogueComponent implements OnInit {
     this.filter.sortType = Math.floor(this.filter.sort / 2);
     this.filterList();
   }
+
+
+  addCourse() {
+      //this._logger.debug("addCourse");
+
+      this._courseService.addCourse(this.onlyCurrent)
+          .then(courses => {
+            this.courses = courses;
+            this.previousFilterJson="";
+            this.filterList();
+          })
+          .catch(error => {
+            this._logger.error(error);
+            this._notificationService.error("System error !!", "Error saving you changes !!\n\t" + (error.message || error.error || error));
+          });
+  }
+
+  /**
+   * THe courses list has changed
+   */
+  onCoursesChange() {
+    // this._logger.debug("onCoursesChange");
+    this._getCourses();
+  }
+
+  /**
+   *  Get and prepare the course list
+   * @private
+   */
+  private _getCourses() {
+    this._courseService.getCourses(this.onlyCurrent)
+        .then(courses => {
+          if (this.onlyCurrent && (courses.length == 0)) {
+            this.router.navigate(['catalogue']);
+          } else if (this.onlyCurrent && (courses.length == 1)) {
+            this.router.navigate(['class', courses[0].id]);
+          } else {
+            this.courses = courses;
+            this.previousFilterJson = "";
+            this.filterList();
+          }
+        })
+        .catch(err => {
+          this._notificationService.error("Error", err)
+        });
+  }
+
+
+
 
   /**
    * Add an event to sort/filter the course list

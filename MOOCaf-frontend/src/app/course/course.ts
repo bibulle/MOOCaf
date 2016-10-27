@@ -7,6 +7,7 @@ export class Course {
   id: string;
   name: string;
   description: string;
+  publishDate: Date;
   note: number;
   noteCount: number;
   parts: CoursePart[];

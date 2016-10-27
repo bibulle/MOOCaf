@@ -254,6 +254,9 @@ class CourseService {
                     if (userCourse.percentFollowed >= 1) {
                         userCourse.dateFollowedEnd = courseCounts.lastDone;
                     }
+                    else {
+                        userCourse.dateFollowedEnd = null;
+                    }
                 }
                 resolve(userCourse);
             })

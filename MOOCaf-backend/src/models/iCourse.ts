@@ -12,6 +12,10 @@ export class ICourse {
   // The description
   description: string;
 
+  // The publish date
+  publishDate: Date;
+
+
   // The average note (choosen by the users)
   note: number;
   // The note count (to add a new note to the average)
@@ -61,6 +65,10 @@ var _schema: Mongoose.Schema = new Mongoose.Schema({
     },
     description: {
       type: String,
+      require: false
+    },
+    publishDate: {
+      type: Date,
       require: false
     },
     note: {
