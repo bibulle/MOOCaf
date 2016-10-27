@@ -72,7 +72,7 @@ export class CourseCardComponent implements OnInit {
   }
 
   /**
-   * On scrolling, is this cours card visible
+   * On scrolling, is this course card visible
    * @param event
    */
   visibilityChange(event:VisibilityEvent) {
@@ -116,7 +116,7 @@ export class CourseCardComponent implements OnInit {
 
 
   /**
-   * SAve the cours on edition
+   * Save the course on edition
    */
   saveCourse() {
     this._courseService.saveCourse(this.course)
@@ -127,7 +127,8 @@ export class CourseCardComponent implements OnInit {
         })
         .catch(err => {
           this._logger.error(err);
-          this._notificationService.error("Error saving your choice", err.status+" : "+err.message);
+          this._notificationService.error("Error saving your choice", (err.statusText || err.message || err.error || err));
+          this.notifyCoursesChange.emit()
         });
 
   }
@@ -152,7 +153,7 @@ export class CourseCardComponent implements OnInit {
           })
           .catch(error => {
             this._logger.error(error);
-            this._notificationService.error("System error !!", "Error saving you changes !!\n\t" + (error.message || error.error || error));
+            this._notificationService.error("System error !!", "Error saving you changes !!\n\t" + (error.statusText || error.message || error.error || error));
           });
     }
   }
@@ -170,7 +171,7 @@ export class CourseCardComponent implements OnInit {
         })
         .catch(error => {
           this._logger.error(error);
-          this._notificationService.error("System error !!", "Error resetting the course !!\n\t" + (error.message || error.error || error));
+          this._notificationService.error("System error !!", "Error resetting the course !!\n\t" + (error.statusText || error.message || error.error || error));
         });
   }
 

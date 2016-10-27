@@ -21,8 +21,12 @@ class Course extends iCourse_1.ICourse {
                 if (err) {
                     db_1.default.init();
                     this.count()
-                        .then(result => resolve(result))
-                        .catch(err => reject(err));
+                        .then(result => {
+                        resolve(result);
+                    })
+                        .catch(err => {
+                        reject(err);
+                    });
                 }
                 else {
                     resolve(count);

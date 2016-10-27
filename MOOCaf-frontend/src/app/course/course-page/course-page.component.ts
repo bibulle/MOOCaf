@@ -4,9 +4,10 @@ import { Subject } from "rxjs";
 import { NotificationService } from "../../widget/notification/notification.service";
 import { CourseService } from "../course.service";
 import { Logger } from "angular2-logger/core";
-import { Router, ActivatedRoute, Params } from "@angular/router";
+import { Router, ActivatedRoute } from "@angular/router";
 import { ParagraphType } from "../../paragraph/paragraph-type.enum";
 import { Paragraph } from "../../paragraph/paragraph";
+import { UserService } from "../../user/user.service";
 
 @Component({
   selector: 'course-page',
@@ -33,11 +34,14 @@ export class CoursePageComponent implements OnInit {
 
   edited: boolean = false;
 
+  private userIsAdmin: boolean = false;
+
   constructor(private route: ActivatedRoute,
               public router: Router,
               private _logger: Logger,
               private _courseService: CourseService,
-              private _notificationService: NotificationService) {
+              private _notificationService: NotificationService,
+              private _userService: UserService) {
 
     /// Get current course count
     this._courseService.currentCourseObservable().subscribe(
@@ -55,6 +59,13 @@ export class CoursePageComponent implements OnInit {
    */
 
   ngOnInit() {
+
+    // check user right
+    this._userService.userObservable().subscribe(
+      () => {
+        this.userIsAdmin = this._userService.isAdmin();
+      });
+
 
     let id = this.route.snapshot.params['id'];
 
@@ -92,7 +103,7 @@ export class CoursePageComponent implements OnInit {
                                })
                                .catch(error => {
                                  this._logger.error(error);
-                                 this._notificationService.error("System error !!", "Error saving you changes !!\n\t" + (error.message || error.error || error));
+                                 this._notificationService.error("System error !!", "Error saving you changes !!\n\t" + (error.statusText || error.message || error.error || error));
                                });
                   },
                   error => {
@@ -206,7 +217,7 @@ export class CoursePageComponent implements OnInit {
         })
         .catch(error => {
           this._logger.error(error);
-          this._notificationService.error("System error !!", "Error saving you changes !!\n\t" + (error.message || error.error || error));
+          this._notificationService.error("System error !!", "Error saving you changes !!\n\t" + (error.statusText || error.message || error.error || error));
         });
   }
 
@@ -246,7 +257,7 @@ export class CoursePageComponent implements OnInit {
         })
         .catch(error => {
           this._logger.error(error);
-          this._notificationService.error("System error !!", "Error saving you changes !!\n\t" + (error.message || error.error || error));
+          this._notificationService.error("System error !!", "Error saving you changes !!\n\t" + (error.statusText || error.message || error.error || error));
         });
   }
 
@@ -277,7 +288,7 @@ export class CoursePageComponent implements OnInit {
           })
           .catch(error => {
             this._logger.error(error);
-            this._notificationService.error("System error !!", "Error saving you changes !!\n\t" + (error.message || error.error || error));
+            this._notificationService.error("System error !!", "Error saving you changes !!\n\t" + (error.statusText || error.message || error.error || error));
           });
     }
   }
