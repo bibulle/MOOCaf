@@ -174,4 +174,16 @@ export class CourseCardComponent implements OnInit {
         });
   }
 
+  /**
+   * publish a course
+   */
+  publishCourse() {
+    if (this.course.publishDate) {
+      this.course.publishDate = null;
+    } else {
+      this.course.publishDate = new Date();
+    }
+    this.saveCourse();
+  }
+
 }

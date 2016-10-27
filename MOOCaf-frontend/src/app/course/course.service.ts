@@ -85,7 +85,7 @@ export class CourseService {
                   resolve(data);
                 },
                 err => {
-                  if (err._body && (err._body == "WRONG_USER")) {
+                  if (err['_body'] && (err['_body'] == "WRONG_USER")) {
                     this._userService.logout();
                     reject("You have been disconnected");
                   } else {
@@ -117,7 +117,7 @@ export class CourseService {
                   resolve(data);
                 },
                 err => {
-                  if (err._body && (err._body == "WRONG_USER")) {
+                  if (err['_body'] && (err['_body'] == "WRONG_USER")) {
                     this._userService.logout();
                     reject("You have been disconnected");
                   } else {
@@ -137,7 +137,7 @@ export class CourseService {
    */
   deleteCourse(course: Course): Promise<void> {
 
-    return new Promise<Course[]>((resolve, reject) => {
+    return new Promise<void>((resolve, reject) => {
       this.authHttp
           .delete(`${this.coursesUrl}/${course.id}`, {headers: CommonHeaders.contentHeaders})
           .subscribe(
@@ -145,7 +145,7 @@ export class CourseService {
               resolve();
             },
             err => {
-              if (err._body && (err._body == "WRONG_USER")) {
+              if (err['_body'] && (err['_body'] == "WRONG_USER")) {
                 this._userService.logout();
                 reject("You have been disconnected");
               } else {
@@ -517,7 +517,7 @@ export class CourseService {
    * get dates fom json to date
    */
   static retrieveDates(course: Course) {
-    ['created', 'updated', 'dateSeen', 'dateFollowed', 'dateFollowedEnd']
+    ['publishDate', 'created', 'updated', 'dateSeen', 'dateFollowed', 'dateFollowedEnd']
       .map(s => {
         if (course[s]) {
           course[s] = new Date("" + course[s]);

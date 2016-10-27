@@ -696,7 +696,7 @@ function _respondWithCoursesList(request, response) {
     if (request.query['progressOnly']) {
         progressOnly = (request.query['progressOnly'] === "true");
     }
-    debug("_respondWithCoursesList " + currentOnly + " " + progressOnly);
+    //debug("_respondWithCoursesList "+currentOnly+" "+progressOnly);
     courseService_1.default.getCourses(request['user']["id"], currentOnly, progressOnly)
         .then((completedCourses) => {
         response.json({ data: completedCourses });

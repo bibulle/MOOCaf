@@ -1,18 +1,20 @@
-<div layout="row" layout-align="start stretch" flex="100"  [class.edited]="edited" class="course-card-content">
+<div layout="row" layout-align="start stretch" flex="100"  [class.edited]="edited" [class.published]="course.publishDate" class="course-card-content">
   <div class="course-card-buttons" *ngIf="edited">
     <button md-icon-button (click)="deleteCourse()" class="md-primary" [class.md-warn]="deleteCourseClicked" title="Delete course">
       <md-icon class="delete">delete</md-icon>
       <md-icon class="warning">announcement</md-icon>
     </button>
-    <button md-icon-button (click)="publishCourse()" class="md-primary" title="Publish">
+    <button md-icon-button (click)="publishCourse()" class="md-primary" title="{{course.publishDate ? 'Unpublish' : 'Publish'}}">
       <md-icon class="publish">public</md-icon>
+      <md-icon class="clear">clear</md-icon>
     </button>
     <button md-icon-button (click)="resetCourse()" class="md-primary" title="Reset users works">
       <md-icon class="reset">settings_backup_restore</md-icon>
     </button>
   </div>
   <md-card class="course" flex="100" (click)="launchClass($event)" (visibilityChange)="visibilityChange($event)">
-    <md-card-subtitle>{{course.created | date}}</md-card-subtitle>
+    <md-card-subtitle class="created-date">{{course.created | date}}</md-card-subtitle>
+    <md-card-subtitle class="publish-date">{{course.publishDate | date}}</md-card-subtitle>
     <md-card-title>{{course.name}}</md-card-title>
     <md-card-content>
       {{course.description}}
@@ -46,6 +48,7 @@
       <div class="banner new" *ngIf="course.new">new !!</div>
       <div class="banner done" *ngIf="course.done">done</div>
       <div class="banner progress" *ngIf="course.inProgress">in progress</div>
+      <div class="banner not-published" *ngIf="!course.publishDate">not ready yet</div>
     </div>
   </md-card>
   <div class="editor" flex="100" layout="column" layout-align="center-stretch">
