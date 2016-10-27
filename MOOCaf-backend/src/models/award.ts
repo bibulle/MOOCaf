@@ -11,9 +11,9 @@ export default class Award extends IAward {
    */
   constructor(document: {}) {
     super(document);
-    modelIAward.on('error', function (err) {
-      debug("Error : " + err);
-    });
+    // modelIAward.on('error', function (err) {
+    //   debug("Error : " + err);
+    // });
   }
 
 

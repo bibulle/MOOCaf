@@ -11,9 +11,9 @@ export default class Course extends ICourse {
    */
   constructor(document: {}) {
     super(document);
-    modelICourse.on('error', function (err) {
-      debug("Error : " + err);
-    });
+    // modelICourse.on('error', function (err) {
+    //   debug("Error : " + err);
+    // });
   }
 
 

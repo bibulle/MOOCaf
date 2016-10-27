@@ -1,0 +1,26 @@
+<div class="paragraph" layout="row" layout-align="start stretch" [class.raised]="!data.userDone">
+  <div class="paragraph-buttons">
+  </div>
+  <div class="display" flex="100" layout="row" layout-align="start stretch">
+    <div class="buttons" flex="20" layout="column" layout-align="start stretch">
+      <button md-raised-button color="accent" [disabled]="isClosed(data)" (click)="testUserChoice()">Test</button>
+      <button md-raised-button color="accent" [disabled]="isClosed(data)" (click)="checkUserChoice()">Check</button>
+      <span class="nb-check" *ngIf="data.userCheckCount >= data.maxCheckCount">No more check ({{data.maxCheckCount}} max)</span>
+      <span class="nb-check" *ngIf="(data.userCheckCount <= 1 ) && (data.userCheckCount <  data.maxCheckCount)">{{data.userCheckCount}} check done ({{data.maxCheckCount}} max)</span>
+      <span class="nb-check" *ngIf="(data.userCheckCount >  1 ) && (data.userCheckCount <  data.maxCheckCount)">{{data.userCheckCount}} checks done ({{data.maxCheckCount}} max)</span>
+    </div>
+    <div class="content_box" flex="80">
+      <div class="content_label" [innerHTML]="data.content.label_html"></div>
+      <label [class]="'content_type_'+data.content.type" [class.check_ok]="data.userCheckOK"
+             [class.check_ko]="data.userCheckOK === false">
+        <textarea [(ngModel)]="data.userChoice" [disabled]="isClosed(data)" (keyup)="saveUserChoice()" (change)="saveUserChoice()" title="content"></textarea>
+        <div [innerHTML]="data.content.question_html"></div>
+        <div *ngIf="isClosed(data) && (data.userCheckOK === false) && data.answer" class="answer" title="answer"><p>
+          {{data.answer}}</p></div>
+      </label>
+    </div>
+  </div>
+  <div class="editor" flex="100" [class.error]="editorInError">
+    <textarea [(ngModel)]="editableJson" (keyup)="editorChange()" (change)="editorChange()" title="editor"></textarea>
+  </div>
+</div>

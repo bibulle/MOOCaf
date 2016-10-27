@@ -1,3 +1,3 @@
 export enum ParagraphType {
-  MarkDown, Form
+  MarkDown, Form, Telnet
 }

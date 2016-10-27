@@ -35,15 +35,14 @@ export class ParagraphComponent implements OnInit {
   private deleteParagraphClicked: boolean = false;
   private addParagraphClicked: boolean = false;
 
+  // added to help templating with enums
+  ParagraphType = ParagraphType;
 
   @Input()
   data: Paragraph;
 
   @Input()
   edited: boolean;
-
-  isMarkDown: boolean = false;
-  isForm: boolean = false;
 
   constructor(private _logger: Logger,
               private _courseService: CourseService,
@@ -55,9 +54,6 @@ export class ParagraphComponent implements OnInit {
     if (this.data) {
       this.data = this.data as Paragraph;
       //console.log(this.data);
-
-      this.isMarkDown = (this.data.type == ParagraphType.MarkDown);
-      this.isForm = (this.data.type == ParagraphType.Form);
 
       this.paragraphNums = this.selectedPartNums.slice();
       this.paragraphNums.push(this.paragraphNum);
