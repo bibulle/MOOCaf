@@ -16,6 +16,8 @@ const eParagraphType_1 = require("../models/eParagraphType");
 const eParagraphContentType_1 = require("../models/eParagraphContentType");
 const courseService_1 = require("../service/courseService");
 const statService_1 = require("../service/statService");
+const userService_1 = require("../service/userService");
+const userService_2 = require("../service/userService");
 const courseRouter = express_1.Router();
 exports.courseRouter = courseRouter;
 // Add JWT management
@@ -43,17 +45,20 @@ courseRouter.route('/add')
     .get((request, response) => {
     //debug("GET /add");
     //debug("connected user : " + JSON.stringify(request['user']));
-    var newCourse = new course_1.default({
-        name: "new Course",
-        description: "Course description",
-    });
-    course_1.default.updateOrCreate(newCourse)
-        .then(() => {
-        _respondWithCoursesList(request, response);
-    })
-        .catch(err => {
-        console.log(err);
-        response.status(500).send("System error " + err);
+    var userId = request['user']["id"];
+    userService_1.default.checkUserRightAndRespond(userId, userService_2.EditRightType.EditCoursesCatalogue, null, response, () => {
+        var newCourse = new course_1.default({
+            name: "new Course",
+            description: "Course description",
+        });
+        course_1.default.updateOrCreate(newCourse)
+            .then(() => {
+            _respondWithCoursesList(request, response);
+        })
+            .catch(err => {
+            console.log(err);
+            response.status(500).send("System error " + err);
+        });
     });
 });
 courseRouter.route('/:course_id')
@@ -67,56 +72,63 @@ courseRouter.route('/:course_id')
     var course = new course_1.default(request.body);
     //debug(course);
     //debug("PUT /" + request.params.course_id);
-    course_1.default.updateOrCreate(course)
-        .then(course => {
-        if (course) {
-            response.json({ data: course });
-        }
-        else {
-            response.status(404).json({ status: 404, message: "Course not found" });
-        }
-    })
-        .catch(err => {
-        console.log(err);
-        response.status(500).send("System error " + err);
+    var userId = request['user']["id"];
+    userService_1.default.checkUserRightAndRespond(userId, userService_2.EditRightType.EditCourse, course['id'], response, () => {
+        course_1.default.updateOrCreate(course)
+            .then(course => {
+            if (course) {
+                response.json({ data: course });
+            }
+            else {
+                response.status(404).json({ status: 404, message: "Course not found" });
+            }
+        })
+            .catch(err => {
+            console.log(err);
+            response.status(500).send("System error " + err);
+        });
     });
 })
     .delete((request, response) => {
     let courseId = request.params['course_id'];
     debug("DELETE /" + courseId);
-    // TODO : Add a check of user right
-    // remove it
-    course_1.default.remove(courseId)
-        .then(() => {
-        UserCourse.removeByCourseId(courseId)
+    var userId = request['user']["id"];
+    userService_1.default.checkUserRightAndRespond(userId, userService_2.EditRightType.EditCoursesCatalogue, null, response, () => {
+        // remove it
+        course_1.default.remove(courseId)
             .then(() => {
-            statService_1.default.calcStatsUser(request['user']["id"]);
-            response.status(200).json({ status: 200, message: "Delete done " });
+            UserCourse.removeByCourseId(courseId)
+                .then(() => {
+                statService_1.default.calcStatsUser(request['user']["id"]);
+                response.status(200).json({ status: 200, message: "Delete done " });
+            })
+                .catch(err => {
+                console.log(err);
+                response.status(500).json({ status: 500, message: "System error " + err });
+            });
         })
             .catch(err => {
             console.log(err);
             response.status(500).json({ status: 500, message: "System error " + err });
         });
-    })
-        .catch(err => {
-        console.log(err);
-        response.status(500).json({ status: 500, message: "System error " + err });
     });
 });
 courseRouter.route('/:course_id/reset')
     .get((request, response) => {
     var courseId = request.params['course_id'];
     debug("GET /" + courseId + "/reset");
-    // TODO : Add a check of user right
-    UserCourse.removeByCourseId(courseId)
-        .then(() => {
-        // debug(userCourse);
-        statService_1.default.calcStatsUser(request['user']["id"]);
-        response.status(200).json({ status: 200, message: "Reset done " });
-    })
-        .catch(err => {
-        console.log(err);
-        response.status(500).json({ status: 500, message: "System error " + err });
+    var userId = request['user']["id"];
+    userService_1.default.checkUserRightAndRespond(userId, userService_2.EditRightType.EditCoursesCatalogue, null, response, () => {
+        UserCourse.removeByCourseId(courseId)
+            .then(() => {
+            // debug(userCourse);
+            statService_1.default.calcStatsUser(request['user']["id"]);
+            response.status(200).json({ status: 200, message: "Reset done " });
+        })
+            .catch(err => {
+            console.log(err);
+            response.status(500).json({ status: 500, message: "System error " + err });
+        });
     });
 });
 courseRouter.route('/:course_id/userValues')
@@ -149,39 +161,40 @@ courseRouter.route('/:course_id/para/:paragraphNums')
     //debug(request.body);
     var paragraph = new iParagraph_1.IParagraph(request.body);
     //debug(paragraph);
-    // TODO : Add a check of user right
-    // Search the userValues
-    course_1.default
-        .findById(courseId)
-        .then(course => {
-        //debug(userCourse);
-        //debug(userCourse.userChoices[paragraphId]);
-        let part = courseService_1.default.searchPartByPath(paragraphNums.slice(0, -1), course.parts);
-        part.contents = part.contents || [];
-        let paraIndex = paragraphNums[paragraphNums.length - 1];
-        if (paragraph['_id'] == null) {
-            // new para, add it
-            part.contents.splice(paraIndex, 0, paragraph);
-        }
-        else {
-            // replace the para
-            part.contents.splice(paraIndex, 1, paragraph);
-        }
-        // Save the course
+    userService_1.default.checkUserRightAndRespond(userId, userService_2.EditRightType.EditCourse, courseId, response, () => {
+        // Search the userValues
         course_1.default
-            .updateOrCreate(course)
-            .then(() => {
-            //debug(course);
-            _respondWithCourseParagraph(courseId, paragraph['_id'], paragraphNums, userId, response);
+            .findById(courseId)
+            .then(course => {
+            //debug(userCourse);
+            //debug(userCourse.userChoices[paragraphId]);
+            let part = courseService_1.default.searchPartByPath(paragraphNums.slice(0, -1), course.parts);
+            part.contents = part.contents || [];
+            let paraIndex = paragraphNums[paragraphNums.length - 1];
+            if (paragraph['_id'] == null) {
+                // new para, add it
+                part.contents.splice(paraIndex, 0, paragraph);
+            }
+            else {
+                // replace the para
+                part.contents.splice(paraIndex, 1, paragraph);
+            }
+            // Save the course
+            course_1.default
+                .updateOrCreate(course)
+                .then(() => {
+                //debug(course);
+                _respondWithCourseParagraph(courseId, paragraph['_id'], paragraphNums, userId, response);
+            })
+                .catch(err => {
+                console.log(err);
+                response.status(500).json({ status: 500, message: "System error " + err });
+            });
         })
             .catch(err => {
             console.log(err);
             response.status(500).json({ status: 500, message: "System error " + err });
         });
-    })
-        .catch(err => {
-        console.log(err);
-        response.status(500).json({ status: 500, message: "System error " + err });
     });
 })
     .delete((request, response) => {
@@ -189,35 +202,36 @@ courseRouter.route('/:course_id/para/:paragraphNums')
     var paragraphNums = JSON.parse("[" + request.params['paragraphNums'] + "]");
     var userId = request['user']["id"];
     debug("DEL /" + courseId + "/para/" + paragraphNums);
-    // TODO : Add a check of user right
-    // Search the course
-    course_1.default
-        .findById(courseId)
-        .then(course => {
-        let parentPartNums = paragraphNums.slice(0, -2);
-        let parentParts = course.parts;
-        if (parentPartNums.length > 0) {
-            parentParts = courseService_1.default.searchPartByPath(parentPartNums, parentParts).parts;
-        }
-        let parentPart = parentParts[paragraphNums[paragraphNums.length - 2]];
-        let paraIndex = paragraphNums[paragraphNums.length - 1];
-        // remove the para
-        parentPart.contents.splice(paraIndex, 1);
-        // Save the course
+    userService_1.default.checkUserRightAndRespond(userId, userService_2.EditRightType.EditCourse, courseId, response, () => {
+        // Search the course
         course_1.default
-            .updateOrCreate(course)
-            .then(() => {
-            //debug(course);
-            _respondWithCoursePart(courseId, null, paragraphNums.slice(0, -1), userId, response);
+            .findById(courseId)
+            .then(course => {
+            let parentPartNums = paragraphNums.slice(0, -2);
+            let parentParts = course.parts;
+            if (parentPartNums.length > 0) {
+                parentParts = courseService_1.default.searchPartByPath(parentPartNums, parentParts).parts;
+            }
+            let parentPart = parentParts[paragraphNums[paragraphNums.length - 2]];
+            let paraIndex = paragraphNums[paragraphNums.length - 1];
+            // remove the para
+            parentPart.contents.splice(paraIndex, 1);
+            // Save the course
+            course_1.default
+                .updateOrCreate(course)
+                .then(() => {
+                //debug(course);
+                _respondWithCoursePart(courseId, null, paragraphNums.slice(0, -1), userId, response);
+            })
+                .catch(err => {
+                console.log(err);
+                response.status(500).json({ status: 500, message: "System error " + err });
+            });
         })
             .catch(err => {
             console.log(err);
             response.status(500).json({ status: 500, message: "System error " + err });
         });
-    })
-        .catch(err => {
-        console.log(err);
-        response.status(500).json({ status: 500, message: "System error " + err });
     });
 });
 courseRouter.route('/:course_id/para/:srcParaNums/move')
@@ -229,40 +243,41 @@ courseRouter.route('/:course_id/para/:srcParaNums/move')
     //debug(request.body);
     var trgParaNum = request.body['trgParaNum'];
     //debug(trgParaNum);
-    // TODO : Add a check of user right
-    // Search the course
-    course_1.default
-        .findById(courseId)
-        .then(course => {
-        // calculate src
-        let srcParentPartNums = srcParaNums.slice(0, -2);
-        let srcParentParts = course.parts;
-        if (srcParentPartNums.length > 0) {
-            srcParentParts = courseService_1.default.searchPartByPath(srcParentPartNums, srcParentParts).parts;
-        }
-        let srcParentPart = srcParentParts[srcParaNums[srcParaNums.length - 2]];
-        let srcParaIndex = srcParaNums[srcParaNums.length - 1];
-        // calculate trg
-        let trgParaIndex = trgParaNum;
-        // remove the para from the src
-        let paragraph = srcParentPart.contents.splice(srcParaIndex, 1)[0];
-        // add the part to the trg
-        srcParentPart.contents.splice(trgParaIndex, 0, paragraph);
-        // Save the course
+    userService_1.default.checkUserRightAndRespond(userId, userService_2.EditRightType.EditCourse, courseId, response, () => {
+        // Search the course
         course_1.default
-            .updateOrCreate(course)
-            .then(() => {
-            //debug(course);
-            _respondWithCoursePart(courseId, null, srcParaNums.slice(0, -1), userId, response);
+            .findById(courseId)
+            .then(course => {
+            // calculate src
+            let srcParentPartNums = srcParaNums.slice(0, -2);
+            let srcParentParts = course.parts;
+            if (srcParentPartNums.length > 0) {
+                srcParentParts = courseService_1.default.searchPartByPath(srcParentPartNums, srcParentParts).parts;
+            }
+            let srcParentPart = srcParentParts[srcParaNums[srcParaNums.length - 2]];
+            let srcParaIndex = srcParaNums[srcParaNums.length - 1];
+            // calculate trg
+            let trgParaIndex = trgParaNum;
+            // remove the para from the src
+            let paragraph = srcParentPart.contents.splice(srcParaIndex, 1)[0];
+            // add the part to the trg
+            srcParentPart.contents.splice(trgParaIndex, 0, paragraph);
+            // Save the course
+            course_1.default
+                .updateOrCreate(course)
+                .then(() => {
+                //debug(course);
+                _respondWithCoursePart(courseId, null, srcParaNums.slice(0, -1), userId, response);
+            })
+                .catch(err => {
+                console.log(err);
+                response.status(500).json({ status: 500, message: "System error " + err });
+            });
         })
             .catch(err => {
             console.log(err);
             response.status(500).json({ status: 500, message: "System error " + err });
         });
-    })
-        .catch(err => {
-        console.log(err);
-        response.status(500).json({ status: 500, message: "System error " + err });
     });
 });
 courseRouter.route('/:course_id/para/:trgParaNums/add')
@@ -274,91 +289,92 @@ courseRouter.route('/:course_id/para/:trgParaNums/add')
     //debug(request.body);
     let type = request.body.type;
     let subType = request.body['subType'];
-    // TODO : Add a check of user right
-    // Search the course
-    course_1.default
-        .findById(courseId)
-        .then(course => {
-        // calculate trg
-        let trgParentPartNums = trgParaNums.slice(0, -2);
-        if (course.parts == null) {
-            course.parts = [];
-        }
-        let trgParentParts = course.parts;
-        if (trgParentPartNums.length > 0) {
-            let part = courseService_1.default.searchPartByPath(trgParentPartNums, trgParentParts);
-            if (part.parts == null) {
-                part.parts = [];
-            }
-            trgParentParts = part.parts;
-        }
-        if (trgParentParts == null) {
-            trgParentParts = [];
-        }
-        let trgParentPart = trgParentParts[trgParaNums[trgParaNums.length - 2]];
-        let trgParaIndex = trgParaNums[trgParaNums.length - 1];
-        // create a new paragraph
-        let paragraph;
-        if (type == eParagraphType_1.ParagraphType.MarkDown) {
-            paragraph = new iParagraph_1.IParagraph({
-                type: type,
-                content: 'content'
-            });
-        }
-        else if (subType == eParagraphContentType_1.ParagraphContentType.Text) {
-            paragraph = new iParagraph_1.IParagraph({
-                type: type,
-                content: {
-                    type: subType,
-                    label: 'Title',
-                    question: 'Question',
-                },
-                maxCheckCount: 3,
-                answer: 'answer'
-            });
-        }
-        else if (subType == eParagraphContentType_1.ParagraphContentType.Radio) {
-            paragraph = new iParagraph_1.IParagraph({
-                type: type,
-                content: {
-                    type: subType,
-                    label: 'Title',
-                    questions: ['Choice 1', 'Choice 2'],
-                },
-                maxCheckCount: 3,
-                answer: 0
-            });
-        }
-        else {
-            paragraph = new iParagraph_1.IParagraph({
-                type: type,
-                content: {
-                    type: subType,
-                    label: 'Title',
-                    questions: ['Choice 1', 'Choice 2'],
-                },
-                maxCheckCount: 3,
-                answer: [0]
-            });
-        }
-        //debug(paragraph);
-        // add the part to the trg
-        trgParentPart.contents.splice(trgParaIndex, 0, paragraph);
-        // Save the course
+    userService_1.default.checkUserRightAndRespond(userId, userService_2.EditRightType.EditCourse, courseId, response, () => {
+        // Search the course
         course_1.default
-            .updateOrCreate(course)
-            .then(() => {
-            //debug(course);
-            _respondWithCoursePart(courseId, null, trgParaNums.slice(0, -1), userId, response);
+            .findById(courseId)
+            .then(course => {
+            // calculate trg
+            let trgParentPartNums = trgParaNums.slice(0, -2);
+            if (course.parts == null) {
+                course.parts = [];
+            }
+            let trgParentParts = course.parts;
+            if (trgParentPartNums.length > 0) {
+                let part = courseService_1.default.searchPartByPath(trgParentPartNums, trgParentParts);
+                if (part.parts == null) {
+                    part.parts = [];
+                }
+                trgParentParts = part.parts;
+            }
+            if (trgParentParts == null) {
+                trgParentParts = [];
+            }
+            let trgParentPart = trgParentParts[trgParaNums[trgParaNums.length - 2]];
+            let trgParaIndex = trgParaNums[trgParaNums.length - 1];
+            // create a new paragraph
+            let paragraph;
+            if (type == eParagraphType_1.ParagraphType.MarkDown) {
+                paragraph = new iParagraph_1.IParagraph({
+                    type: type,
+                    content: 'content'
+                });
+            }
+            else if (subType == eParagraphContentType_1.ParagraphContentType.Text) {
+                paragraph = new iParagraph_1.IParagraph({
+                    type: type,
+                    content: {
+                        type: subType,
+                        label: 'Title',
+                        question: 'Question',
+                    },
+                    maxCheckCount: 3,
+                    answer: 'answer'
+                });
+            }
+            else if (subType == eParagraphContentType_1.ParagraphContentType.Radio) {
+                paragraph = new iParagraph_1.IParagraph({
+                    type: type,
+                    content: {
+                        type: subType,
+                        label: 'Title',
+                        questions: ['Choice 1', 'Choice 2'],
+                    },
+                    maxCheckCount: 3,
+                    answer: 0
+                });
+            }
+            else {
+                paragraph = new iParagraph_1.IParagraph({
+                    type: type,
+                    content: {
+                        type: subType,
+                        label: 'Title',
+                        questions: ['Choice 1', 'Choice 2'],
+                    },
+                    maxCheckCount: 3,
+                    answer: [0]
+                });
+            }
+            //debug(paragraph);
+            // add the part to the trg
+            trgParentPart.contents.splice(trgParaIndex, 0, paragraph);
+            // Save the course
+            course_1.default
+                .updateOrCreate(course)
+                .then(() => {
+                //debug(course);
+                _respondWithCoursePart(courseId, null, trgParaNums.slice(0, -1), userId, response);
+            })
+                .catch(err => {
+                console.log(err);
+                response.status(500).json({ status: 500, message: "System error " + err });
+            });
         })
             .catch(err => {
             console.log(err);
             response.status(500).json({ status: 500, message: "System error " + err });
         });
-    })
-        .catch(err => {
-        console.log(err);
-        response.status(500).json({ status: 500, message: "System error " + err });
     });
 });
 courseRouter.route('/:course_id/part/:partNums')
@@ -370,40 +386,41 @@ courseRouter.route('/:course_id/part/:partNums')
     //debug(request.body);
     var coursePart = new iCoursePart_1.ICoursePart(request.body);
     //(coursePart);
-    // TODO : Add a check of user right
-    // Search the userValues
-    course_1.default
-        .findById(courseId)
-        .then(course => {
-        let parentPartNums = partNums.slice(0, -1);
-        let parentParts = course.parts;
-        if (parentPartNums.length > 0) {
-            parentParts = courseService_1.default.searchPartByPath(parentPartNums, parentParts).parts;
-        }
-        let partIndex = partNums[partNums.length - 1];
-        if (coursePart['_id'] == null) {
-            // new page, add it
-            parentParts.splice(partIndex, 0, coursePart);
-        }
-        else {
-            // replace the page
-            parentParts.splice(partIndex, 1, coursePart);
-        }
-        // Save the course
+    userService_1.default.checkUserRightAndRespond(userId, userService_2.EditRightType.EditCourse, courseId, response, () => {
+        // Search the userValues
         course_1.default
-            .updateOrCreate(course)
-            .then(() => {
-            //debug(course);
-            _respondWithCoursePart(courseId, coursePart['_id'], partNums, userId, response);
+            .findById(courseId)
+            .then(course => {
+            let parentPartNums = partNums.slice(0, -1);
+            let parentParts = course.parts;
+            if (parentPartNums.length > 0) {
+                parentParts = courseService_1.default.searchPartByPath(parentPartNums, parentParts).parts;
+            }
+            let partIndex = partNums[partNums.length - 1];
+            if (coursePart['_id'] == null) {
+                // new page, add it
+                parentParts.splice(partIndex, 0, coursePart);
+            }
+            else {
+                // replace the page
+                parentParts.splice(partIndex, 1, coursePart);
+            }
+            // Save the course
+            course_1.default
+                .updateOrCreate(course)
+                .then(() => {
+                //debug(course);
+                _respondWithCoursePart(courseId, coursePart['_id'], partNums, userId, response);
+            })
+                .catch(err => {
+                console.log(err);
+                response.status(500).json({ status: 500, message: "System error " + err });
+            });
         })
             .catch(err => {
             console.log(err);
             response.status(500).json({ status: 500, message: "System error " + err });
         });
-    })
-        .catch(err => {
-        console.log(err);
-        response.status(500).json({ status: 500, message: "System error " + err });
     });
 })
     .delete((request, response) => {
@@ -411,34 +428,35 @@ courseRouter.route('/:course_id/part/:partNums')
     var partNums = JSON.parse("[" + request.params['partNums'] + "]");
     var userId = request['user']["id"];
     debug("DEL /" + courseId + "/part/" + partNums);
-    // TODO : Add a check of user right
-    // Search the course
-    course_1.default
-        .findById(courseId)
-        .then(course => {
-        let parentPartNums = partNums.slice(0, -1);
-        let parentParts = course.parts;
-        if (parentPartNums.length > 0) {
-            parentParts = courseService_1.default.searchPartByPath(parentPartNums, parentParts).parts;
-        }
-        let partIndex = partNums[partNums.length - 1];
-        // remove the part
-        parentParts.splice(partIndex, 1);
-        // Save the course
+    userService_1.default.checkUserRightAndRespond(userId, userService_2.EditRightType.EditCourse, courseId, response, () => {
+        // Search the course
         course_1.default
-            .updateOrCreate(course)
-            .then(() => {
-            //debug(course);
-            _respondWithCourse(courseId, userId, response);
+            .findById(courseId)
+            .then(course => {
+            let parentPartNums = partNums.slice(0, -1);
+            let parentParts = course.parts;
+            if (parentPartNums.length > 0) {
+                parentParts = courseService_1.default.searchPartByPath(parentPartNums, parentParts).parts;
+            }
+            let partIndex = partNums[partNums.length - 1];
+            // remove the part
+            parentParts.splice(partIndex, 1);
+            // Save the course
+            course_1.default
+                .updateOrCreate(course)
+                .then(() => {
+                //debug(course);
+                _respondWithCourse(courseId, userId, response);
+            })
+                .catch(err => {
+                console.log(err);
+                response.status(500).json({ status: 500, message: "System error " + err });
+            });
         })
             .catch(err => {
             console.log(err);
             response.status(500).json({ status: 500, message: "System error " + err });
         });
-    })
-        .catch(err => {
-        console.log(err);
-        response.status(500).json({ status: 500, message: "System error " + err });
     });
 });
 courseRouter.route('/:course_id/part/:srcPartNums/move')
@@ -450,44 +468,45 @@ courseRouter.route('/:course_id/part/:srcPartNums/move')
     //debug(request.body);
     var trgPartNums = request.body;
     //debug(trgPartNums);
-    // TODO : Add a check of user right
-    // Search the course
-    course_1.default
-        .findById(courseId)
-        .then(course => {
-        // calculate src
-        let srcParentPartNums = srcPartNums.slice(0, -1);
-        let srcParentParts = course.parts;
-        if (srcParentPartNums.length > 0) {
-            srcParentParts = courseService_1.default.searchPartByPath(srcParentPartNums, srcParentParts).parts;
-        }
-        let srcPartIndex = srcPartNums[srcPartNums.length - 1];
-        // calculate trg
-        let trgParentPartNums = trgPartNums.slice(0, -1);
-        let trgParentParts = course.parts;
-        if (trgParentPartNums.length > 0) {
-            trgParentParts = courseService_1.default.searchPartByPath(trgParentPartNums, trgParentParts).parts;
-        }
-        let trgPartIndex = trgPartNums[trgPartNums.length - 1];
-        // remove the part from the src
-        let coursePart = srcParentParts.splice(srcPartIndex, 1)[0];
-        // add the part to the trg
-        trgParentParts.splice(trgPartIndex, 0, coursePart);
-        // Save the course
+    userService_1.default.checkUserRightAndRespond(userId, userService_2.EditRightType.EditCourse, courseId, response, () => {
+        // Search the course
         course_1.default
-            .updateOrCreate(course)
-            .then(() => {
-            //debug(course);
-            _respondWithCourse(courseId, userId, response);
+            .findById(courseId)
+            .then(course => {
+            // calculate src
+            let srcParentPartNums = srcPartNums.slice(0, -1);
+            let srcParentParts = course.parts;
+            if (srcParentPartNums.length > 0) {
+                srcParentParts = courseService_1.default.searchPartByPath(srcParentPartNums, srcParentParts).parts;
+            }
+            let srcPartIndex = srcPartNums[srcPartNums.length - 1];
+            // calculate trg
+            let trgParentPartNums = trgPartNums.slice(0, -1);
+            let trgParentParts = course.parts;
+            if (trgParentPartNums.length > 0) {
+                trgParentParts = courseService_1.default.searchPartByPath(trgParentPartNums, trgParentParts).parts;
+            }
+            let trgPartIndex = trgPartNums[trgPartNums.length - 1];
+            // remove the part from the src
+            let coursePart = srcParentParts.splice(srcPartIndex, 1)[0];
+            // add the part to the trg
+            trgParentParts.splice(trgPartIndex, 0, coursePart);
+            // Save the course
+            course_1.default
+                .updateOrCreate(course)
+                .then(() => {
+                //debug(course);
+                _respondWithCourse(courseId, userId, response);
+            })
+                .catch(err => {
+                console.log(err);
+                response.status(500).json({ status: 500, message: "System error " + err });
+            });
         })
             .catch(err => {
             console.log(err);
             response.status(500).json({ status: 500, message: "System error " + err });
         });
-    })
-        .catch(err => {
-        console.log(err);
-        response.status(500).json({ status: 500, message: "System error " + err });
     });
 });
 courseRouter.route('/:course_id/part/:trgPartNums/add')
@@ -497,51 +516,52 @@ courseRouter.route('/:course_id/part/:trgPartNums/add')
     var userId = request['user']["id"];
     debug("PUT /" + courseId + "/part/" + trgPartNums + "/add");
     //debug(request.body);
-    // TODO : Add a check of user right
-    // Search the course
-    course_1.default
-        .findById(courseId)
-        .then(course => {
-        // calculate trg
-        let trgParentPartNums = trgPartNums.slice(0, -1);
-        if (course.parts == null) {
-            course.parts = [];
-        }
-        let trgParentParts = course.parts;
-        if (trgParentPartNums.length > 0) {
-            let part = courseService_1.default.searchPartByPath(trgParentPartNums, trgParentParts);
-            if (part.parts == null) {
-                part.parts = [];
-            }
-            trgParentParts = part.parts;
-        }
-        if (trgParentParts == null) {
-            trgParentParts = [];
-        }
-        let trgPartIndex = trgPartNums[trgPartNums.length - 1];
-        // create a new coursePart
-        let coursePart = new iCoursePart_1.ICoursePart({
-            title: "New page",
-            parts: [],
-            contents: []
-        });
-        // add the part to the trg
-        trgParentParts.splice(trgPartIndex, 0, coursePart);
-        // Save the course
+    userService_1.default.checkUserRightAndRespond(userId, userService_2.EditRightType.EditCourse, courseId, response, () => {
+        // Search the course
         course_1.default
-            .updateOrCreate(course)
-            .then(() => {
-            //debug(course);
-            _respondWithCourse(courseId, userId, response);
+            .findById(courseId)
+            .then(course => {
+            // calculate trg
+            let trgParentPartNums = trgPartNums.slice(0, -1);
+            if (course.parts == null) {
+                course.parts = [];
+            }
+            let trgParentParts = course.parts;
+            if (trgParentPartNums.length > 0) {
+                let part = courseService_1.default.searchPartByPath(trgParentPartNums, trgParentParts);
+                if (part.parts == null) {
+                    part.parts = [];
+                }
+                trgParentParts = part.parts;
+            }
+            if (trgParentParts == null) {
+                trgParentParts = [];
+            }
+            let trgPartIndex = trgPartNums[trgPartNums.length - 1];
+            // create a new coursePart
+            let coursePart = new iCoursePart_1.ICoursePart({
+                title: "New page",
+                parts: [],
+                contents: []
+            });
+            // add the part to the trg
+            trgParentParts.splice(trgPartIndex, 0, coursePart);
+            // Save the course
+            course_1.default
+                .updateOrCreate(course)
+                .then(() => {
+                //debug(course);
+                _respondWithCourse(courseId, userId, response);
+            })
+                .catch(err => {
+                console.log(err);
+                response.status(500).json({ status: 500, message: "System error " + err });
+            });
         })
             .catch(err => {
             console.log(err);
             response.status(500).json({ status: 500, message: "System error " + err });
         });
-    })
-        .catch(err => {
-        console.log(err);
-        response.status(500).json({ status: 500, message: "System error " + err });
     });
 });
 courseRouter.route('/:course_id/:paragraph_id/userChoice')

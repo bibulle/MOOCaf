@@ -2,7 +2,7 @@
 const _ = require("lodash");
 const award_1 = require("../models/award");
 const User = require("../models/user");
-var debug = require('debug')('server:service:course');
+var debug = require('debug')('server:service:award');
 class AwardService {
     static getAwards(userId) {
         return new Promise((resolve, reject) => {

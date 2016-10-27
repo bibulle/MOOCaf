@@ -1,23 +1,19 @@
 "use strict";
 const express_1 = require("express");
-const jsonwebtoken_1 = require("jsonwebtoken");
-const crypto_1 = require("crypto");
 const _ = require("lodash");
-const config_1 = require("../config");
 const statService_1 = require("../service/statService");
+const userService_1 = require("../service/userService");
 const User = require("../models/user");
 var debug = require('debug')('server:route:login');
 const loginRouter = express_1.Router();
 exports.loginRouter = loginRouter;
-function createToken(user) {
-    return jsonwebtoken_1.sign(_.pick(user, ['username', 'firstname', 'lastname', 'email', 'isAdmin', 'id']), config_1.secret, { expiresIn: "7d" });
-}
 // ====================================
 // route to signup (create a new user)
 // ====================================
 loginRouter.route('/')
     .post((request, response) => {
-    if (!request.body.username || !request.body.password) {
+    var password = request.body['password'];
+    if (!request.body.username || !password) {
         debug("400 : You must send the username and the password");
         return response.status(400).send("You must send the username and the password");
     }
@@ -29,8 +25,8 @@ loginRouter.route('/')
         }
         var user = new User(_.pick(request.body, 'username', 'firstname', 'lastname', 'email'));
         // Hash password
-        user.salt = crypto_1.randomBytes(128).toString("base64");
-        crypto_1.pbkdf2(request.body.password, user.salt, 10000, config_1.length, config_1.digest, function (err, hash) {
+        user.salt = userService_1.default.getSalt();
+        userService_1.default.createHash(password, user.salt, function (err, hash) {
             if (err) {
                 console.log(err);
                 return response.status(500).send("Cannot create user " + err);
@@ -57,8 +53,9 @@ loginRouter.route('/')
 // ====================================
 loginRouter.route('/login')
     .post((request, response) => {
-    debug("login : " + request.body.username + " " + request.body.password);
-    if (!request.body.username || !request.body.password) {
+    var password = request.body['password'];
+    //debug("login : " + request.body.username + " " + request.body.password);
+    if (!request.body.username || !password) {
         debug("400 : You must send the username and the password");
         return response.status(400).send("You must send the username and the password");
     }
@@ -69,7 +66,7 @@ loginRouter.route('/login')
             return response.status(401).send("The username or password don't match");
         }
         statService_1.default.calcStatsUser(user['id']);
-        crypto_1.pbkdf2(request.body.password, user.salt, 10000, config_1.length, config_1.digest, function (err, hash) {
+        userService_1.default.createHash(password, user.salt, function (err, hash) {
             if (err) {
                 console.log(err);
                 return response.status(500).send("System error " + err);
@@ -80,7 +77,7 @@ loginRouter.route('/login')
             }
             debug("201 : token created(" + request.body.username + ")");
             response.status(201).send({
-                id_token: createToken(user)
+                id_token: userService_1.default.createToken(user)
             });
         });
     })

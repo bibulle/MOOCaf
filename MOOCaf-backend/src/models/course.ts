@@ -27,8 +27,12 @@ export default class Course extends ICourse {
           if (err) {
             db.init();
             this.count()
-              .then(result => resolve(result))
-              .catch(err => reject(err))
+              .then(result => {
+                resolve(result)
+              })
+              .catch(err => {
+                reject(err)
+              })
           } else {
             resolve(count);
           }

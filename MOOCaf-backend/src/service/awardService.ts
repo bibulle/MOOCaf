@@ -5,7 +5,7 @@ import User = require("../models/user");
 import UserCourse = require("../models/UserCourse");
 import IUserPart = require("../models/iUserParts");
 
-var debug = require('debug')('server:service:course');
+var debug = require('debug')('server:service:award');
 
 export default class AwardService {
 
