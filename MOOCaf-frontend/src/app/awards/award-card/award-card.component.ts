@@ -70,7 +70,7 @@ export class AwardCardComponent implements OnInit {
                          })
                          .catch(error => {
                            this._logger.error(error);
-                           this._notificationService.error("System error !!", "Error saving you changes !!\n\t" + (error.message || error));
+                           this._notificationService.error("Error saving you changes !!", (error.statusText || error.message || error.error || error));
                          });
             },
             error => {
@@ -177,7 +177,7 @@ export class AwardCardComponent implements OnInit {
           })
           .catch(error => {
             this._logger.error(error);
-            this._notificationService.error("System error !!", "Error saving you changes !!\n\t" + (error.message || error.error || error));
+            this._notificationService.error("Error saving you changes !!", (error.statusText || error.message || error.error || error));
           });
     }
   }

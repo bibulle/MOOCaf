@@ -1,7 +1,7 @@
 <div class="badge" title="{{award.description}} ({{100*award.userCount/award.limitCount | number:'1.0-0'}}%)" layout="row" layout-align="start-stretch" [class.edited]="edited">
   <div class="award-card-buttons" *ngIf="edited">
     <button md-icon-button (click)="deleteAward()" class="md-primary" [class.md-warn]="deleteAwardClicked" title="Delete paragraph">
-      <md-icon class="delete">remove</md-icon>
+      <md-icon class="delete">delete</md-icon>
       <md-icon class="warning">announcement</md-icon>
     </button>
   </div>
@@ -11,6 +11,6 @@
     <div flex="100">{{award.name}}</div>
   </div>
   <div class="editor" [class.error]="editorInError">
-    <textarea [(ngModel)]="editableJson" (keyup)="editorChange()" (change)="editorChange()"></textarea>
+    <textarea [(ngModel)]="editableJson" (keyup)="editorChange()" (change)="editorChange()" title="editor"></textarea>
   </div>
 </div>

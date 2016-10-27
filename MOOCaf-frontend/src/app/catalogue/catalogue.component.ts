@@ -105,7 +105,7 @@ export class CatalogueComponent implements OnInit {
         })
         .catch(error => {
           this._logger.error(error);
-          this._notificationService.error("System error !!", "Error saving you changes !!\n\t" + (error.message || error.error || error));
+          this._notificationService.error("System error !!", "Error saving you changes !!\n\t" + (error.statusText || error.message || error.error || error));
         });
   }
 
