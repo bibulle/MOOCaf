@@ -9,9 +9,9 @@ class Award extends iAward_1.IAward {
      */
     constructor(document) {
         super(document);
-        iAward_1.modelIAward.on('error', function (err) {
-            debug("Error : " + err);
-        });
+        // modelIAward.on('error', function (err) {
+        //   debug("Error : " + err);
+        // });
     }
     static count() {
         //debug("count");

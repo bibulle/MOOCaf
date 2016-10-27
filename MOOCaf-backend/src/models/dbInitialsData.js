@@ -184,6 +184,32 @@ class DbInitialsData {
                                 ]
                             },
                             {
+                                name: "Telnet Test",
+                                description: "Just a Telnet Test",
+                                note: 1.0,
+                                noteCount: 2,
+                                created: new Date('2016-08-18T00:00:00'),
+                                updated: new Date('2016-08-18T00:00:00'),
+                                parts: [
+                                    {
+                                        title: "First try ",
+                                        parts: null,
+                                        contents: [
+                                            new iParagraph_1.IParagraph({
+                                                type: eParagraphType_1.ParagraphType.Telnet,
+                                                content: {
+                                                    label: 'This is the title of the question',
+                                                    question: 'What do you think ?\n\nSecond line',
+                                                    size: 20
+                                                },
+                                                maxCheckCount: 3,
+                                                answer: 'sdkdfsd sdg'
+                                            })
+                                        ]
+                                    }
+                                ]
+                            },
+                            {
                                 name: "What's new in JDK8",
                                 description: "Just learn to use JDK8 new features",
                                 note: 4.0,

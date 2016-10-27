@@ -9,9 +9,9 @@ class Course extends iCourse_1.ICourse {
      */
     constructor(document) {
         super(document);
-        iCourse_1.modelICourse.on('error', function (err) {
-            debug("Error : " + err);
-        });
+        // modelICourse.on('error', function (err) {
+        //   debug("Error : " + err);
+        // });
     }
     static count() {
         //debug("count");
