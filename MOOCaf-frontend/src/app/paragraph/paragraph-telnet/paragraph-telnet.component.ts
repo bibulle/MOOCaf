@@ -56,7 +56,7 @@ export class ParagraphTelnetComponent extends ParagraphAbstractComponent impleme
                          })
                          .catch(error => {
                            this._logger.error(error);
-                           this._notificationService.error("System error !!", "Error saving you changes !!\n\t" + (error.message || error));
+                           this._notificationService.error("Error saving you changes !!", (error.statusText || error.message || error.error || error));
                          });
             },
             error => {
@@ -71,6 +71,7 @@ export class ParagraphTelnetComponent extends ParagraphAbstractComponent impleme
   prepareData(): void {
     //this._logger.debug(this.data);
     this._markdownToHtml();
+    this._addMissingValues();
   }
 
 
@@ -98,7 +99,7 @@ export class ParagraphTelnetComponent extends ParagraphAbstractComponent impleme
         })
         .catch(error => {
           this._logger.error(error);
-          this._notificationService.error("Cannot test", (error.message || error));
+          this._notificationService.error("Cannot test", (error.statusText || error.message || error.error || error));
         });
 
   }
@@ -121,7 +122,7 @@ export class ParagraphTelnetComponent extends ParagraphAbstractComponent impleme
         })
         .catch(error => {
           this._logger.error(error);
-          this._notificationService.error("Cannot check", (error.message || error));
+          this._notificationService.error("Cannot check", (error.statusText || error.message || error.error || error));
         });
 
   }
@@ -157,5 +158,20 @@ export class ParagraphTelnetComponent extends ParagraphAbstractComponent impleme
       this.data.content['question_html'] = ParagraphAbstractComponent.markdownToHTML(this.data.content['question']).replace(/^<p>(.*)<\/p>[\r\n]*$/, "$1")
     }
   }
+
+  /**
+   * Add missing values to data to allowed a correct UI
+   * @private
+   */
+  private _addMissingValues() {
+    this.data.id = this.data['_id'];
+
+    // if no user check count... init to zero
+    if (this.data.userCheckCount == null) {
+      this.data.userCheckCount = 0;
+    }
+
+  }
+
 
 }

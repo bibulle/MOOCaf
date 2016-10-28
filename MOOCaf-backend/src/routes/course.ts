@@ -21,6 +21,7 @@ import CourseService from "../service/courseService";
 import StatService from "../service/statService";
 import UserService from "../service/userService";
 import { EditRightType } from "../service/userService";
+import ParagraphService from "../service/paragraphService";
 
 
 const courseRouter: Router = Router();
@@ -426,46 +427,7 @@ courseRouter.route('/:course_id/para/:trgParaNums/add')
                     let trgParaIndex = trgParaNums[trgParaNums.length - 1];
 
                     // create a new paragraph
-                    let paragraph: IParagraph;
-                    if (type == ParagraphType.MarkDown) {
-                      paragraph = new IParagraph({
-                        type: type,
-                        content: 'content'
-                      });
-                    } else if (subType == ParagraphContentType.Text) {
-                      paragraph = new IParagraph({
-                        type: type,
-                        content: {
-                          type: subType,
-                          label: 'Title',
-                          question: 'Question',
-                        },
-                        maxCheckCount: 3,
-                        answer: 'answer'
-                      });
-                    } else if (subType == ParagraphContentType.Radio) {
-                      paragraph = new IParagraph({
-                        type: type,
-                        content: {
-                          type: subType,
-                          label: 'Title',
-                          questions: ['Choice 1', 'Choice 2'],
-                        },
-                        maxCheckCount: 3,
-                        answer: 0
-                      });
-                    } else {
-                      paragraph = new IParagraph({
-                        type: type,
-                        content: {
-                          type: subType,
-                          label: 'Title',
-                          questions: ['Choice 1', 'Choice 2'],
-                        },
-                        maxCheckCount: 3,
-                        answer: [0]
-                      });
-                    }
+                    let paragraph: IParagraph = ParagraphService.getNewParagraph(type, subType);
 
                     //debug(paragraph);
 
@@ -826,6 +788,93 @@ courseRouter.route('/:course_id/:paragraph_id/userChoice/check')
               UserCourse
                 .findByUserIdCourseId(userId, courseId)
                 .then(userCourse => {
+
+                  // Init user choice if needed
+                  if (userCourse == null) {
+                    userCourse = new UserCourse({courseId: courseId, userId: userId});
+                  }
+                  if (userCourse.userChoices == null) {
+                    userCourse.userChoices = {};
+                  }
+                  if (userCourse.userChoices[paragraphId] == null) {
+                    userCourse.userChoices[paragraphId] = new IUserChoices()
+                  }
+
+                  _.assign(userCourse.userChoices[paragraphId], userChoice);
+                  if (!userCourse.userChoices[paragraphId].userCheckCount) {
+                    userCourse.userChoices[paragraphId].userCheckCount = 0;
+                  }
+                  userCourse.userChoices[paragraphId].updated = new Date();
+                  //debug(userCourse.userChoices[paragraphId]);
+
+                  // get the paragraph
+                  Course.findById(courseId)
+                        .then(course => {
+                          let paragraph = CourseService.searchParagraphById(paragraphId, course.parts);
+                          if (paragraph != null) {
+
+                            // check the user choice
+                            let isDone = ParagraphService.checkUserChoice(paragraph, userCourse.userChoices[paragraphId], response);
+                            if (isDone) {
+                              // save it to Db
+                              CourseService.calcProgression(userCourse)
+                                           .then((userCourse) => {
+                                             UserCourse
+                                               .updateOrCreate(userCourse)
+                                               .then(() => {
+
+                                                 StatService.calcStatsUser(userId);
+
+                                                 _respondWithCourseParagraph(courseId, paragraphId, null, request['user']["id"], response);
+                                               })
+                                               .catch(err => {
+                                                 console.log(err);
+                                                 response.status(500).json({status: 500, message: "System error " + err});
+                                               })
+                                           })
+                                           .catch(err => {
+                                             console.log(err);
+                                             response.status(500).json({status: 500, message: "System error " + err});
+                                           })
+                            }
+
+                          } else {
+                            response.status(404).json({status: 404, message: "Course not found"});
+                          }
+                        })
+                        .catch(err => {
+                          console.log(err);
+                          response.status(500).send("System error " + err);
+                        });
+
+                })
+                .catch(err => {
+                  console.log(err);
+                  response.status(500).json({status: 500, message: "System error " + err});
+                });
+
+            });
+
+courseRouter.route('/:course_id/:paragraph_id/userChoice/test')
+            // ============================================
+            // test user choice for a course paragraph
+            // ============================================
+            .put((request: Request, response: Response) => {
+
+              var courseId = request.params['course_id'];
+              var paragraphId = request.params['paragraph_id'];
+              var userId = request['user']["id"];
+
+              debug("PUT /" + courseId + "/" + paragraphId + "/userChoice/test'");
+              //debug(request.body);
+
+              var userChoice = new UserChoice(request.body);
+              //debug(userChoice);
+
+              // Search the user Values (to check if check can be done)
+              UserCourse
+                .findByUserIdCourseId(userId, courseId)
+                .then(userCourse => {
                   if (userCourse == null) {
                     userCourse = new UserCourse({courseId: courseId, userId: userId});
                   }
@@ -849,22 +898,8 @@ courseRouter.route('/:course_id/:paragraph_id/userChoice/check')
                           let paragraph = CourseService.searchParagraphById(paragraphId, course.parts);
                           if (paragraph != null) {
                             // check the user choice
-                            if (paragraph.maxCheckCount <= userCourse.userChoices[paragraphId].userCheckCount) {
-                              // Too many try, won't be saved
-                              response.status(401).json({status: 401, message: "Too many try"});
-                            } else if (userCourse.userChoices[paragraphId].userCheckOK === true) {
-                              // Answer already correct
-                              response.status(401).json({status: 401, message: "Answer already correct"});
-                            } else {
-                              // Do the check
-                              userCourse.userChoices[paragraphId].userCheckOK = ("" + userCourse.userChoices[paragraphId].userChoice == "" + paragraph.answer);
-                              userCourse.userChoices[paragraphId].userCheckCount += 1;
-                              userCourse.userChoices[paragraphId].updated = new Date();
-
-                              // if done, set it
-                              if ((userCourse.userChoices[paragraphId].userCheckOK === true) || (paragraph.maxCheckCount <= userCourse.userChoices[paragraphId].userCheckCount)) {
-                                userCourse.userChoices[paragraphId].userDone = new Date();
-                              }
+                            let isDone = ParagraphService.testUserChoice(paragraph, userCourse.userChoices[paragraphId], response);
+                            if (isDone) {
 
                               // save it to Db
                               CourseService.calcProgression(userCourse)
