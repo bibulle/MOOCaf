@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from "@angular/forms";
 
 import { MdCardModule } from "@angular2-material/card";
 import { MdInputModule } from "@angular2-material/input";
@@ -14,7 +15,8 @@ import { FlexModule } from "../widget/flex/flex.module";
     MdButtonModule,
     MdCardModule,
     MdInputModule,
-    FlexModule
+    FlexModule,
+    FormsModule
   ],
   declarations: [SignupComponent],
   exports: [SignupComponent],
