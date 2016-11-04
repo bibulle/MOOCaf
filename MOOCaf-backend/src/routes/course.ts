@@ -846,7 +846,7 @@ courseRouter.route('/:course_id/:paragraph_id/userChoice/check')
 
 courseRouter.route('/:course_id/:paragraph_id/userChoice/test')
             // ============================================
-            // test user choice for a course paragraph
+            // test user choice for a course paragraph : response : a Job
             // ============================================
             .put((request: Request, response: Response) => {
 
