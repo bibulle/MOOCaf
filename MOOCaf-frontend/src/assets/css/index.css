@@ -154,6 +154,20 @@ not-found {
 
 
 
+.content_box pre .in {
+  font-weight:bold;
+}
+.content_box pre .in::before {
+  content: "> ";
+}
+.content_box pre .out {
+  color: #408040;
+}
+.content_box pre .err {
+  font-weight:bold;
+  color: #b33636;
+}
+
 
 
 
