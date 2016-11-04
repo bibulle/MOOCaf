@@ -27,6 +27,8 @@ export class IParagraph {
   userCheckCount: number;
   // the user has done this paragraph  (won't be in the model because coming from the user)
   userDone: Date;
+  // Response on user choice test(won't be in the model because coming from the user)
+  userChoiceReturn: any;
 
   created: Date;
   updated: Date;
@@ -34,7 +36,7 @@ export class IParagraph {
 
   /**
    * Constructor
-   * @param any
+   * @param document
    */
   constructor(document: {}) {
     _.merge(this, document);
@@ -63,7 +65,7 @@ schemaParagraph.add({
   },
   content: {
     type: Mongoose.Schema.Types.Mixed,
-    default: new IParagraphContent()
+    'default': new IParagraphContent()
   },
   answer: {
     type: Mongoose.Schema.Types.Mixed,
@@ -75,11 +77,11 @@ schemaParagraph.add({
   },
   created: {
     type: Date,
-    default: Date.now
+    'default': Date.now
   },
   updated: {
     type: Date,
-    default: Date.now
+    'default': Date.now
   }
 
 });

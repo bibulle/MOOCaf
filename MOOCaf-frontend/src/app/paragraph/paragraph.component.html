@@ -25,5 +25,6 @@
     <md-icon class="warning">announcement</md-icon>
   </button>
 </div>
-<paragraph-markdown *ngIf="isMarkDown" [data]="data" [courseId]="courseId" [paragraphNums]="paragraphNums"></paragraph-markdown>
-<paragraph-form     *ngIf="isForm"     [data]="data" [courseId]="courseId" [paragraphNums]="paragraphNums"></paragraph-form>
+<paragraph-markdown *ngIf="(data.type == ParagraphType.MarkDown)" [data]="data" [courseId]="courseId" [paragraphNums]="paragraphNums"></paragraph-markdown>
+<paragraph-form     *ngIf="(data.type == ParagraphType.Form)"     [data]="data" [courseId]="courseId" [paragraphNums]="paragraphNums"></paragraph-form>
+<paragraph-telnet   *ngIf="(data.type == ParagraphType.Telnet)"   [data]="data" [courseId]="courseId" [paragraphNums]="paragraphNums"></paragraph-telnet>

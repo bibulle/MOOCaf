@@ -27,6 +27,9 @@ export class Paragraph {
   // The user previous choice
   userChoice: any;
 
+  // The user previous choice return (from the serveur)
+  userChoiceReturn: any;
+
   // If the user choice ok(true), ko(false) or undefined
   userCheckOK: boolean;
 
@@ -44,6 +47,7 @@ export class Paragraph {
     // Init attributes
     this.id = options.id;
     this.userChoice = options.userChoice;
+    this.userChoiceReturn = options.userChoiceReturn;
     this.userCheckOK = options.userCheckOK;
     this.userCheckCount = options.userCheckCount;
     this.maxCheckCount = options.maxCheckCount;

@@ -8,6 +8,7 @@ import { FormsModule } from "@angular/forms";
 import { FlexModule } from "../widget/flex/flex.module";
 import { ScrollDetectorModule } from "../widget/scroll-detector/scroll-detector.module";
 import { MdButtonModule } from "@angular2-material/button";
+import { ParagraphTelnetComponent } from './paragraph-telnet/paragraph-telnet.component';
 
 @NgModule({
   imports: [
@@ -18,7 +19,7 @@ import { MdButtonModule } from "@angular2-material/button";
     FlexModule,
     ScrollDetectorModule
   ],
-  declarations: [ParagraphComponent, ParagraphMarkdownComponent, ParagraphFormComponent],
+  declarations: [ParagraphComponent, ParagraphMarkdownComponent, ParagraphFormComponent, ParagraphTelnetComponent],
   exports: [ParagraphComponent]
 })
 export class ParagraphModule { }

@@ -455,6 +455,31 @@ export class CourseService {
   }
 
   /**
+   * test user choice (exec it on the serveur... for telnet or whatever)
+   * @param courseId
+   * @param paragraph
+   * @returns {Promise<Paragraph>}
+   */
+  testUserChoice(courseId: string, paragraph: Paragraph): Promise<Paragraph> {
+
+    var userChoice = {
+      userChoice: paragraph.userChoice
+    };
+
+    let url = `${this.coursesUrl}/${courseId}/${paragraph['_id']}/userchoice/test`;
+    return this.authHttp
+               .put(url, userChoice, {headers: CommonHeaders.contentHeaders})
+               .toPromise()
+               .then(res => {
+                 // check if something change in current course thing
+                 this.checkCurrentCourse();
+
+                 return res.json().data;
+               })
+               .catch(error => this.handleError(error, this._logger));
+  }
+
+  /**
    * check user choice
    * @param courseId
    * @param paragraph

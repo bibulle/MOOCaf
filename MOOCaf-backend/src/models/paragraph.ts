@@ -11,7 +11,7 @@ class IParagraph {
   type: ParagraphType;
 
   // The markdown rawContent
-  public content: IParagraphContent[] = new Array<IParagraphContent>();
+  public content: IParagraphContent[] = [];
 
   // if it's form... the correct answer
   answer: any;
@@ -32,13 +32,13 @@ class IParagraph {
 
   /**
    * Constructor
-   * @param mongoose.Document<IUser>
+   * @param document
    */
   constructor(document: {}) {
     _.merge(this, document);
 
     if (!this.content) {
-      this.content = new Array<IParagraphContent>();
+      this.content = [];
     }
 
   }
@@ -48,6 +48,7 @@ interface IParagraphModel extends IParagraph, Mongoose.Document {
 }
 
 
+//noinspection TypeScriptUnresolvedVariable
 /**
  * MongooseSchema
  * @type {"mongoose".Schema}
@@ -60,7 +61,7 @@ var _schema: Mongoose.Schema = new Mongoose.Schema({
     },
     content: {
       type: [],
-      default: new Array<IParagraphContent>()
+      'default': []
     },
     answer: {
       type: Mongoose.Schema.Types.Mixed,
@@ -72,11 +73,11 @@ var _schema: Mongoose.Schema = new Mongoose.Schema({
     },
     created: {
       type: Date,
-      default: Date.now
+      'default': Date.now
     },
     updated: {
       type: Date,
-      default: Date.now
+      'default': Date.now
     }
 
   })
@@ -114,7 +115,7 @@ class Paragraph extends IParagraph {
 
   /**
    * Constructor
-   * @param mongoose.Document<IUser>
+   * @param document
    */
   constructor(document: {}) {
     super(document);

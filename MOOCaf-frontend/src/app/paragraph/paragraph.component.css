@@ -2,10 +2,24 @@
   /*position: relative;*/
 }
 
+
+/*-------------*/
+/* Test and Check buttons */
+/*-------------*/
 .paragraph .buttons {
   padding-right: 1%;
   padding-left: 1%;
 }
+.buttons button {
+  margin-bottom: 5px;
+}
+.buttons button:last-child {
+  margin-bottom: 10px;
+}
+
+/*-------------*/
+/* Content */
+/*-------------*/
 
 .paragraph .content_box {
   width: 89%;
@@ -44,6 +58,10 @@
 
 }
 
+
+/*-------------*/
+/* Edit buttons */
+/*-------------*/
 .paragraph-buttons {
   position: absolute;
   right: 6px;

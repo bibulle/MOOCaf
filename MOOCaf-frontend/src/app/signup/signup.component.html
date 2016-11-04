@@ -3,13 +3,13 @@
     <md-card-title>
       Signup
     </md-card-title>
-    <form role="form" (submit)="signup($event, username.value, password.value, firstname.value, lastname.value, email.value)">
+    <form role="form" (submit)="signup()">
       <md-card-content>
-        <md-input placeholder="Username"  required                 #username></md-input>
-        <md-input placeholder="Password"  required type="password" #password></md-input>
-        <md-input placeholder="Firstname" required                 #firstname></md-input>
-        <md-input placeholder="Lastname"  required                 #lastname></md-input>
-        <md-input placeholder="Email"     required type="email"    #email></md-input>
+        <md-input placeholder="Username"  required maxlength="20" minlength="3" title="should be a valid linux username (minuscule letters and numbers)"  [(ngModel)]="user.username" (keyup)="userNameChanged()" (change)="userNameChanged()" name="username"></md-input>
+        <md-input placeholder="Password"  required type="password" [(ngModel)]="user.password" name="password"></md-input>
+        <md-input placeholder="Firstname" required                 [(ngModel)]="user.firstname" name="firstname"></md-input>
+        <md-input placeholder="Lastname"  required                 [(ngModel)]="user.lastname" name="lastname"></md-input>
+        <md-input placeholder="Email"     required type="email"    [(ngModel)]="user.email" name="email"></md-input>
       </md-card-content>
       <md-card-actions align="end">
         <button md-raised-button color="primary" type="submit">Submit</button>
