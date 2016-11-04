@@ -75,14 +75,6 @@ ${telnetResultBuilder.shellSeparatorOut}
 set +o history
 ${after}`;
 
-    // OpenStackService
-    //   .rebuildServerByName("MOOCer-Linux")
-    //   .then(server => {
-    //     debug(server);
-    //   })
-    //   .catch(err=> {
-    //     debug(err);
-    //   })
 
     return new Promise<void>((resolve, reject) => {
       var PASSWORD_CRYPT = '$6$Nuh5shGL$.lY2sRp2I8nnbykLl0zcj2K4L6BvaNSZLDb8x4y0DTC8QsnW85.tOBI9N.jtScY2DcHpSrUTV3GD.ANVKtkJs1';

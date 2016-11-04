@@ -1,0 +1,31 @@
+#!/usr/bin/env node
+
+var debug = require('debug')('server:batch');
+var CronJob = require('cron').CronJob;
+
+var OpenStackService = require("../service/openStackService").default;
+
+
+debug('Starting.....');
+
+
+//========================================================================
+var reBuildLinuxServer = function () {
+
+  debug("Rebuild Linux Server");
+
+  OpenStackService
+    .rebuildServerByName("MOOCer-Linux")
+    .then(() => {
+      debug("done");
+    })
+    .catch(err=> {
+      debug(err);
+    })
+
+};
+
+//========================================================================
+//new CronJob("0 * * * * *", reBuildLinuxServer, null, true, "GMT");
+new CronJob("0 0 4 * * *", reBuildLinuxServer, null, true, "GMT");
+//========================================================================
