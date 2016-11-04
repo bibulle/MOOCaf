@@ -28,24 +28,38 @@ export default class ParagraphService {
 
   /**
    * check a user choice in a paragraph (and respond if not allowed)
+   * @param userId
    * @param paragraph
    * @param userChoice
    * @param response
    * @returns {boolean}
    */
-  static checkUserChoice(paragraph: IParagraph, userChoice: IUserChoices, response: Response): boolean {
+  static checkUserChoice(userId: string, paragraph: IParagraph, userChoice: IUserChoices, response: Response): Promise<boolean> {
     //debug("checkUserChoice");
 
-    return ParagraphService._checkIfOpenAndRespondOrAction(paragraph, userChoice, response, () => {
-      // Do the check
-      userChoice.userCheckOK = ParagraphService._getClassForAType(paragraph.type).checkUserChoice(paragraph, userChoice);
+    return new Promise<boolean>((resolve) => {
+      var ret = ParagraphService._checkIfOpenAndRespondOrAction(paragraph, userChoice, response);
 
-      userChoice.userCheckCount += 1;
-      userChoice.updated = new Date();
+      // Not open, already respond... do nothing else
+      if (!ret) {
+        resolve(false)
+      } else {
+        // Do the check
+        ParagraphService
+          ._getClassForAType(paragraph.type)
+          .checkUserChoice(userId, paragraph, userChoice)
+          .then(ret => {
+            userChoice.userCheckOK = ret;
 
-      // if done, set it
-      if ((userChoice.userCheckOK === true) || (paragraph.maxCheckCount <= userChoice.userCheckCount)) {
-        userChoice.userDone = new Date();
+            userChoice.userCheckCount += 1;
+            userChoice.updated = new Date();
+
+            // if done, set it
+            if ((userChoice.userCheckOK === true) || (paragraph.maxCheckCount <= userChoice.userCheckCount)) {
+              userChoice.userDone = new Date();
+            }
+            resolve(true);
+          })
       }
     });
   }
@@ -53,18 +67,29 @@ export default class ParagraphService {
 
   /**
    * test a user choice in a paragraph (and respond if not allowed)
+   * @param userId
    * @param paragraph
    * @param userChoice
    * @param response
    * @returns {boolean}
    */
-  static testUserChoice(paragraph: IParagraph, userChoice: IUserChoices, response: Response): boolean {
+  static testUserChoice(userId: string, paragraph: IParagraph, userChoice: IUserChoices, response: Response): Promise<boolean> {
     //debug("checkUserChoice");
 
-    return ParagraphService._checkIfOpenAndRespondOrAction(paragraph, userChoice, response, () => {
-      // Do the test
-      ParagraphService._getClassForAType(paragraph.type).testUserChoice(paragraph, userChoice);
-
+    return new Promise<boolean>((resolve) => {
+      var ret = ParagraphService._checkIfOpenAndRespondOrAction(paragraph, userChoice, response);
+      // Not open, already respond... do nothing else
+      if (!ret) {
+        resolve(false)
+      } else {
+        // Do the test
+        ParagraphService
+          ._getClassForAType(paragraph.type)
+          .testUserChoice(userId, paragraph, userChoice)
+          .then(() => {
+            resolve(true);
+          });
+      }
     });
   }
 
@@ -74,11 +99,10 @@ export default class ParagraphService {
    * @param paragraph
    * @param userChoice
    * @param response
-   * @param actionIfOpen
    * @returns {boolean}
    * @private
    */
-  private static _checkIfOpenAndRespondOrAction(paragraph: IParagraph, userChoice: IUserChoices, response: Response, actionIfOpen: () => void): boolean {
+  private static _checkIfOpenAndRespondOrAction(paragraph: IParagraph, userChoice: IUserChoices, response: Response): boolean {
 
     if (paragraph.maxCheckCount <= userChoice.userCheckCount) {
       // Too many try, won't be saved
@@ -90,11 +114,7 @@ export default class ParagraphService {
       response.status(401).json({status: 401, message: "Answer already correct"});
       return false;
     } else {
-
-      actionIfOpen();
-
       return true;
-
     }
 
   }

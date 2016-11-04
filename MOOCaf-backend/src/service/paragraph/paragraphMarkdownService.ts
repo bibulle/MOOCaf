@@ -24,22 +24,29 @@ export default class ParagraphMarkdownService implements IParagraphService {
   /**
    * Check a user choice in a paragraph (and respond if not allowed)
    *    The return value is ok or not
+   * @param userId
    * @param paragraph
    * @param userChoice
    * @returns {boolean}
    */
-  checkUserChoice(paragraph: IParagraph, userChoice: IUserChoices): boolean {
-    // do nothing
-    return false;
+  checkUserChoice(userId: string, paragraph: IParagraph, userChoice: IUserChoices): Promise<boolean> {
+    return new Promise<boolean>( (resolve) => {
+      // do nothing
+      resolve(false);
+    });
   }
 
   /**
    * Test a user choice in a paragraph (and respond if not allowed)
    *    The return value should set into the userChoice
+   * @param userId
    * @param paragraph
    * @param userChoice
    */
-  testUserChoice(paragraph: IParagraph, userChoice: IUserChoices) {
-    // do nothing
+  testUserChoice(userId: string, paragraph: IParagraph, userChoice: IUserChoices): Promise<void> {
+    return new Promise<void>( (resolve) => {
+      // do nothing
+      resolve();
+    });
   }
 }

@@ -60,23 +60,31 @@ export default class ParagraphFormService implements IParagraphService {
   /**
    * Check a user choice in a paragraph (and respond if not allowed)
    *    The return value is ok or not
+   * @param userId
    * @param paragraph
    * @param userChoice
    * @returns {boolean}
    */
-  checkUserChoice(paragraph: IParagraph, userChoice: IUserChoices): boolean {
-    // Do the check
-    return ("" + userChoice.userChoice == "" + paragraph.answer);
+  checkUserChoice(userId: string, paragraph: IParagraph, userChoice: IUserChoices): Promise<boolean> {
+
+    return new Promise<boolean>( (resolve) => {
+      // Do the check
+      resolve("" + userChoice.userChoice == "" + paragraph.answer);
+    });
   }
 
   /**
    * Test a user choice in a paragraph (and respond if not allowed)
    *    The return value should set into the userChoice
+   * @param userId
    * @param paragraph
    * @param userChoice
    */
-  testUserChoice(paragraph: IParagraph, userChoice: IUserChoices) {
-    // do nothing
+  testUserChoice(userId: string, paragraph: IParagraph, userChoice: IUserChoices): Promise<void> {
+    return new Promise<void>( (resolve) => {
+      // do nothing
+      resolve();
+    });
   }
 
 

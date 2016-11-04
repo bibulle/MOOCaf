@@ -1,62 +1,63 @@
 import * as _ from 'lodash';
 
 import Course from "../models/course";
-import {ICourse} from "../models/iCourse";
+import { ICourse } from "../models/iCourse";
 import User = require("../models/user");
-import {ICoursePart} from "../models/iCoursePart";
-import {IParagraph} from "../models/iParagraph";
+import { ICoursePart } from "../models/iCoursePart";
+import { IParagraph } from "../models/iParagraph";
 import UserCourse = require("../models/UserCourse");
 import IUserPart = require("../models/iUserParts");
+import UserChoice = require("../models/userChoice");
+import IUserChoices = require("../models/iUserChoices");
+
 var debug = require('debug')('server:service:course');
 
 export default class CourseService {
 
 
-
   static getCourses(userId: string, currentOnly: boolean, progressOnly: boolean): Promise <ICourse[]> {
 
-    return new Promise<ICourse[]> ((resolve, reject) => {
+    return new Promise<ICourse[]>((resolve, reject) => {
       Course.find()
-        .then((courses: ICourse[]) => {
-          //debug(courses);
-          // Search the user
-          User.findById(userId)
-            .then(user => {
-              // fill each paragraph with users values
-              var promises = _.map(courses,
-                p => CourseService.fillCourseForUser(p, user));
-              Promise.all(promises)
-                .then((completedCourses: ICourse[]) => {
+            .then((courses: ICourse[]) => {
+              //debug(courses);
+              // Search the user
+              User.findById(userId)
+                  .then(user => {
+                    // fill each paragraph with users values
+                    var promises = _.map(courses,
+                      p => CourseService.fillCourseForUser(p, user));
+                    Promise.all(promises)
+                           .then((completedCourses: ICourse[]) => {
 
-                  // filter if we only need the currents one
-                  if (currentOnly) {
-                    completedCourses = completedCourses
-                      .filter(f => {
-                        return (f.dateFollowed && !f.dateFollowedEnd)
-                      })
-                  } else if (progressOnly) {
-                    completedCourses = completedCourses
-                      .filter(f => {
-                        return (f.dateFollowed)
-                      })
-                  }
+                             // filter if we only need the currents one
+                             if (currentOnly) {
+                               completedCourses = completedCourses
+                                 .filter(f => {
+                                   return (f.dateFollowed && !f.dateFollowedEnd)
+                                 })
+                             } else if (progressOnly) {
+                               completedCourses = completedCourses
+                                 .filter(f => {
+                                   return (f.dateFollowed)
+                                 })
+                             }
 
-                  resolve(completedCourses);
-                })
-                .catch(err => {
-                  reject(err);
-                });
+                             resolve(completedCourses);
+                           })
+                           .catch(err => {
+                             reject(err);
+                           });
+                  })
+                  .catch(err => {
+                    reject(err);
+                  });
             })
             .catch(err => {
               reject(err);
             });
-        })
-        .catch(err => {
-          reject(err);
-        });
     });
   }
-
 
 
   /**
@@ -90,12 +91,12 @@ export default class CourseService {
           .then(course => {
             //debug(course);
             CourseService.fillCourseForUser(course, user)
-              .then(course => {
-                resolve(course);
-              })
-              .catch(err => {
-                reject(err);
-              });
+                         .then(course => {
+                           resolve(course);
+                         })
+                         .catch(err => {
+                           reject(err);
+                         });
           })
           .catch(err => {
             console.log(err);
@@ -136,6 +137,7 @@ export default class CourseService {
                 paragraph.userCheckCount = value.userCheckCount;
                 paragraph.userCheckOK = value.userCheckOK;
                 paragraph.userDone = value.userDone;
+                paragraph.userChoiceReturn = value.userChoiceReturn;
 
                 // remove the answer to not spoil !!
                 if (!user.isAdmin && (value.userCheckCount == null) || (value.userCheckCount < paragraph.maxCheckCount)) {
@@ -152,7 +154,7 @@ export default class CourseService {
               if (part) {
                 //console.log(p);
                 part.lastDone = value.lastDone;
-                part.percentFollowed = (value.countRead+value.countCheckOk+value.countCheckKo)/value.countParagraph;
+                part.percentFollowed = (value.countRead + value.countCheckOk + value.countCheckKo) / value.countParagraph;
                 part.countRead = value.countRead;
                 part.countCheckOk = value.countCheckOk;
                 part.countCheckKo = value.countCheckKo;
@@ -215,7 +217,7 @@ export default class CourseService {
    * Search for a paragraph within course parts
    * @param paragraphNums
    * @param courseParts
-   * @returns  the earched paragraph
+   * @returns  the searched paragraph
    */
   static searchParagraphByPath(paragraphNums: number[], courseParts: ICoursePart[]): IParagraph {
 
@@ -230,7 +232,7 @@ export default class CourseService {
    * Search for a part within course parts
    * @param partId
    * @param courseParts
-   * @returns  the earched paragraph
+   * @returns  the searched paragraph
    */
   static searchPartById(partId: string, courseParts: ICoursePart[]): ICoursePart {
 
@@ -259,7 +261,7 @@ export default class CourseService {
    * Search for a part within course parts
    * @param partNums
    * @param courseParts
-   * @returns  the earched paragraph
+   * @returns  the searched paragraph
    */
   static searchPartByPath(partNums: number[], courseParts: ICoursePart[]): ICoursePart {
 
@@ -270,6 +272,37 @@ export default class CourseService {
 
     return part;
   }
+
+  /**
+   * fill or init a user course with coming user choices
+   * @param userCourse
+   * @param courseId
+   * @param userId
+   * @param paragraphId
+   * @param userChoice
+   * @returns {UserCourse}
+   */
+  static initOrFillUserCourse(userCourse: UserCourse, courseId: string, userId: string, paragraphId: string, userChoice: UserChoice) {
+    // Init user choice if needed
+    if (userCourse == null) {
+      userCourse = new UserCourse({courseId: courseId, userId: userId});
+    }
+    if (userCourse.userChoices == null) {
+      userCourse.userChoices = {};
+    }
+    if (userCourse.userChoices[paragraphId] == null) {
+      userCourse.userChoices[paragraphId] = new IUserChoices()
+    }
+
+    _.assign(userCourse.userChoices[paragraphId], userChoice);
+    if (!userCourse.userChoices[paragraphId].userCheckCount) {
+      userCourse.userChoices[paragraphId].userCheckCount = 0;
+    }
+    userCourse.userChoices[paragraphId].updated = new Date();
+    //debug(userCourse.userChoices[paragraphId]);
+    return userCourse;
+  }
+
 
   /**
    * Calc progression and stats for a user
@@ -286,33 +319,33 @@ export default class CourseService {
 
     return new Promise <UserCourse>((resolve, reject) => {
       Course.findById(courseId)
-        .then(course => {
+            .then(course => {
 
-          let courseCounts = CourseService._calcProgressionOnParts(course.parts, userCourse);
+              let courseCounts = CourseService._calcProgressionOnParts(course.parts, userCourse);
 
-          // something as been done
-          if (courseCounts.lastDone != null) {
-            // Let's start the course
-            if (!userCourse.dateFollowed) {
-              userCourse.dateFollowed = courseCounts.lastDone;
-            }
-            // Calculate the percent done
-            userCourse.percentFollowed = (courseCounts.countRead + courseCounts.countCheckOk + courseCounts.countCheckKo) / (courseCounts.countParagraph);
+              // something as been done
+              if (courseCounts.lastDone != null) {
+                // Let's start the course
+                if (!userCourse.dateFollowed) {
+                  userCourse.dateFollowed = courseCounts.lastDone;
+                }
+                // Calculate the percent done
+                userCourse.percentFollowed = (courseCounts.countRead + courseCounts.countCheckOk + courseCounts.countCheckKo) / (courseCounts.countParagraph);
 
-            // Let's end it
-            if (userCourse.percentFollowed >= 1) {
-              userCourse.dateFollowedEnd = courseCounts.lastDone;
-            } else {
-              userCourse.dateFollowedEnd = null;
-            }
-          }
+                // Let's end it
+                if (userCourse.percentFollowed >= 1) {
+                  userCourse.dateFollowedEnd = courseCounts.lastDone;
+                } else {
+                  userCourse.dateFollowedEnd = null;
+                }
+              }
 
-          resolve(userCourse);
-        })
-        .catch(err => {
-          console.log(err);
-          reject("System error " + err);
-        });
+              resolve(userCourse);
+            })
+            .catch(err => {
+              console.log(err);
+              reject("System error " + err);
+            });
 
     });
   }
@@ -373,7 +406,6 @@ export default class CourseService {
     return ret;
 
   }
-
 
 
 }

@@ -765,8 +765,7 @@ courseRouter.route('/:course_id/:paragraph_id/userChoice')
                           response.status(500).json({status: 500, message: "System error " + err});
                         });
 
-            })
-;
+            });
 
 courseRouter.route('/:course_id/:paragraph_id/userChoice/check')
             // ============================================
@@ -788,24 +787,7 @@ courseRouter.route('/:course_id/:paragraph_id/userChoice/check')
               UserCourse
                 .findByUserIdCourseId(userId, courseId)
                 .then(userCourse => {
-
-                  // Init user choice if needed
-                  if (userCourse == null) {
-                    userCourse = new UserCourse({courseId: courseId, userId: userId});
-                  }
-                  if (userCourse.userChoices == null) {
-                    userCourse.userChoices = {};
-                  }
-                  if (userCourse.userChoices[paragraphId] == null) {
-                    userCourse.userChoices[paragraphId] = new IUserChoices()
-                  }
-
-                  _.assign(userCourse.userChoices[paragraphId], userChoice);
-                  if (!userCourse.userChoices[paragraphId].userCheckCount) {
-                    userCourse.userChoices[paragraphId].userCheckCount = 0;
-                  }
-                  userCourse.userChoices[paragraphId].updated = new Date();
-                  //debug(userCourse.userChoices[paragraphId]);
+                  userCourse = CourseService.initOrFillUserCourse(userCourse, courseId, userId, paragraphId, userChoice);
 
                   // get the paragraph
                   Course.findById(courseId)
@@ -814,30 +796,37 @@ courseRouter.route('/:course_id/:paragraph_id/userChoice/check')
                           if (paragraph != null) {
 
                             // check the user choice
-                            let isDone = ParagraphService.checkUserChoice(paragraph, userCourse.userChoices[paragraphId], response);
-                            if (isDone) {
-                              // save it to Db
-                              CourseService.calcProgression(userCourse)
-                                           .then((userCourse) => {
-                                             UserCourse
-                                               .updateOrCreate(userCourse)
-                                               .then(() => {
+                            ParagraphService
+                              .checkUserChoice(userId, paragraph, userCourse.userChoices[paragraphId], response)
+                              .then(isDone => {
+                                if (isDone) {
+                                  // save it to Db
+                                  CourseService
+                                    .calcProgression(userCourse)
+                                    .then((userCourse) => {
+                                      UserCourse
+                                        .updateOrCreate(userCourse)
+                                        .then(() => {
 
-                                                 StatService.calcStatsUser(userId);
+                                          StatService.calcStatsUser(userId);
 
-                                                 _respondWithCourseParagraph(courseId, paragraphId, null, request['user']["id"], response);
-                                               })
-                                               .catch(err => {
-                                                 console.log(err);
-                                                 response.status(500).json({status: 500, message: "System error " + err});
-                                               })
-                                           })
-                                           .catch(err => {
-                                             console.log(err);
-                                             response.status(500).json({status: 500, message: "System error " + err});
-                                           })
-                            }
-
+                                          _respondWithCourseParagraph(courseId, paragraphId, null, request['user']["id"], response);
+                                        })
+                                        .catch(err => {
+                                          console.log(err);
+                                          response.status(500).json({status: 500, message: "System error " + err});
+                                        })
+                                    })
+                                    .catch(err => {
+                                      console.log(err);
+                                      response.status(500).json({status: 500, message: "System error " + err});
+                                    })
+                                }
+                              })
+                              .catch(err => {
+                                console.log(err);
+                                response.status(500).json({status: 500, message: "System error " + err});
+                              })
                           } else {
                             response.status(404).json({status: 404, message: "Course not found"});
                           }
@@ -875,21 +864,8 @@ courseRouter.route('/:course_id/:paragraph_id/userChoice/test')
               UserCourse
                 .findByUserIdCourseId(userId, courseId)
                 .then(userCourse => {
-                  if (userCourse == null) {
-                    userCourse = new UserCourse({courseId: courseId, userId: userId});
-                  }
-                  if (userCourse.userChoices == null) {
-                    userCourse.userChoices = {};
-                  }
-                  if (userCourse.userChoices[paragraphId] == null) {
-                    userCourse.userChoices[paragraphId] = new IUserChoices()
-                  }
 
-                  _.assign(userCourse.userChoices[paragraphId], userChoice);
-                  if (!userCourse.userChoices[paragraphId].userCheckCount) {
-                    userCourse.userChoices[paragraphId].userCheckCount = 0;
-                  }
-                  userCourse.userChoices[paragraphId].updated = new Date();
+                  userCourse = CourseService.initOrFillUserCourse(userCourse, courseId, userId, paragraphId, userChoice);
                   //debug(userCourse.userChoices[paragraphId]);
 
                   // get the paragraph
@@ -898,30 +874,33 @@ courseRouter.route('/:course_id/:paragraph_id/userChoice/test')
                           let paragraph = CourseService.searchParagraphById(paragraphId, course.parts);
                           if (paragraph != null) {
                             // check the user choice
-                            let isDone = ParagraphService.testUserChoice(paragraph, userCourse.userChoices[paragraphId], response);
-                            if (isDone) {
+                            ParagraphService
+                              .testUserChoice(userId, paragraph, userCourse.userChoices[paragraphId], response)
+                              .then(isDone => {
+                                if (isDone) {
 
-                              // save it to Db
-                              CourseService.calcProgression(userCourse)
-                                           .then((userCourse) => {
-                                             UserCourse
-                                               .updateOrCreate(userCourse)
-                                               .then(() => {
+                                  // save it to Db
+                                  CourseService.calcProgression(userCourse)
+                                               .then((userCourse) => {
+                                                 UserCourse
+                                                   .updateOrCreate(userCourse)
+                                                   .then(() => {
 
-                                                 StatService.calcStatsUser(userId);
+                                                     StatService.calcStatsUser(userId);
 
-                                                 _respondWithCourseParagraph(courseId, paragraphId, null, request['user']["id"], response);
+                                                     _respondWithCourseParagraph(courseId, paragraphId, null, request['user']["id"], response);
+                                                   })
+                                                   .catch(err => {
+                                                     console.log(err);
+                                                     response.status(500).json({status: 500, message: "System error " + err});
+                                                   })
                                                })
                                                .catch(err => {
                                                  console.log(err);
                                                  response.status(500).json({status: 500, message: "System error " + err});
                                                })
-                                           })
-                                           .catch(err => {
-                                             console.log(err);
-                                             response.status(500).json({status: 500, message: "System error " + err});
-                                           })
-                            }
+                                }
+                              })
 
                           } else {
                             response.status(404).json({status: 404, message: "Course not found"});
