@@ -13,6 +13,7 @@ import mongoose from './models/db';
 import {loginRouter} from "./routes/login";
 import {courseRouter} from "./routes/course";
 import {awardRouter} from "./routes/award";
+import { jobRouter } from "./routes/job";
 
 // Init Db access
 mongoose.init()
@@ -59,6 +60,8 @@ app.use("/users", loginRouter);
 app.use("/api/course", courseRouter);
 //noinspection TypeScriptValidateTypes
 app.use("/api/award", awardRouter);
+//noinspection TypeScriptValidateTypes
+app.use("/api/job", jobRouter);
 
 // error handlers
 // development error handler

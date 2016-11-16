@@ -71,3 +71,7 @@ textarea:disabled {
   overflow: auto;
 }
 
+.content_box pre >> .running {
+  display: none;
+}
+

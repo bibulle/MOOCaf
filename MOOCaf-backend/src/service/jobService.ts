@@ -1,4 +1,4 @@
-var debug = require('debug')('server:service:job');
+var debug = require('debug')('server:service:jobRouter');
 
 import { Job, JobStatus } from "../models/job";
 
@@ -6,10 +6,11 @@ export default class JobService {
 
 
   static jobs: Job[] = [];
+  static subscribers: { [id: string] : Function} = {};
 
 
   /**
-   * Create a job
+   * Create a jobRouter
    * @param id can be null
    * @param status
    * @param result
@@ -27,6 +28,13 @@ export default class JobService {
       this.jobs.push(job);
     }
 
+    if (this.subscribers[job.id]) {
+      this.subscribers[job.id](job);
+      if (job.status == JobStatus.Done) {
+        this.unSubscribeJob(job.id);
+      }
+    }
+
     // clean old jobs
     this._cleanOldJobs();
 
@@ -34,7 +42,7 @@ export default class JobService {
   }
 
   /**
-   * Get an existing job
+   * Get an existing jobRouter
    * @param id
    * @returns {Job}
    */
@@ -50,7 +58,7 @@ export default class JobService {
   }
 
   /**
-   * Update a job with new status and/or result
+   * Update a jobRouter with new status and/or result
    * @param id
    * @param status
    * @param result
@@ -67,6 +75,13 @@ export default class JobService {
       job.lastStatus = new Date();
     }
 
+    if (this.subscribers[job.id]) {
+      this.subscribers[job.id](job);
+      if (job.status == JobStatus.Done) {
+        this.unSubscribeJob(job.id);
+      }
+    }
+
     // clean old jobs
     this._cleanOldJobs();
 
@@ -74,7 +89,21 @@ export default class JobService {
   }
 
   /**
-   * Clean old job...
+   * Subscribe to a jobRouter
+   */
+  static subscribeJob(id: string, callback: Function) {
+    this.subscribers[id] = callback;
+  }
+
+  /**
+   * Unsubscribe to a jobRouter
+   */
+  static unSubscribeJob(id: string) {
+    delete this.subscribers[id];
+  }
+
+  /**
+   * Clean old jobRouter...( nothing apppend for 10 hours)
    * @returns {Promise<void>}
    * @private
    */
@@ -82,7 +111,11 @@ export default class JobService {
     return new Promise<void>((resolve) => {
       var limitTime = Date.now() - 10 * 60 * 60 * 1000;
       this.jobs = this.jobs.filter(j => {
-        return j.lastStatus.getTime() > limitTime
+        var ret = (j.lastStatus.getTime() > limitTime);
+        if (!ret) {
+          this.unSubscribeJob(j.id);
+        }
+        return ret;
       });
       resolve();
     })

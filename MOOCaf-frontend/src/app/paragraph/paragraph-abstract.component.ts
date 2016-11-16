@@ -5,10 +5,11 @@ import { Input } from "@angular/core";
 import { CourseService } from "../course/course.service";
 import { Logger } from "angular2-logger/core";
 import { NotificationService } from "../widget/notification/notification.service";
+import marked from "marked";
+import highlight from "highlight.js";
+import { JobService } from "./job.service";
 
 //import * as marked from 'marked';
-import marked from 'marked';
-import highlight from 'highlight.js';
 
 export abstract class ParagraphAbstractComponent {
 
@@ -26,7 +27,8 @@ export abstract class ParagraphAbstractComponent {
 
   constructor(protected _courseService: CourseService,
               protected _logger: Logger,
-              protected _notificationService: NotificationService) {
+              protected _notificationService: NotificationService,
+              protected _jobService: JobService) {
 
     // Synchronous highlighting with highlight.js
     //noinspection TypeScriptUnresolvedFunction

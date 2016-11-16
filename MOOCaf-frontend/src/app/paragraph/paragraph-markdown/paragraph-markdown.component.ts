@@ -4,6 +4,7 @@ import { VisibilityEvent } from "../../widget/scroll-detector/visible.directive"
 import { NotificationService } from "../../widget/notification/notification.service";
 import { Logger } from "angular2-logger/core";
 import { CourseService } from "../../course/course.service";
+import { JobService } from "../job.service";
 
 @Component({
   selector: 'paragraph-markdown',
@@ -20,11 +21,13 @@ export class ParagraphMarkdownComponent extends ParagraphAbstractComponent imple
 
   constructor(_courseService: CourseService,
               _logger: Logger,
-              _notificationService: NotificationService) {
+              _notificationService: NotificationService,
+              _jobService: JobService) {
     super(
       _courseService,
       _logger,
-      _notificationService
+      _notificationService,
+      _jobService
     );
 
   }

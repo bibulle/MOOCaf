@@ -3,10 +3,7 @@
 }
 
 .level1 {
-  padding-top: 0.6em;
-  padding-bottom: 0.6em;
-  padding-right: 0;
-  padding-left: 0;
+  padding: 0.6em 0;
   /*margin: 0.2em;*/
 }
 .level1 button {
@@ -42,7 +39,7 @@
 .level1 button.selected, .level2 button.selected {
   /*background-color: #DDDDDD;*/
   /*font-weight: bold;*/
-  text-shadow: 1px 0px 0px black;
+  text-shadow: 1px 0 0 black;
 }
 
 .level1 button:hover, .level2 button:hover {
@@ -85,6 +82,6 @@ md-icon.no-child {
 }
 
 .part-title {
-  padding-right: 0.8em;
+  padding-right: 1em;
 }
 

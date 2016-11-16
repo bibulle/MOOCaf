@@ -9,6 +9,7 @@ import { IParagraphService } from "./paragraph/iParagraphService";
 import ParagraphFormService from "./paragraph/paragraphFormService";
 import ParagraphTelnetService from "./paragraph/paragraphTelnetService";
 import ParagraphMarkdownService from "./paragraph/paragraphMarkdownService";
+import { Job } from "../models/job";
 
 var debug = require('debug')('server:service:paragraph');
 
@@ -73,21 +74,25 @@ export default class ParagraphService {
    * @param response
    * @returns {boolean}
    */
-  static testUserChoice(userId: string, paragraph: IParagraph, userChoice: IUserChoices, response: Response): Promise<boolean> {
+  static testUserChoice(userId: string, paragraph: IParagraph, userChoice: IUserChoices, response: Response): Promise<Job> {
     //debug("checkUserChoice");
 
-    return new Promise<boolean>((resolve) => {
+    return new Promise<Job>((resolve, reject) => {
       var ret = ParagraphService._checkIfOpenAndRespondOrAction(paragraph, userChoice, response);
       // Not open, already respond... do nothing else
       if (!ret) {
-        resolve(false)
+        resolve(null)
       } else {
         // Do the test
         ParagraphService
           ._getClassForAType(paragraph.type)
           .testUserChoice(userId, paragraph, userChoice)
-          .then(() => {
-            resolve(true);
+          .then((job) => {
+            resolve(job);
+          })
+          .catch((err) => {
+            //debug(err);
+            reject(err);
           });
       }
     });
@@ -95,7 +100,7 @@ export default class ParagraphService {
 
 
   /**
-   * If paragraph is Open, do the job, else respond
+   * If paragraph is Open, do the jobRouter, else respond
    * @param paragraph
    * @param userChoice
    * @param response

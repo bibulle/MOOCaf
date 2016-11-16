@@ -1,35 +1,39 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ElementRef, AfterViewInit } from "@angular/core";
 import { ParagraphAbstractComponent } from "../paragraph-abstract.component";
 import { NotificationService } from "../../widget/notification/notification.service";
 import { Logger } from "angular2-logger/core";
 import { CourseService } from "../../course/course.service";
 import { Subject } from "rxjs";
 import { Paragraph } from "../paragraph";
+import { Job, JobStatus } from "../job";
+import { JobService } from "../job.service";
 
 @Component({
   selector: 'paragraph-telnet',
   templateUrl: './paragraph-telnet.component.html',
   styleUrls: ['../paragraph.component.css', './paragraph-telnet.component.css']
 })
-export class ParagraphTelnetComponent extends ParagraphAbstractComponent implements OnInit {
+export class ParagraphTelnetComponent extends ParagraphAbstractComponent implements OnInit, AfterViewInit {
 
 
+  isRunning = false;
 
 
   // The queue to manage user choices
   private subjectParagraph: Subject<Paragraph>;
 
 
-
-
   // the constructor
   constructor(_courseService: CourseService,
               _logger: Logger,
-              _notificationService: NotificationService) {
+              _notificationService: NotificationService,
+              _jobService: JobService,
+              private _el: ElementRef) {
     super(
       _courseService,
       _logger,
-      _notificationService
+      _notificationService,
+      _jobService
     );
   }
 
@@ -65,8 +69,27 @@ export class ParagraphTelnetComponent extends ParagraphAbstractComponent impleme
           );
     }
 
+
+    //this._logger.debug(this._el.nativeElement.querySelector('pre'));
+
   }
 
+  //noinspection JSUnusedGlobalSymbols
+  ngAfterViewInit() {
+    // Initially, scroll to bottom
+    this.scrollReturnToBottom(true);
+  }
+
+  scrollReturnToBottom(forced: boolean) {
+    // if we are at the end of the return view, scroll after change has been done
+    if (this._el.nativeElement.querySelector('pre')) {
+      if (forced || (this._el.nativeElement.querySelector('pre').scrollTop+this._el.nativeElement.querySelector('pre').clientHeight >= this._el.nativeElement.querySelector('pre').scrollHeight)) {
+        setTimeout(() => {
+          this._el.nativeElement.querySelector('pre').scrollTop = this._el.nativeElement.querySelector('pre').scrollHeight;
+        },100);
+      }
+    }
+  }
 
   prepareData(): void {
     //this._logger.debug(this.data);
@@ -88,14 +111,12 @@ export class ParagraphTelnetComponent extends ParagraphAbstractComponent impleme
    * test the user choices
    */
   testUserChoice() {
+    this.isRunning = true;
     // Send this to the backend
     this._courseService
         .testUserChoice(this.courseId, this.data)
-        .then(modifiedParagraph => {
-          //this._logger.debug(modifiedParagraph);
-          // Update the paragraph
-          this.data.userChoice = modifiedParagraph.userChoice;
-          this.data.userChoiceReturn = modifiedParagraph.userChoiceReturn;
+        .then(job => {
+          this.manageJob(job);
         })
         .catch(error => {
           this._logger.error(error);
@@ -119,6 +140,9 @@ export class ParagraphTelnetComponent extends ParagraphAbstractComponent impleme
           this.data.userCheckOK = modifiedParagraph.userCheckOK;
           this.data.answer = modifiedParagraph.answer;
           this.data.userDone = modifiedParagraph.userDone;
+
+          this.prepareData();
+
         })
         .catch(error => {
           this._logger.error(error);
@@ -128,6 +152,35 @@ export class ParagraphTelnetComponent extends ParagraphAbstractComponent impleme
   }
 
 
+  manageJob(job: Job) {
+    //this._logger.debug(job);
+
+    // Update the paragraph
+    this.data.userChoice = job.result.userChoice;
+    this.data.userChoiceReturn = job.result.userChoiceReturn;
+    this.prepareData();
+
+    this.scrollReturnToBottom(false);
+
+    if (job.status == JobStatus.Continue) {
+
+      setTimeout(() => {
+
+          //this._logger.debug("timeout");
+          this._jobService.getJob(job.id)
+              .then(job => {
+                this.manageJob(job);
+              })
+              .catch(error => {
+                this._logger.error(error);
+                this._notificationService.error("Error", (error.statusText || error.message || error.error || error));
+              });
+
+        },
+        5000);
+    }
+
+  }
 
   /**
    * Is the paragraph closed (interface should then be disabled)
@@ -170,6 +223,9 @@ export class ParagraphTelnetComponent extends ParagraphAbstractComponent impleme
     if (this.data.userCheckCount == null) {
       this.data.userCheckCount = 0;
     }
+
+    // if is still running, add the variable
+    this.isRunning = (this.data.userChoiceReturn && this.data.userChoiceReturn.match('class="running"'));
 
   }
 

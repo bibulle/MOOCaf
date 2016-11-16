@@ -4,6 +4,7 @@ import { ParagraphContentType } from "../../models/eParagraphContentType";
 import { IParagraph } from "../../models/iParagraph";
 import IUserChoices = require("../../models/iUserChoices");
 import { IParagraphService } from "./iParagraphService";
+import { Job } from "../../models/job";
 
 var debug = require('debug')('server:service:paragraph-form');
 
@@ -80,8 +81,8 @@ export default class ParagraphFormService implements IParagraphService {
    * @param paragraph
    * @param userChoice
    */
-  testUserChoice(userId: string, paragraph: IParagraph, userChoice: IUserChoices): Promise<void> {
-    return new Promise<void>( (resolve) => {
+  testUserChoice(userId: string, paragraph: IParagraph, userChoice: IUserChoices): Promise<Job> {
+    return new Promise<Job>( (resolve) => {
       // do nothing
       resolve();
     });

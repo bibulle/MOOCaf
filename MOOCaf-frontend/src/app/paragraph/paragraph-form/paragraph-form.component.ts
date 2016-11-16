@@ -6,6 +6,7 @@ import { CourseService } from "../../course/course.service";
 import { Logger } from "angular2-logger/core";
 import { NotificationService } from "../../widget/notification/notification.service";
 import { ParagraphContentType } from "../paragraph-content-type.enum";
+import { JobService } from "../job.service";
 
 @Component({
   selector: 'paragraph-form',
@@ -29,11 +30,13 @@ export class ParagraphFormComponent extends ParagraphAbstractComponent implement
   // the constructor
   constructor(_courseService: CourseService,
               _logger: Logger,
-              _notificationService: NotificationService) {
+              _notificationService: NotificationService,
+              _jobService: JobService) {
     super(
       _courseService,
       _logger,
-      _notificationService
+      _notificationService,
+      _jobService
     );
 
   }

@@ -3,6 +3,7 @@ import { ParagraphType } from "../../models/eParagraphType";
 import { IParagraph } from "../../models/iParagraph";
 import { IParagraphService } from "./iParagraphService";
 import IUserChoices = require("../../models/iUserChoices");
+import { Job } from "../../models/job";
 var debug = require('debug')('server:service:paragraph-markdown');
 
 export default class ParagraphMarkdownService implements IParagraphService {
@@ -43,8 +44,8 @@ export default class ParagraphMarkdownService implements IParagraphService {
    * @param paragraph
    * @param userChoice
    */
-  testUserChoice(userId: string, paragraph: IParagraph, userChoice: IUserChoices): Promise<void> {
-    return new Promise<void>( (resolve) => {
+  testUserChoice(userId: string, paragraph: IParagraph, userChoice: IUserChoices): Promise<Job> {
+    return new Promise<Job>( (resolve) => {
       // do nothing
       resolve();
     });

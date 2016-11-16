@@ -9,6 +9,9 @@ import { FlexModule } from "../widget/flex/flex.module";
 import { ScrollDetectorModule } from "../widget/scroll-detector/scroll-detector.module";
 import { MdButtonModule } from "@angular2-material/button";
 import { ParagraphTelnetComponent } from './paragraph-telnet/paragraph-telnet.component';
+import { MdProgressBarModule } from "@angular2-material/progress-bar";
+import { MdProgressCircleModule } from "@angular2-material/progress-circle";
+import { JobService } from "./job.service";
 
 @NgModule({
   imports: [
@@ -16,10 +19,15 @@ import { ParagraphTelnetComponent } from './paragraph-telnet/paragraph-telnet.co
     FormsModule,
     MdIconModule,
     MdButtonModule,
+    MdProgressBarModule,
+    MdProgressCircleModule,
     FlexModule,
     ScrollDetectorModule
   ],
   declarations: [ParagraphComponent, ParagraphMarkdownComponent, ParagraphFormComponent, ParagraphTelnetComponent],
+  providers: [
+    JobService
+  ],
   exports: [ParagraphComponent]
 })
 export class ParagraphModule { }
