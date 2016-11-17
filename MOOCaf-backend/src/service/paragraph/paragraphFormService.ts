@@ -4,7 +4,8 @@ import { ParagraphContentType } from "../../models/eParagraphContentType";
 import { IParagraph } from "../../models/iParagraph";
 import IUserChoices = require("../../models/iUserChoices");
 import { IParagraphService } from "./iParagraphService";
-import { Job } from "../../models/job";
+import { Job, JobStatus } from "../../models/job";
+import JobService from "../jobService";
 
 var debug = require('debug')('server:service:paragraph-form');
 
@@ -66,11 +67,23 @@ export default class ParagraphFormService implements IParagraphService {
    * @param userChoice
    * @returns {boolean}
    */
-  checkUserChoice(userId: string, paragraph: IParagraph, userChoice: IUserChoices): Promise<boolean> {
+  checkUserChoice(userId: string, paragraph: IParagraph, userChoice: IUserChoices): Promise<Job> {
 
-    return new Promise<boolean>( (resolve) => {
+    return new Promise<Job>( (resolve) => {
+
       // Do the check
-      resolve("" + userChoice.userChoice == "" + paragraph.answer);
+      userChoice.userCheckOK = ("" + userChoice.userChoice == "" + paragraph.answer);
+
+      userChoice.userCheckCount += 1;
+      userChoice.updated = new Date();
+
+      // if done, set it
+      if ((userChoice.userCheckOK === true) || (paragraph.maxCheckCount <= userChoice.userCheckCount)) {
+        userChoice.userDone = new Date();
+        userChoice['answer'] = paragraph.answer;
+      }
+
+      resolve(JobService.createJob(null, JobStatus.Done, userChoice));
     });
   }
 

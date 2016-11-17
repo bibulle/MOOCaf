@@ -37,6 +37,10 @@ button.active {
   background-color: #B2DFDB;
 }
 
+button[md-icon-button] {
+  line-height: 1;
+}
+
 .md-content {
   padding: 8px 8px;
   /*min-height: 640px;*/

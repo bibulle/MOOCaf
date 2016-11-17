@@ -106,5 +106,32 @@ export abstract class ParagraphAbstractComponent {
 
   }
 
+  /**
+   * fill a trg object with fields from the source one
+   * @param trg
+   * @param src
+   * @private
+   */
+  protected _fillObj(trg: any, src: any) {
+    for (var k in src) {
+
+      if (src[k] instanceof Array) {
+        if (!trg[k] || !(trg[k] instanceof Array)) {
+          trg[k] = [];
+        }
+        this._fillObj(trg[k], src[k]);
+      } else if ((typeof src[k]) === 'object') {
+        if (!trg[k] || ((typeof trg[k]) !== 'object')) {
+          trg[k] = {};
+        }
+        this._fillObj(trg[k], src[k]);
+      } else {
+
+        trg[k] = src[k];
+      }
+    }
+
+  }
+
 
 }

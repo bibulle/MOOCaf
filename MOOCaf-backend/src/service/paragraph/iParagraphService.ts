@@ -23,7 +23,7 @@ export interface IParagraphService {
    * @param paragraph
    * @param userChoice
    */
-  checkUserChoice(userId: string, paragraph: IParagraph, userChoice: IUserChoices): Promise<boolean>;
+  checkUserChoice(userId: string, paragraph: IParagraph, userChoice: IUserChoices): Promise<Job>;
 
 
   /**

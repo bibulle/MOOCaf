@@ -10,6 +10,15 @@
   padding-top: 0.5em;
 }
 
+label div.answer {
+  float: right;
+  color: green;
+  font-weight: bold;
+  /*margin-right: 20px;*/
+  font-size: 1.2em;
+  margin: 0.3em 2em 0 0;
+}
+
 label {
   display: inline-block;
   clear: both;
@@ -64,9 +73,16 @@ textarea:disabled {
   background-color: #f0f0f0;
 }
 
+.return {
+  display: inline-block;
+  width: 100%;
+  padding: 0 12px;
+  box-sizing: border-box;
+}
+
 .content_box pre {
   margin-top:0;
-  margin-left: 1.5em;
+  /*margin-left: 1.5em;*/
   max-height: 15em;
   overflow: auto;
 }

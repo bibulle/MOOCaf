@@ -9,6 +9,7 @@ import result = require("lodash/result");
 import * as async from 'async';
 import { Job, JobStatus } from "../../models/job";
 import JobService from "../jobService";
+import reject = require("lodash/reject");
 
 
 
@@ -27,8 +28,11 @@ export default class ParagraphTelnetService implements IParagraphService {
     return new IParagraph({
       type: ParagraphType.Telnet,
       content: {
-        label: 'Title',
-        question: 'Question',
+        before: "echo 'do something before'",
+        after: "echo 'do something after'",
+        label: 'This is the title of the question',
+        question: 'What do you think ?\n\nSecond line',
+        size: 20
       },
       maxCheckCount: 3,
       answer: 'answer'
@@ -44,13 +48,76 @@ export default class ParagraphTelnetService implements IParagraphService {
    * @param userChoice
    * @returns {boolean}
    */
-  checkUserChoice(userId: string, paragraph: IParagraph, userChoice: IUserChoices): Promise<boolean> {
+  checkUserChoice(userId: string, paragraph: IParagraph, userChoice: IUserChoices): Promise<Job> {
 
-    // TODO : implement this
+    return new Promise<Job>((resolve, reject) => {
 
-    return new Promise<boolean>((resolve) => {
-      // do nothing
-      resolve(false);
+      this.testUserChoice(userId, paragraph, userChoice)
+          .then(jobTest => {
+
+            var jobCheck: Job = JobService.createJob(null, jobTest.status, jobTest.result);
+
+            if (jobTest.status == JobStatus.Done) {
+
+              // Do the check
+              userChoice = jobTest.result;
+
+              userChoice.userCheckOK = (userChoice.userChoiceReturn.indexOf(paragraph.answer) >= 0);
+
+              userChoice.userCheckCount += 1;
+              userChoice.updated = new Date();
+
+              // if done, set it
+              if ((userChoice.userCheckOK === true) || (paragraph.maxCheckCount <= userChoice.userCheckCount)) {
+                userChoice.userDone = new Date();
+                userChoice['answer'] = paragraph.answer;
+              }
+
+              JobService.updateJob(jobCheck.id, JobStatus.Continue, j.result);
+
+            } else {
+
+              JobService.subscribeJob(jobTest.id, (j) => {
+
+                JobService.updateJob(jobCheck.id, JobStatus.Continue, j.result);
+
+                if (j.status == JobStatus.Done) {
+
+                  // Do the check
+                  userChoice = j.result;
+
+                  userChoice.userCheckOK = (userChoice.userChoiceReturn.indexOf(paragraph.answer) >= 0);
+
+                  userChoice.userCheckCount += 1;
+                  userChoice.updated = new Date();
+
+                  // if done, set it
+                  if ((userChoice.userCheckOK === true) || (paragraph.maxCheckCount <= userChoice.userCheckCount)) {
+                    userChoice.userDone = new Date();
+                    userChoice['answer'] = paragraph.answer;
+                  }
+
+                  JobService.updateJob(jobCheck.id, j.status, j.result);
+                }
+
+              });
+            }
+
+
+
+            resolve(JobService.getJob(jobCheck.id));
+
+
+
+
+
+
+
+
+          })
+          .catch(err => {
+            reject(err);
+          })
     });
   }
 
@@ -63,8 +130,8 @@ export default class ParagraphTelnetService implements IParagraphService {
    */
   testUserChoice(userId: string, paragraph: IParagraph, userChoice: IUserChoices): Promise<Job> {
 
-    var before = `mkdir foobar\n touch 'foobar/you_find_me_${(new Date()).getTime()}.tmp'; echo '---'`;
-    var after = "cd $HOME ; rm -fr foobar; echo '---'";
+    var before = `${paragraph.content['before']}`;
+    var after = `${paragraph.content['after']}`;
     var separator = "-------------------------------" + (new Date()).getTime();
 
     var telnetResultBuilder = new TelnetResultBuilder(separator);
@@ -73,19 +140,13 @@ export default class ParagraphTelnetService implements IParagraphService {
 ${before}
 set -o history
 ${telnetResultBuilder.shellSeparatorIn}
-${userChoice.userChoice}
+${userChoice.userChoice || ""}
 ${telnetResultBuilder.shellSeparatorOut}
 set +o history
 ${after}`;
 
-    // OpenStackService
-    //   .rebuildServerByName("MOOCer-Linux")
-    //   .then(server => {
-    //     debug(server);
-    //   })
-    //   .catch(err=> {
-    //     debug(err);
-    //   })
+    //debug(script);
+
 
     return new Promise<Job>((resolve, reject) => {
       var PASSWORD_CRYPT = '$6$Nuh5shGL$.lY2sRp2I8nnbykLl0zcj2K4L6BvaNSZLDb8x4y0DTC8QsnW85.tOBI9N.jtScY2DcHpSrUTV3GD.ANVKtkJs1';

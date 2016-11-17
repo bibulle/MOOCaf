@@ -484,9 +484,9 @@ export class CourseService {
    * check user choice
    * @param courseId
    * @param paragraph
-   * @returns {Promise<Paragraph>}
+   * @returns {Promise<Job>}
    */
-  checkUserChoice(courseId: string, paragraph: Paragraph): Promise<Paragraph> {
+  checkUserChoice(courseId: string, paragraph: Paragraph): Promise<Job> {
 
     var userChoice = {
       userChoice: paragraph.userChoice

@@ -18,7 +18,9 @@
         <div *ngIf="isClosed(data) && (data.userCheckOK === false) && data.answer" class="answer" title="answer"><p>
           {{data.answer}}</p></div>
       </label>
-      <pre *ngIf="data.userChoiceReturn" [innerHTML]="data.userChoiceReturn"></pre>
+      <div class="return">
+        <pre *ngIf="data.userChoiceReturn" [innerHTML]="data.userChoiceReturn"></pre>
+      </div>
       <md-progress-bar mode="indeterminate" *ngIf="isRunning"></md-progress-bar>
     </div>
   </div>

@@ -16,6 +16,12 @@ import { JobService } from "../job.service";
 export class ParagraphTelnetComponent extends ParagraphAbstractComponent implements OnInit, AfterViewInit {
 
 
+  editableJson: string;
+  editorInError = false;
+
+  // The previous Json value
+  private _previousJson = "";
+
   isRunning = false;
 
 
@@ -95,6 +101,7 @@ export class ParagraphTelnetComponent extends ParagraphAbstractComponent impleme
     //this._logger.debug(this.data);
     this._markdownToHtml();
     this._addMissingValues();
+    this._addEditableJson();
   }
 
 
@@ -132,17 +139,8 @@ export class ParagraphTelnetComponent extends ParagraphAbstractComponent impleme
     // Send this to the backend
     this._courseService
         .checkUserChoice(this.courseId, this.data)
-        .then(modifiedParagraph => {
-          //this._logger.debug(modifiedParagraph);
-          // Update the paragraph
-          this.data.userChoice = modifiedParagraph.userChoice;
-          this.data.userCheckCount = modifiedParagraph.userCheckCount;
-          this.data.userCheckOK = modifiedParagraph.userCheckOK;
-          this.data.answer = modifiedParagraph.answer;
-          this.data.userDone = modifiedParagraph.userDone;
-
-          this.prepareData();
-
+        .then(job => {
+          this.manageJob(job);
         })
         .catch(error => {
           this._logger.error(error);
@@ -158,6 +156,10 @@ export class ParagraphTelnetComponent extends ParagraphAbstractComponent impleme
     // Update the paragraph
     this.data.userChoice = job.result.userChoice;
     this.data.userChoiceReturn = job.result.userChoiceReturn;
+    this.data.userCheckCount = job.result.userCheckCount;
+    this.data.userCheckOK = job.result.userCheckOK;
+    this.data.answer = job.result.answer;
+    this.data.userDone = job.result.userDone;
     this.prepareData();
 
     this.scrollReturnToBottom(false);
@@ -180,6 +182,34 @@ export class ParagraphTelnetComponent extends ParagraphAbstractComponent impleme
         5000);
     }
 
+  }
+
+  /**
+   * The editor field has been changed
+   */
+  editorChange() {
+    var obj: any;
+
+    if (this._previousJson !== this.editableJson) {
+      this._previousJson = this.editableJson;
+      try {
+        obj = JSON.parse(this.editableJson);
+
+        this._fillObj(this.data, obj);
+
+        this._markdownToHtml();
+
+        this.editorInError = false;
+
+        this.subjectEditor
+            .next(this.data);
+
+      } catch (ex) {
+        this.editorInError = true;
+        this._logger.debug(ex);
+      }
+
+    }
   }
 
   /**
@@ -227,6 +257,32 @@ export class ParagraphTelnetComponent extends ParagraphAbstractComponent impleme
     // if is still running, add the variable
     this.isRunning = (this.data.userChoiceReturn && this.data.userChoiceReturn.match('class="running"'));
 
+  }
+
+  /**
+   * Add json version of the data for the editor
+   * @private
+   */
+  private _addEditableJson() {
+    this.editableJson = JSON.stringify(
+      this.data,
+      (key, value) => {
+        if (["_id", "label_html", "question_html", "id", "paragraphContentType", "updated", "created", "type"].indexOf(key) >= 0) {
+          return undefined;
+        }
+
+        if (key.startsWith("user")) {
+          return undefined
+        }
+
+        // if calculated html exit, remove it
+        if (value && value.raw && value.html) {
+          return value.raw
+        }
+        return value;
+      },
+      2);
+    this._previousJson = this.editableJson;
   }
 
 
