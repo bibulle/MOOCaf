@@ -3,10 +3,7 @@
 }
 
 .level1 {
-  padding-top: 0.6em;
-  padding-bottom: 0.6em;
-  padding-right: 0;
-  padding-left: 0;
+  padding: 0.6em 0;
   /*margin: 0.2em;*/
 }
 .level1 button {
@@ -19,7 +16,8 @@
   background-color: inherit;
   border: none;
   text-align: left ;
-  padding: 10px 0;
+  padding: 10px 0 0;
+  font-size: 1.2em;
 }
 .level2 button {
   cursor: pointer;
@@ -36,13 +34,14 @@
   margin-left: 30px;
   margin-top: 3px;
 
-  padding: 10px 5px;
+  /*padding: 10px 5px;*/
+  padding: 5px 5px 0;
 }
 
 .level1 button.selected, .level2 button.selected {
   /*background-color: #DDDDDD;*/
   /*font-weight: bold;*/
-  text-shadow: 1px 0px 0px black;
+  text-shadow: 1px 0 0 black;
 }
 
 .level1 button:hover, .level2 button:hover {
@@ -85,6 +84,6 @@ md-icon.no-child {
 }
 
 .part-title {
-  padding-right: 0.8em;
+  padding-right: 1em;
 }
 

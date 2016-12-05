@@ -5,10 +5,11 @@ import { Input } from "@angular/core";
 import { CourseService } from "../course/course.service";
 import { Logger } from "angular2-logger/core";
 import { NotificationService } from "../widget/notification/notification.service";
+import marked from "marked";
+import highlight from "highlight.js";
+import { JobService } from "./job.service";
 
 //import * as marked from 'marked';
-import marked from 'marked';
-import highlight from 'highlight.js';
 
 export abstract class ParagraphAbstractComponent {
 
@@ -26,7 +27,8 @@ export abstract class ParagraphAbstractComponent {
 
   constructor(protected _courseService: CourseService,
               protected _logger: Logger,
-              protected _notificationService: NotificationService) {
+              protected _notificationService: NotificationService,
+              protected _jobService: JobService) {
 
     // Synchronous highlighting with highlight.js
     //noinspection TypeScriptUnresolvedFunction
@@ -100,6 +102,33 @@ export abstract class ParagraphAbstractComponent {
       return marked(markdown);
     } else if ( markdown.type === "ParagraphContentText") {
       return marked(markdown.content);
+    }
+
+  }
+
+  /**
+   * fill a trg object with fields from the source one
+   * @param trg
+   * @param src
+   * @private
+   */
+  protected _fillObj(trg: any, src: any) {
+    for (var k in src) {
+
+      if (src[k] instanceof Array) {
+        if (!trg[k] || !(trg[k] instanceof Array)) {
+          trg[k] = [];
+        }
+        this._fillObj(trg[k], src[k]);
+      } else if ((typeof src[k]) === 'object') {
+        if (!trg[k] || ((typeof trg[k]) !== 'object')) {
+          trg[k] = {};
+        }
+        this._fillObj(trg[k], src[k]);
+      } else {
+
+        trg[k] = src[k];
+      }
     }
 
   }

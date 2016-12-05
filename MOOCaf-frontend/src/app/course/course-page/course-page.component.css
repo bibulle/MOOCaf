@@ -17,6 +17,10 @@
   flex: 0 0 auto;
   text-align: center;
 }
+.part_header h1 {
+  font-size: 1.8em;
+  margin: 0;}
+
 .edited .content, .edited .part_header, .edited .courseTitle {
   overflow-y: scroll;
 }

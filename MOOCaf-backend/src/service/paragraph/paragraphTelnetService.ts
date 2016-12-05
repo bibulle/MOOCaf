@@ -7,6 +7,10 @@ import { Client } from "ssh2";
 import User = require("../../models/user");
 import result = require("lodash/result");
 import * as async from 'async';
+import { Job, JobStatus } from "../../models/job";
+import JobService from "../jobService";
+import reject = require("lodash/reject");
+
 
 
 var debug = require('debug')('server:service:paragraph-telnet');
@@ -24,8 +28,11 @@ export default class ParagraphTelnetService implements IParagraphService {
     return new IParagraph({
       type: ParagraphType.Telnet,
       content: {
-        label: 'Title',
-        question: 'Question',
+        before: "echo 'do something before'",
+        after: "echo 'do something after'",
+        label: 'This is the title of the question',
+        question: 'What do you think ?\n\nSecond line',
+        size: 20
       },
       maxCheckCount: 3,
       answer: 'answer'
@@ -41,13 +48,76 @@ export default class ParagraphTelnetService implements IParagraphService {
    * @param userChoice
    * @returns {boolean}
    */
-  checkUserChoice(userId: string, paragraph: IParagraph, userChoice: IUserChoices): Promise<boolean> {
+  checkUserChoice(userId: string, paragraph: IParagraph, userChoice: IUserChoices): Promise<Job> {
 
-    // TODO : implement this
+    return new Promise<Job>((resolve, reject) => {
 
-    return new Promise<boolean>((resolve) => {
-      // do nothing
-      resolve(false);
+      this.testUserChoice(userId, paragraph, userChoice)
+          .then(jobTest => {
+
+            var jobCheck: Job = JobService.createJob(null, jobTest.status, jobTest.result);
+
+            if (jobTest.status == JobStatus.Done) {
+
+              // Do the check
+              userChoice = jobTest.result;
+
+              userChoice.userCheckOK = (userChoice.userChoiceReturn.indexOf(paragraph.answer) >= 0);
+
+              userChoice.userCheckCount += 1;
+              userChoice.updated = new Date();
+
+              // if done, set it
+              if ((userChoice.userCheckOK === true) || (paragraph.maxCheckCount <= userChoice.userCheckCount)) {
+                userChoice.userDone = new Date();
+                userChoice['answer'] = paragraph.answer;
+              }
+
+              JobService.updateJob(jobCheck.id, JobStatus.Continue, jobTest.result);
+
+            } else {
+
+              JobService.subscribeJob(jobTest.id, (j) => {
+
+                JobService.updateJob(jobCheck.id, JobStatus.Continue, j.result);
+
+                if (j.status == JobStatus.Done) {
+
+                  // Do the check
+                  userChoice = j.result;
+
+                  userChoice.userCheckOK = (userChoice.userChoiceReturn.indexOf(paragraph.answer) >= 0);
+
+                  userChoice.userCheckCount += 1;
+                  userChoice.updated = new Date();
+
+                  // if done, set it
+                  if ((userChoice.userCheckOK === true) || (paragraph.maxCheckCount <= userChoice.userCheckCount)) {
+                    userChoice.userDone = new Date();
+                    userChoice['answer'] = paragraph.answer;
+                  }
+
+                  JobService.updateJob(jobCheck.id, j.status, j.result);
+                }
+
+              });
+            }
+
+
+
+            resolve(JobService.getJob(jobCheck.id));
+
+
+
+
+
+
+
+
+          })
+          .catch(err => {
+            reject(err);
+          })
     });
   }
 
@@ -58,10 +128,12 @@ export default class ParagraphTelnetService implements IParagraphService {
    * @param paragraph
    * @param userChoice
    */
-  testUserChoice(userId: string, paragraph: IParagraph, userChoice: IUserChoices): Promise<void> {
+  testUserChoice(userId: string, paragraph: IParagraph, userChoice: IUserChoices): Promise<Job> {
 
-    var before = `mkdir foobar\n touch 'foobar/you_find_me_${(new Date()).getTime()}.tmp'; echo '---'`;
-    var after = "cd $HOME ; rm -fr foobar; echo '---'";
+    debug('testUserChoice');
+
+    var before = `${paragraph.content['before']}`;
+    var after = `${paragraph.content['after']}`;
     var separator = "-------------------------------" + (new Date()).getTime();
 
     var telnetResultBuilder = new TelnetResultBuilder(separator);
@@ -70,13 +142,21 @@ export default class ParagraphTelnetService implements IParagraphService {
 ${before}
 set -o history
 ${telnetResultBuilder.shellSeparatorIn}
-${userChoice.userChoice}
+${userChoice.userChoice || ""}
 ${telnetResultBuilder.shellSeparatorOut}
 set +o history
 ${after}`;
 
+    //debug(script);
 
-    return new Promise<void>((resolve, reject) => {
+    debug('testUserChoice 1');
+    debug(require('fs').realpathSync('./teccbgdt.pem'));
+    require('fs').stat('./teccbgdt.pem', (err, stat) => {
+      debug (err);
+      debug (stat);
+    });
+
+    return new Promise<Job>((resolve, reject) => {
       var PASSWORD_CRYPT = '$6$Nuh5shGL$.lY2sRp2I8nnbykLl0zcj2K4L6BvaNSZLDb8x4y0DTC8QsnW85.tOBI9N.jtScY2DcHpSrUTV3GD.ANVKtkJs1';
       var PASSWORD_UN_CRYPT = 'foo';
 
@@ -94,9 +174,13 @@ ${after}`;
           if [ $? -eq 1 ]
           then
             sudo useradd ${sshUser} -p '${PASSWORD_CRYPT}' -m -s /bin/bash
+            sudo ed /etc/ssh/sshd_config <<< $'H\n,s/PasswordAuthentication no/PasswordAuthentication yes/\nw'
+            sudo service ssh restart
           fi`;
 
             var systemStream = null;
+
+            try {
 
             connSystem
               .on('ready', () => {
@@ -105,6 +189,7 @@ ${after}`;
                 // first test if user exist and create it if not
                 connSystem
                   .exec(CREATE_USER_SCRIPT, (err, stream) => {
+                    //debug("connSystem : exec");
                     if (err) {
                       debug("ERR");
                       debug(err);
@@ -142,18 +227,32 @@ ${after}`;
                 host: '10.71.68.175',
                 port: 22,
                 username: 'ubuntu',
-                privateKey: require('fs').readFileSync('/Users/martin/.ssh/teccbgdt.pem')
+                privateKey: require('fs').readFileSync('./teccbgdt.pem')
               });
 
 
-            // When user will be connected... do the job
+            // When user will be connected... do the jobRouter
             connUser
+              .on('error', function(err) {
+                debug(err);
+                userChoice.userChoiceReturn = "System error " + err;
+                reject(err);
+                return connUser.end();
+              })
               .on("ready", () => {
+
+                userChoice.userChoiceReturn = telnetResultBuilder.getResult();
+                var job: Job = JobService.createJob(null, JobStatus.Continue, userChoice);
+                resolve(job);
 
                 // for each command, send it
                 async.eachSeries(script.split("\n"), (s, callback) => {
 
                     telnetResultBuilder.addStdIn(s + "\n");
+
+                    userChoice.userChoiceReturn = telnetResultBuilder.getResult();
+                    JobService.updateJob(job.id, JobStatus.Continue, userChoice);
+
                     connUser.exec(s + "\n", (err, stream) => {
                       if (err) {
                         debug("ERR " + err);
@@ -165,9 +264,13 @@ ${after}`;
 
                       }).on('data', function (data) {
                         telnetResultBuilder.addStdOut(data);
+                        userChoice.userChoiceReturn = telnetResultBuilder.getResult();
+                        JobService.updateJob(job.id, JobStatus.Continue, userChoice);
                         //console.log('STDOUT: ' + data);
                       }).stderr.on('data', function (data) {
                         telnetResultBuilder.addStdErr(data);
+                        userChoice.userChoiceReturn = telnetResultBuilder.getResult();
+                        JobService.updateJob(job.id, JobStatus.Continue, userChoice);
                         //console.log('STDERR: ' + data);
                       });
 
@@ -176,21 +279,26 @@ ${after}`;
                   },
                   err => {
                     if (err) {
-                      debug("ERR " + err);
-                      return;
+                      debug(err);
+                      telnetResultBuilder.addStdErr("ERR " + err);
                     }
-                    debug("=========");
-                    debug(telnetResultBuilder.getResult());
-                    debug("=========");
+                    // debug("=========");
+                    // debug(telnetResultBuilder.getResult());
+                    // debug("=========");
 
-                    userChoice.userChoiceReturn = telnetResultBuilder.getResult();
+                    userChoice.userChoiceReturn = telnetResultBuilder.getResult(true);
                     connUser.end();
-                    resolve();
+                    JobService.updateJob(job.id, JobStatus.Done, userChoice)
                   });
 
 
               })
 
+            } catch (err) {
+              console.log(err);
+              userChoice.userChoiceReturn = "System error " + err;
+              reject(err);
+            }
 
           })
           .catch(err => {
@@ -241,8 +349,12 @@ class TelnetResultBuilder {
     this._stdErrInDone = this._addResult(data, this._stdErrInDone, "err")
   }
 
-  getResult(): string {
-    return this._result;
+  getResult(ended?: boolean): string {
+    if (!ended) {
+      return '<span class="running"></span>'+this._result;
+    } else {
+      return this._result;
+    }
   }
 
   get shellSeparatorIn(): string {

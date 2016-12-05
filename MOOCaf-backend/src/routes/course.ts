@@ -22,6 +22,7 @@ import StatService from "../service/statService";
 import UserService from "../service/userService";
 import { EditRightType } from "../service/userService";
 import ParagraphService from "../service/paragraphService";
+import JobService from "../service/jobService";
 
 
 const courseRouter: Router = Router();
@@ -798,8 +799,30 @@ courseRouter.route('/:course_id/:paragraph_id/userChoice/check')
                             // check the user choice
                             ParagraphService
                               .checkUserChoice(userId, paragraph, userCourse.userChoices[paragraphId], response)
-                              .then(isDone => {
-                                if (isDone) {
+                              .then(job => {
+                                if (job) {
+
+                                  // Subscribe to jobRouter change
+                                  JobService.subscribeJob(job.id, (j) => {
+
+                                    debug(j);
+
+                                    userCourse.userChoices[paragraphId] = j.result;
+
+                                    CourseService
+                                      .calcProgression(userCourse)
+                                      .then((userCourse) => {
+                                        UserCourse
+                                          .updateOrCreate(userCourse)
+                                          .then(() => {
+                                            StatService.calcStatsUser(userId);
+                                          })
+                                          .catch(err => {
+                                            console.log(err);
+                                          })
+                                      })
+                                  });
+
                                   // save it to Db
                                   CourseService
                                     .calcProgression(userCourse)
@@ -810,7 +833,8 @@ courseRouter.route('/:course_id/:paragraph_id/userChoice/check')
 
                                           StatService.calcStatsUser(userId);
 
-                                          _respondWithCourseParagraph(courseId, paragraphId, null, request['user']["id"], response);
+                                          //_respondWithCourseParagraph(courseId, paragraphId, null, request['user']["id"], response);
+                                          response.json({data: job})
                                         })
                                         .catch(err => {
                                           console.log(err);
@@ -846,7 +870,7 @@ courseRouter.route('/:course_id/:paragraph_id/userChoice/check')
 
 courseRouter.route('/:course_id/:paragraph_id/userChoice/test')
             // ============================================
-            // test user choice for a course paragraph
+            // test user choice for a course paragraph : response : a Job
             // ============================================
             .put((request: Request, response: Response) => {
 
@@ -876,31 +900,58 @@ courseRouter.route('/:course_id/:paragraph_id/userChoice/test')
                             // check the user choice
                             ParagraphService
                               .testUserChoice(userId, paragraph, userCourse.userChoices[paragraphId], response)
-                              .then(isDone => {
-                                if (isDone) {
+                              .then(job => {
 
+                                if (job) {
+
+                                  // Subscribe to jobRouter change
+                                  JobService.subscribeJob(job.id, (j) => {
+
+                                    //debug(j);
+
+                                    userCourse.userChoices[paragraphId] = j.result;
+
+                                    UserCourse
+                                      .updateOrCreate(userCourse)
+                                      .then(() => {
+                                        StatService.calcStatsUser(userId);
+                                      })
+                                      .catch(err => {
+                                        console.log(err);
+                                      })
+                                  });
+
+                                  // Subscribe to jobRouter change
+                                  userCourse.userChoices[paragraphId] = job.result;
                                   // save it to Db
-                                  CourseService.calcProgression(userCourse)
-                                               .then((userCourse) => {
-                                                 UserCourse
-                                                   .updateOrCreate(userCourse)
-                                                   .then(() => {
+                                  CourseService
+                                    .calcProgression(userCourse)
+                                    .then((userCourse) => {
+                                      UserCourse
+                                        .updateOrCreate(userCourse)
+                                        .then(() => {
 
-                                                     StatService.calcStatsUser(userId);
+                                          StatService.calcStatsUser(userId);
 
-                                                     _respondWithCourseParagraph(courseId, paragraphId, null, request['user']["id"], response);
-                                                   })
-                                                   .catch(err => {
-                                                     console.log(err);
-                                                     response.status(500).json({status: 500, message: "System error " + err});
-                                                   })
-                                               })
-                                               .catch(err => {
-                                                 console.log(err);
-                                                 response.status(500).json({status: 500, message: "System error " + err});
-                                               })
+                                          //_respondWithCourseParagraph(courseId, paragraphId, null, request['user']["id"], response);
+                                          response.json({data: job})
+
+                                        })
+                                        .catch(err => {
+                                          console.log(err);
+                                          response.status(500).json({status: 500, message: "System error " + err});
+                                        })
+                                    })
+                                    .catch(err => {
+                                      console.log(err);
+                                      response.status(500).json({status: 500, message: "System error " + err});
+                                    })
                                 }
                               })
+                              .catch(err => {
+                                console.log(err);
+                                response.status(500).json({status: 500, message: "System error " + err});
+                              });
 
                           } else {
                             response.status(404).json({status: 404, message: "Course not found"});

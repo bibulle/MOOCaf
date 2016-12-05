@@ -6,6 +6,7 @@ import { CourseService } from "../../course/course.service";
 import { Logger } from "angular2-logger/core";
 import { NotificationService } from "../../widget/notification/notification.service";
 import { ParagraphContentType } from "../paragraph-content-type.enum";
+import { JobService } from "../job.service";
 
 @Component({
   selector: 'paragraph-form',
@@ -29,11 +30,13 @@ export class ParagraphFormComponent extends ParagraphAbstractComponent implement
   // the constructor
   constructor(_courseService: CourseService,
               _logger: Logger,
-              _notificationService: NotificationService) {
+              _notificationService: NotificationService,
+              _jobService: JobService) {
     super(
       _courseService,
       _logger,
-      _notificationService
+      _notificationService,
+      _jobService
     );
 
   }
@@ -127,14 +130,14 @@ export class ParagraphFormComponent extends ParagraphAbstractComponent implement
     // Send this to the backend
     this._courseService
         .checkUserChoice(this.courseId, this.data)
-        .then(modifiedParagraph => {
+        .then(job => {
           //this._logger.debug(modifiedParagraph);
           // Update the paragraph
-          this.data.userChoice = modifiedParagraph.userChoice;
-          this.data.userCheckCount = modifiedParagraph.userCheckCount;
-          this.data.userCheckOK = modifiedParagraph.userCheckOK;
-          this.data.answer = modifiedParagraph.answer;
-          this.data.userDone = modifiedParagraph.userDone;
+          this.data.userChoice = job.result.userChoice;
+          this.data.userCheckCount = job.result.userCheckCount;
+          this.data.userCheckOK = job.result.userCheckOK;
+          this.data.answer = job.result.answer;
+          this.data.userDone = job.result.userDone;
         })
         .catch(error => {
           this._logger.error(error);
@@ -171,34 +174,6 @@ export class ParagraphFormComponent extends ParagraphAbstractComponent implement
 
     }
   }
-
-  /**
-   * fill a trg object with fields from the source one
-   * @param trg
-   * @param src
-   * @private
-   */
-  private _fillObj(trg: any, src: any) {
-    for (var k in src) {
-
-      if (src[k] instanceof Array) {
-        if (!trg[k] || !(trg[k] instanceof Array)) {
-          trg[k] = [];
-        }
-        this._fillObj(trg[k], src[k]);
-      } else if ((typeof src[k]) === 'object') {
-        if (!trg[k] || ((typeof trg[k]) !== 'object')) {
-          trg[k] = {};
-        }
-        this._fillObj(trg[k], src[k]);
-      } else {
-
-        trg[k] = src[k];
-      }
-    }
-
-  }
-
 
   /**
    * Add missing values to data to allowed a correct UI

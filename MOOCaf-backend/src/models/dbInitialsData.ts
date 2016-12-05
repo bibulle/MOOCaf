@@ -215,12 +215,14 @@ export class DbInitialsData {
                               new IParagraph({
                                   type: ParagraphType.Telnet,
                                   content: {
+                                    before: "mkdir foobar\n touch 'foobar/you_find_me.tmp'",
+                                    after: "cd $HOME ; rm -fr foobar",
                                     label: 'This is the title of the question',
                                     question: 'What do you think ?\n\nSecond line',
                                     size: 20
                                   },
                                   maxCheckCount: 3,
-                                  answer: 'sdkdfsd sdg'
+                                  answer: 'you_find_me.tmp'
                                 }
                               )
                             ]

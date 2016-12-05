@@ -1,6 +1,8 @@
 import { ParagraphContentType } from "../../models/eParagraphContentType";
 import { IParagraph } from "../../models/iParagraph";
 import IUserChoices = require("../../models/iUserChoices");
+import { Job } from "../../models/job";
+
 
 
 export interface IParagraphService {
@@ -21,7 +23,7 @@ export interface IParagraphService {
    * @param paragraph
    * @param userChoice
    */
-  checkUserChoice(userId: string, paragraph: IParagraph, userChoice: IUserChoices): Promise<boolean>;
+  checkUserChoice(userId: string, paragraph: IParagraph, userChoice: IUserChoices): Promise<Job>;
 
 
   /**
@@ -31,6 +33,6 @@ export interface IParagraphService {
    * @param paragraph
    * @param userChoice
    */
-  testUserChoice(userId: string, paragraph: IParagraph, userChoice: IUserChoices): Promise<void>;
+  testUserChoice(userId: string, paragraph: IParagraph, userChoice: IUserChoices): Promise<Job>;
 
 }

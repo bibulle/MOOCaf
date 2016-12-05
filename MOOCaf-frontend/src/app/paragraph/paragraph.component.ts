@@ -128,6 +128,9 @@ export class ParagraphComponent implements OnInit {
         type = ParagraphType.Form;
         subType = ParagraphContentType.Text;
         break;
+      case "telnet":
+        type = ParagraphType.Telnet;
+        break;
       default:
         this._notificationService.error("System error !!", "Unknown type : '" + typeS + "'");
         return;

@@ -13,6 +13,7 @@ import mongoose from './models/db';
 import {loginRouter} from "./routes/login";
 import {courseRouter} from "./routes/course";
 import {awardRouter} from "./routes/award";
+import { jobRouter } from "./routes/job";
 
 // Init Db access
 mongoose.init()
@@ -42,9 +43,13 @@ var originsWhiteList = ['http://localhost:4200'];
 if (process.env['frontend']) {
   originsWhiteList = JSON.parse(process.env['frontend']);
 }
+debug('--------------');
+debug(originsWhiteList);
+debug('--------------');
 var corsOptions = {
   origin: function(origin, callback){
     var isWhitelisted = originsWhiteList.indexOf(origin) !== -1;
+    debug(isWhitelisted);
     callback(null, isWhitelisted);
   },
   credentials:true
@@ -59,6 +64,8 @@ app.use("/users", loginRouter);
 app.use("/api/course", courseRouter);
 //noinspection TypeScriptValidateTypes
 app.use("/api/award", awardRouter);
+//noinspection TypeScriptValidateTypes
+app.use("/api/job", jobRouter);
 
 // error handlers
 // development error handler

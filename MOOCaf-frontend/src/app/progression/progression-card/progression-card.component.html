@@ -8,7 +8,7 @@
         <div class="stat2" [style.width]="100*(part.countCheckOk/part.countParagraph) + '%'" title="Good answer"></div>
         <div class="stat3" [style.width]="100*(part.countCheckKo/part.countParagraph) + '%'" title="Wrong answer"></div>
       </div>
-      <div class="percent">{{100*part.percentFollowed | number:'1.1-1'}} %</div>
+      <div class="percent">{{100*(part.countRead+part.countCheckOk)/part.countParagraph | number:'1.1-1'}} %</div>
     </div>
   </div>
 </md-card>

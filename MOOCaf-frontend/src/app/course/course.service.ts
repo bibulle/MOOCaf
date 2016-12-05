@@ -10,6 +10,7 @@ import { CommonHeaders } from "../shared/common-headers";
 import { Paragraph } from "../paragraph/paragraph";
 import { ParagraphType } from "../paragraph/paragraph-type.enum";
 import { ParagraphContentType } from "../paragraph/paragraph-content-type.enum";
+import { Job } from "../paragraph/job";
 
 @Injectable()
 export class CourseService {
@@ -458,9 +459,9 @@ export class CourseService {
    * test user choice (exec it on the serveur... for telnet or whatever)
    * @param courseId
    * @param paragraph
-   * @returns {Promise<Paragraph>}
+   * @returns {Promise<Job>}
    */
-  testUserChoice(courseId: string, paragraph: Paragraph): Promise<Paragraph> {
+  testUserChoice(courseId: string, paragraph: Paragraph): Promise<Job> {
 
     var userChoice = {
       userChoice: paragraph.userChoice
@@ -483,9 +484,9 @@ export class CourseService {
    * check user choice
    * @param courseId
    * @param paragraph
-   * @returns {Promise<Paragraph>}
+   * @returns {Promise<Job>}
    */
-  checkUserChoice(courseId: string, paragraph: Paragraph): Promise<Paragraph> {
+  checkUserChoice(courseId: string, paragraph: Paragraph): Promise<Job> {
 
     var userChoice = {
       userChoice: paragraph.userChoice

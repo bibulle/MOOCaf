@@ -21,19 +21,19 @@
 
 .stat1 {
   background-color: #555555;
-  width: 30%;
+  /*width: 30%;*/
   height: 100%;
   float: left;
 }
 .stat2 {
   background-color: #a8a8a8;
-  width: 20%;
+  /*width: 20%;*/
   height: 100%;
   float: left;
 }
 .stat3 {
   background-color: #543232;
-  width: 20%;
+  /*width: 20%;*/
   height: 100%;
   float: left;
 }
