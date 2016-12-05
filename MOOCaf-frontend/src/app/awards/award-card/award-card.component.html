@@ -6,7 +6,7 @@
     </button>
   </div>
   <md-icon class="under level{{award.level}}" svgSrc="assets/img/{{award.imgPath}}"></md-icon>
-  <md-icon class="over  level{{award.level}}" svgSrc="assets/img/{{award.imgPath}}" [style]="clippingZone"></md-icon>
+  <md-icon class="over  level{{award.level}}" svgSrc="assets/img/{{award.imgPath}}" [style.-webkit-clip-path]="clippingZone" [style.clip-path]="clippingZone"></md-icon>
   <div class="name" layout="row" layout-align="start center">
     <div flex="100">{{award.name}}</div>
   </div>
