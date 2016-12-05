@@ -236,7 +236,7 @@ export class ParagraphFormComponent extends ParagraphAbstractComponent implement
           return undefined;
         }
 
-        if (key.startsWith("user")) {
+        if ((''+key).startsWith("user")) {
           return undefined
         }
 
