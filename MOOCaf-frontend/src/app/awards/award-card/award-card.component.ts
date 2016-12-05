@@ -105,7 +105,12 @@ export class AwardCardComponent implements OnInit {
     let path = 'polygon(50% 50%, ' + Math.round(50 - 190 * sin) + '% ' + Math.round(50 - 190 * cos) + '%, -150% 0%, -150% 250%, 250% 250%, 250% 0%, ' + Math.round(50 + 190 * sin) + '% ' + Math.round(50 - 190 * cos) + '%)';
 
     //this._logger.debug(this.award.name+" "+ratio);
-    this.clippingZone = this._sanitizer.bypassSecurityTrustStyle('-webkit-clip-path: ' + path + ';clip-path: ' + path + ';');
+    this._logger.debug("----------1");
+    //this.clippingZone = this._sanitizer.bypassSecurityTrustStyle('-webkit-clip-path: ' + path + ';clip-path: ' + path + ';');
+    this.clippingZone=this._sanitizer.bypassSecurityTrustStyle(path);
+    this._logger.debug("----------2");
+    this._logger.debug(this.award.name+" "+this.clippingZone);
+    this._logger.debug("----------3");
 
   }
 
@@ -132,7 +137,7 @@ export class AwardCardComponent implements OnInit {
    * The editor field has been changed
    */
   editorChange() {
-    var obj: any;
+    let obj: any;
 
     if (this._previousJson !== this.editableJson) {
       this._previousJson = this.editableJson;
@@ -191,7 +196,7 @@ export class AwardCardComponent implements OnInit {
    * @private
    */
   private _fillObj(trg: any, src: any) {
-    for (var k in src) {
+    for (let k in src) {
       if (src.hasOwnProperty(k) && typeof k !== 'function') {
         if (src[k] instanceof Array) {
           if (!trg[k] || !(trg[k] instanceof Array)) {
