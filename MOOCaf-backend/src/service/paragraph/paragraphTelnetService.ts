@@ -73,7 +73,7 @@ export default class ParagraphTelnetService implements IParagraphService {
                 userChoice['answer'] = paragraph.answer;
               }
 
-              JobService.updateJob(jobCheck.id, JobStatus.Continue, j.result);
+              JobService.updateJob(jobCheck.id, JobStatus.Continue, jobTest.result);
 
             } else {
 
@@ -130,6 +130,8 @@ export default class ParagraphTelnetService implements IParagraphService {
    */
   testUserChoice(userId: string, paragraph: IParagraph, userChoice: IUserChoices): Promise<Job> {
 
+    debug('testUserChoice');
+
     var before = `${paragraph.content['before']}`;
     var after = `${paragraph.content['after']}`;
     var separator = "-------------------------------" + (new Date()).getTime();
@@ -147,6 +149,12 @@ ${after}`;
 
     //debug(script);
 
+    debug('testUserChoice 1');
+    debug(require('fs').realpathSync('./teccbgdt.pem'));
+    require('fs').stat('./teccbgdt.pem', (err, stat) => {
+      debug (err);
+      debug (stat);
+    });
 
     return new Promise<Job>((resolve, reject) => {
       var PASSWORD_CRYPT = '$6$Nuh5shGL$.lY2sRp2I8nnbykLl0zcj2K4L6BvaNSZLDb8x4y0DTC8QsnW85.tOBI9N.jtScY2DcHpSrUTV3GD.ANVKtkJs1';
@@ -171,6 +179,8 @@ ${after}`;
           fi`;
 
             var systemStream = null;
+
+            try {
 
             connSystem
               .on('ready', () => {
@@ -217,7 +227,7 @@ ${after}`;
                 host: '10.71.68.175',
                 port: 22,
                 username: 'ubuntu',
-                privateKey: require('fs').readFileSync('/Users/martin/.ssh/teccbgdt.pem')
+                privateKey: require('fs').readFileSync('./teccbgdt.pem')
               });
 
 
@@ -284,6 +294,11 @@ ${after}`;
 
               })
 
+            } catch (err) {
+              console.log(err);
+              userChoice.userChoiceReturn = "System error " + err;
+              reject(err);
+            }
 
           })
           .catch(err => {

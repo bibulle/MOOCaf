@@ -175,6 +175,32 @@ not-found {
 
 
 
+.paragraph .content_box blockquote {
+  border-left: 1px solid #ccc;
+  color: #707070;
+  margin-left: 19px;
+  padding: 10px 20px;
+}
+.paragraph .content_box blockquote blockquote {
+  border-left: none;
+  margin-left: 0;
+  padding: 0;
+}
+.hljs-type, .hljs-string, .hljs-number, .hljs-selector-id, .hljs-selector-class, .hljs-quote, .hljs-template-tag, .hljs-deletion {
+  color: #707070;
+}
+
+.paragraph .content_box a {
+  color: #009688;
+  user-select: none;
+  outline: none;
+  border: none;
+  text-decoration: none;
+}
+
+
+
+
 .layout-align,
 .layout-align-start-stretch {
   -webkit-box-pack: start;

@@ -45,7 +45,7 @@
       </div>
       <!--Header-->
       <div class="part_header" layout="row" layout-align="start stretch">
-        <h3 flex="100">{{selectedPart.title}}</h3>
+        <h1 flex="100">{{selectedPart.title}}</h1>
         <div class="editor" flex="100" [class.error]="editorInError">
           <textarea [(ngModel)]="selectedPart.title" (keyup)="editorChange()" (change)="editorChange()" title="Page title"></textarea>
         </div>
