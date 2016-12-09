@@ -41,6 +41,14 @@ interface IUserCourseModel extends IUserCourse, Mongoose.Document {
  * @private
  */
 var _schema: Mongoose.Schema = new Mongoose.Schema({
+  userId: {
+    type: String,
+    require: true
+  },
+  courseId: {
+    type: String,
+    require: true
+  },
   isFavorite: {
     type: Boolean,
     'default': false
