@@ -7,3 +7,6 @@
   display: flex;
   flex: 0 0 auto;
 }
+.progression.md-content {
+  display: flex;
+}

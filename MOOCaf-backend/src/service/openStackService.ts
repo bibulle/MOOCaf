@@ -26,7 +26,7 @@ export default class OpenStackService {
    */
   static rebuildServerByName(serverName: string): Promise<void> {
 
-    return new Promise((resolve, reject) => {
+    return new Promise<void>((resolve, reject) => {
       // Get servers
       OpenStackService
         .getServers()

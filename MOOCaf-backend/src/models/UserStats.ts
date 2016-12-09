@@ -29,6 +29,10 @@ interface IUserStatsModel extends IUserStats, Mongoose.Document {
  * @private
  */
 var _schema: Mongoose.Schema = new Mongoose.Schema({
+  userId: {
+    type: String,
+    require: true
+  },
   userCount: {
     type: Number,
     'default': 0

@@ -79,6 +79,7 @@ export class CourseCardComponent implements OnInit {
     // Is it visible ?
     if ((event.topVisible && event.percentVisible > 0.4) || (event.percentVisible > 0.8)) {
       if (!this.course.dateSeen) {
+        //this._logger.debug(this.course.name+" seen");
         this.course.dateSeen = new Date();
         this.calcNew();
         this._courseService.saveUserValues(this.course)

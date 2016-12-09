@@ -18,16 +18,16 @@
 
     <!-- Toolbar -->
     <md-toolbar color="primary">
-      <button  md-button class="md-icon-button" aria-label="Home"            title="Home"            routerLinkActive="active" routerLink="/home"     >
+      <button  md-button aria-label="Home"            title="Home"            routerLinkActive="active" routerLink="/home"     >
         <md-icon>home</md-icon> <span>Home</span>
       </button>
-      <button  md-button class="md-icon-button" aria-label="Class catalogue" title="Class catalogue" routerLinkActive="active" routerLink="/catalogue">
+      <button  md-button aria-label="Class catalogue" title="Class catalogue" routerLinkActive="active" routerLink="/catalogue">
         <md-icon>store</md-icon> <span>Catalogue</span>
       </button>
-      <button  md-button class="md-icon-button" aria-label="Classes"         title="Classes"         routerLinkActive="active" routerLink="/class"    *ngIf="countCurrentCourses == 1">
+      <button  md-button aria-label="Classes"         title="Classes"         routerLinkActive="active" routerLink="/class"    *ngIf="countCurrentCourses == 1">
         <md-icon>school</md-icon> <span>Current class</span>
       </button>
-      <button  md-button class="md-icon-button" aria-label="Classes"         title="Classes"         routerLinkActive="active" routerLink="/class"    *ngIf="countCurrentCourses > 1">
+      <button  md-button aria-label="Classes"         title="Classes"         routerLinkActive="active" routerLink="/class"    *ngIf="countCurrentCourses > 1">
         <md-icon>school</md-icon> <span>Current classes</span>
       </button>
 

@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
-import {MdIconModule} from "@angular2-material/icon";
+import {MdIconModule} from "@angular/material";
 
 import { AboutButtonComponent } from './about-button.component';
 

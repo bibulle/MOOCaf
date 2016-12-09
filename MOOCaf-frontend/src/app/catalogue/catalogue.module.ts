@@ -2,13 +2,13 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from "@angular/forms";
 
-import { MdButtonModule } from "@angular2-material/button";
-import { MdIconModule } from "@angular2-material/icon";
-import { MdInputModule } from "@angular2-material/input";
+import { MdButtonModule } from "@angular/material";
+import { MdIconModule } from "@angular/material";
+import { MdInputModule } from "@angular/material";
 
 import { CatalogueComponent } from './catalogue.component';
 import { CourseModule } from "../course/course.module";
-import { FlexModule } from "../widget/flex/flex.module";
+// import { FlexModule } from "../widget/flex/flex.module";
 import { ScrollDetectorModule } from "../widget/scroll-detector/scroll-detector.module";
 
 @NgModule({
@@ -18,7 +18,7 @@ import { ScrollDetectorModule } from "../widget/scroll-detector/scroll-detector.
     MdIconModule,
     MdInputModule,
     FormsModule,
-    FlexModule,
+    // FlexModule,
     ScrollDetectorModule,
     CourseModule,
     //CourseCardModule

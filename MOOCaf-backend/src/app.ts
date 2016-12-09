@@ -43,13 +43,9 @@ var originsWhiteList = ['http://localhost:4200'];
 if (process.env['frontend']) {
   originsWhiteList = JSON.parse(process.env['frontend']);
 }
-debug('--------------');
-debug(originsWhiteList);
-debug('--------------');
 var corsOptions = {
   origin: function(origin, callback){
     var isWhitelisted = originsWhiteList.indexOf(origin) !== -1;
-    debug(isWhitelisted);
     callback(null, isWhitelisted);
   },
   credentials:true

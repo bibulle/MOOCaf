@@ -33,17 +33,20 @@
   overflow: auto;
   position: relative;
 }
+.class.md-content {
+  display: flex;
+}
 
 
 md-sidenav-layout md-sidenav {
   box-shadow: none;
-  background-color: #E0F2F1;
+  /*background-color: #E0F2F1;*/
 }
 
 .toggleSchedule {
   position: absolute;
   left: -19px;
-  background-color: #E0F2F1;
+  /*background-color: #E0F2F1;*/
 }
 
 .md-content.class {

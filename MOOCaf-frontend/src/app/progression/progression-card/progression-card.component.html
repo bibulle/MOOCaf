@@ -4,11 +4,11 @@
     <div *ngFor="let part of course.parts" class="progression-part" flex="100" layout="row" layout-align="start center">
       <div class="part-title">{{part.title}}</div>
       <div class="progression-stat">
-        <div class="stat1" [style.width]="100*(part.countRead/part.countParagraph) + '%'" title="Read"></div>
-        <div class="stat2" [style.width]="100*(part.countCheckOk/part.countParagraph) + '%'" title="Good answer"></div>
-        <div class="stat3" [style.width]="100*(part.countCheckKo/part.countParagraph) + '%'" title="Wrong answer"></div>
+        <div class="stat1" [style.width]="(part.countParagraph ? 100*(part.countRead/part.countParagraph) : 0) + '%'" title="Read"></div>
+        <div class="stat2" [style.width]="(part.countParagraph ? 100*(part.countCheckOk/part.countParagraph) : 0) + '%'" title="Good answer"></div>
+        <div class="stat3" [style.width]="(part.countParagraph ? 100*(part.countCheckKo/part.countParagraph) : 0) + '%'" title="Wrong answer"></div>
       </div>
-      <div class="percent">{{100*(part.countRead+part.countCheckOk)/part.countParagraph | number:'1.1-1'}} %</div>
+      <div class="percent">{{(part.countParagraph ? 100*(part.countRead+part.countCheckOk)/part.countParagraph : 0) | number:'1.1-1'}} %</div>
     </div>
   </div>
 </md-card>
