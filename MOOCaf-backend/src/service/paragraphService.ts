@@ -36,7 +36,7 @@ export default class ParagraphService {
    * @returns {Promise<Job>}
    */
   static checkUserChoice(userId: string, paragraph: IParagraph, userChoice: IUserChoices, response: Response): Promise<Job> {
-    debug({"checkUserChoice": paragraph});
+    //debug({"checkUserChoice": paragraph});
 
     return new Promise<Job>((resolve) => {
       var ret = ParagraphService._checkIfOpenAndRespondOrAction(paragraph, userChoice, response);
