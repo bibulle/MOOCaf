@@ -2,10 +2,10 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from "@angular/forms";
 
-import { MdSidenavModule } from "@angular2-material/sidenav";
-import { MdIconModule } from "@angular2-material/icon";
+import { MdSidenavModule } from "@angular/material";
+import { MdIconModule } from "@angular/material";
 
-import { FlexModule } from "../../widget/flex/flex.module";
+// import { FlexModule } from "../../widget/flex/flex.module";
 import { ScrollDetectorModule } from "../../widget/scroll-detector/scroll-detector.module";
 
 import { CoursePageComponent } from './course-page.component';
@@ -18,7 +18,7 @@ import { ParagraphModule } from "../../paragraph/paragraph.module";
     MdIconModule,
     MdSidenavModule,
     FormsModule,
-    FlexModule,
+    // FlexModule,
     ScrollDetectorModule,
     ScheduleModule,
     ParagraphModule

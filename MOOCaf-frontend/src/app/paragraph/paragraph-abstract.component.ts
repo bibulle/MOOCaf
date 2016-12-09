@@ -5,9 +5,9 @@ import { Input } from "@angular/core";
 import { CourseService } from "../course/course.service";
 import { Logger } from "angular2-logger/core";
 import { NotificationService } from "../widget/notification/notification.service";
-import marked from "marked";
-import highlight from "highlight.js";
+import * as marked from "marked";
 import { JobService } from "./job.service";
+import { highlightAuto } from "highlight.js";
 
 //import * as marked from 'marked';
 
@@ -35,7 +35,7 @@ export abstract class ParagraphAbstractComponent {
     marked.setOptions({
       highlight: function (code) {
         //noinspection TypeScriptUnresolvedFunction
-        return highlight.highlightAuto(code)['value'];
+        return highlightAuto(code)['value'];
       }
     });
 
