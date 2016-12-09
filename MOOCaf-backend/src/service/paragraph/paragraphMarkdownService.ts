@@ -30,10 +30,10 @@ export default class ParagraphMarkdownService implements IParagraphService {
    * @param userChoice
    * @returns {boolean}
    */
-  checkUserChoice(userId: string, paragraph: IParagraph, userChoice: IUserChoices): Promise<boolean> {
-    return new Promise<boolean>( (resolve) => {
+  checkUserChoice(userId: string, paragraph: IParagraph, userChoice: IUserChoices): Promise<Job> {
+    return new Promise<Job>( (resolve) => {
       // do nothing
-      resolve(false);
+      resolve(new Job({}));
     });
   }
 
