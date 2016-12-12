@@ -39,6 +39,9 @@
       <button  md-button class="md-icon-button" aria-label="Awards"          title="Awards"          routerLinkActive="active" routerLink="/awards">
         <md-icon>cake</md-icon> <span>Awards</span>
       </button>
+      <button  md-button class="md-icon-button" aria-label="Awards"          title="Awards"          routerLinkActive="active" routerLink="/users" *ngIf="userIsAdmin">
+        <md-icon>people</md-icon> <span>Users</span>
+      </button>
     </md-toolbar>
 
     <!-- Main content -->

@@ -1,3 +1,24 @@
-<p>
-  user works!
-</p>
+<div class="md-content users" flex="100" layout="column" layout-align="start stretch" [class.edited]="edited">
+
+  <div class="edit-users-buttons" *ngIf="userIsAdmin">
+    <button md-icon-button (click)="toggleEditMode()" [class.md-accent]="edited" [class.md-primary]="!edited"
+            title="Edit users">
+      <md-icon>edit</md-icon>
+    </button>
+  </div>
+  <div class="menu" layout="row" layout-align="start center">
+    <div flex="100" layout="row" layout-align="start center">
+      <div flex="50" layout="row" layout-align="center center">
+      </div>
+      <div flex="50" layout="row" layout-align="end center">
+        <md-icon>search</md-icon>
+        &nbsp;
+        <md-input placeholder="Search" #cataloguesearch flex="75" [(ngModel)]="search" (ngModelChange)="filterList()"></md-input>
+      </div>
+    </div>
+  </div>
+
+  <div class="user-list" layout="row" layout-align="start start" layout-wrap flex="100">
+    <user-card class="user" *ngFor="let user of users; let i = index" flex="100" [edited]="edited" [user]="user" [index]="i" layout="row"></user-card>
+  </div>
+</div>

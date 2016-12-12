@@ -1,0 +1,38 @@
+
+:host {
+  margin: 0;
+}
+
+.user-content.userOpen {
+  border-top: 1px solid #CCC;
+  border-bottom: 1px solid #CCC;
+}
+
+.user-content {
+  padding: 0.5em;
+  align-items: center;
+}
+
+.content {
+  margin: 5px;
+}
+
+.userOpen .content, md-input {
+  display: none;
+}
+
+.content, .userOpen md-input {
+  display: inherit;
+}
+
+md-input {
+  margin: 5px;
+}
+
+.fill-remaining-space {
+  flex: 1 1 auto;
+}
+
+.open {
+  align-self: center;
+}

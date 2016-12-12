@@ -1,7 +1,7 @@
 import { Injectable } from "@angular/core";
-import { Http } from "@angular/http";
+import { Http, Response } from "@angular/http";
 
-import { JwtHelper, tokenNotExpired } from "angular2-jwt";
+import { JwtHelper, tokenNotExpired, AuthHttp } from "angular2-jwt";
 import { Observable, BehaviorSubject } from "rxjs/Rx";
 import { Logger } from "angular2-logger/app/core/logger";
 
@@ -24,9 +24,10 @@ export class UserService {
 
   private keyTokenId = 'id_token';
 
-  constructor(private _http: Http,
-              private _logger: Logger,
-              private _notificationService: NotificationService) {
+  constructor (private _http: Http,
+               private _authHttp: AuthHttp,
+               private _logger: Logger,
+               private _notificationService: NotificationService) {
 
 
     this.loggedIn = !!localStorage.getItem(this.keyTokenId);
@@ -43,14 +44,14 @@ export class UserService {
    * Get the observable on user changes
    * @returns {Observable<User>}
    */
-  userObservable(): Observable<User> {
+  userObservable (): Observable<User> {
     return this.userSubject.distinctUntilKeyChanged('username');
   }
 
   /**
    * Check authentication locally (is the jwt not expired)
    */
-  checkAuthent() {
+  checkAuthent () {
     //console.log("checkAuthent");
     var jwt = localStorage.getItem(this.keyTokenId);
 
@@ -77,15 +78,15 @@ export class UserService {
    * @param password
    * @returns {Promise<void>}
    */
-  login(username, password): Promise<void> {
-    let body = JSON.stringify({username, password});
+  login (username, password): Promise<void> {
+    let body = JSON.stringify({ username, password });
 
     return new Promise<void>((resolve, reject) => {
       this._http
           .post(
             environment.serverUrl + 'users/login',
             body,
-            {headers: CommonHeaders.contentHeaders}
+            { headers: CommonHeaders.contentHeaders }
           )
           .timeout(3000, new Error('Connection timeout exceeded'))
           .toPromise()
@@ -112,7 +113,7 @@ export class UserService {
   /**
    * Logout (just remove the JWT token)
    */
-  logout() {
+  logout () {
     localStorage.removeItem(this.keyTokenId);
     this.loggedIn = false;
     this.checkAuthent();
@@ -128,15 +129,15 @@ export class UserService {
    * @param email
    * @returns {Promise<void>}
    */
-  signup(username, password, firstname, lastname, email): Promise<void> {
-    let body = JSON.stringify({username, password, firstname, lastname, email});
+  signup (username, password, firstname, lastname, email): Promise<void> {
+    let body = JSON.stringify({ username, password, firstname, lastname, email });
 
     return new Promise<void>((resolve, reject) => {
       this._http
           .post(
             environment.serverUrl + 'users',
             body,
-            {headers: CommonHeaders.contentHeaders}
+            { headers: CommonHeaders.contentHeaders }
           )
           .timeout(3000, new Error('Connection timeout exceeded'))
           .toPromise()
@@ -153,8 +154,33 @@ export class UserService {
     });
   }
 
-  isAdmin(): boolean {
+  isAdmin (): boolean {
     return this.user && this.user.isAdmin;
   }
 
+  /**
+   * Get users list
+   */
+  getUsers (): Promise<User[]> {
+    return new Promise<User[]>((resolve, reject) => {
+      this._authHttp
+          .get(environment.serverUrl + 'api/user', { headers: CommonHeaders.contentHeaders })
+          .map((res: Response) => res.json().data as User[])
+          .subscribe(
+            data => {
+              //console.log(data);
+              resolve(data);
+            },
+            err => {
+              if (err._body && (err._body == "WRONG_USER")) {
+                this.logout();
+                reject("You have been disconnected");
+              } else {
+                reject(err);
+              }
+            },
+          );
+    })
+
+  }
 }

@@ -10,6 +10,7 @@ import { CatalogueComponent } from "./catalogue/catalogue.component";
 import { CoursePageComponent } from "./course/course-page/course-page.component";
 import { ProgressionComponent } from "./progression/progression.component";
 import { NotFoundComponent } from "./not-found/not-found.component";
+import { UserComponent } from "./user/user.component";
 
 const routes: Routes = [
   { path: '',             redirectTo: '/home', pathMatch: 'full' },
@@ -21,6 +22,7 @@ const routes: Routes = [
   { path: 'class',        component: CatalogueComponent,    canActivate: [AuthGuard], data: {onlyCurrent: true} },
   { path: 'class/:id',    component: CoursePageComponent,   canActivate: [AuthGuard] },
   { path: 'progress',     component: ProgressionComponent,  canActivate: [AuthGuard] },
+  { path: 'users',        component: UserComponent,         canActivate: [AuthGuard] },
   // Show the 404 page for any routes that don't exist.
   { path: '**',           component: NotFoundComponent }
 ];

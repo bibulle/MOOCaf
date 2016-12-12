@@ -1,0 +1,22 @@
+
+.users {
+    position: relative;
+    display: flex;
+}
+
+.user-list {
+    overflow: auto;
+    width: 100%;
+}
+
+/*.user:first-child {*/
+    /*border-top: 1px solid #CCC;*/
+/*}*/
+
+.edit-users-buttons {
+    position: absolute;
+    right: 0;
+    top: 0;
+    z-index: 100;
+}
+

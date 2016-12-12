@@ -1,0 +1,20 @@
+<div class="user-content" flex="100" layout="row" [class.userOpen]="!userClosed" [class.first]="index==0">
+  <md-input flex="20" placeholder="Username" required maxlength="20" [disabled]="!edited" minlength="3"
+            title="should be a valid linux username (minuscule letters and numbers)" [(ngModel)]="user.username"
+            (keyup)="userNameChanged()" (change)="userNameChanged()" name="username"></md-input>
+  <md-input flex="20" placeholder="Firstname" required [disabled]="!edited" [(ngModel)]="user.firstname"
+            name="firstname"></md-input>
+  <md-input flex="20" placeholder="Lastname" required [disabled]="!edited" [(ngModel)]="user.lastname"
+            name="lastname"></md-input>
+  <md-input flex="20" placeholder="Email" required type="email" [disabled]="!edited" [(ngModel)]="user.email"
+            name="email"></md-input>
+  <span flex="20" class="content">{{user.username}}</span>
+  <span flex="20" class="content">{{user.firstname}}</span>
+  <span flex="20" class="content">{{user.lastname}}</span>
+  <span flex="20" class="content">{{user.email}}</span>
+  <span class="fill-remaining-space"></span>
+  <button md-icon-button class="open" (click)="toggleUserClosed()">
+    <md-icon *ngIf="userClosed">keyboard_arrow_down</md-icon>
+    <md-icon *ngIf="!userClosed">keyboard_arrow_up</md-icon>
+  </button>
+</div>

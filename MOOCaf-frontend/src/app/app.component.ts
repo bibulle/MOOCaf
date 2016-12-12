@@ -1,7 +1,8 @@
 import { Component } from '@angular/core';
-import {Logger} from "angular2-logger/core";
-import {CourseService} from "./course/course.service";
-import {NotificationService} from "./widget/notification/notification.service";
+import { Logger } from "angular2-logger/core";
+import { CourseService } from "./course/course.service";
+import { NotificationService } from "./widget/notification/notification.service";
+import { UserService } from "./user/user.service";
 
 @Component({
   selector: 'app-root',
@@ -9,17 +10,18 @@ import {NotificationService} from "./widget/notification/notification.service";
   styleUrls: ['./app.component.css']
 })
 export class AppComponent {
-  title = 'app works!';
 
-  countCurrentCourses = 0;
+  private countCurrentCourses = 0;
+  private userIsAdmin: boolean = false;
 
-  notificationMessage = "";
-  showMessage = false;
-  notificationTimeout = null;
+  private notificationMessage = "";
+  private showMessage = false;
+  private notificationTimeout = null;
 
-  constructor(private _logger: Logger,
-              private _courseService: CourseService,
-              private _notificationService: NotificationService) {
+  constructor (private _logger: Logger,
+               private _courseService: CourseService,
+               private _notificationService: NotificationService,
+               private _userService: UserService) {
   }
 
   // notification options
@@ -38,27 +40,35 @@ export class AppComponent {
     position: ["right", "bottom"]
   };
 
-  ngOnInit() {
+  ngOnInit () {
     // Has the user some "current course"
     this._courseService.currentCourseObservable().subscribe(
       count => {
         this.countCurrentCourses = count;
       }
     );
+    // check user right
+    this._userService.userObservable().subscribe(
+      () => {
+        this.userIsAdmin = this._userService.isAdmin();
+      });
+
+
+    // Message and notification callback
     this._notificationService.getMessageEmmiter()
-      .subscribe(message => {
-        this.notificationMessage = message;
-        this.showMessage = true;
+        .subscribe(message => {
+          this.notificationMessage = message;
+          this.showMessage = true;
 
-        if (this.notificationTimeout != null) {
-          clearTimeout(this.notificationTimeout);
-        }
+          if (this.notificationTimeout != null) {
+            clearTimeout(this.notificationTimeout);
+          }
 
-        this.notificationTimeout = setTimeout(() => {
-            this.showMessage = false;
-          },
-          2000);
-      })
+          this.notificationTimeout = setTimeout(() => {
+              this.showMessage = false;
+            },
+            2000);
+        })
 
   }
 

@@ -7,7 +7,7 @@ import { secret, length, digest } from "../config";
 import User = require("../models/user");
 
 
-var debug = require('debug')('server:service:user');
+const debug = require('debug')('server:service:user');
 
 export default class UserService {
 
@@ -74,6 +74,7 @@ export default class UserService {
 
       case EditRightType.EditAward:
       case EditRightType.EditCoursesCatalogue:
+      case EditRightType.ListUsers:
       default:
         return this._isUserAdmin(userId);
     }
@@ -102,5 +103,5 @@ export default class UserService {
 }
 
 export enum EditRightType {
-  EditCourse,  EditAward, EditCoursesCatalogue
+  EditCourse,  EditAward, EditCoursesCatalogue, ListUsers
 }
