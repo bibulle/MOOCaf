@@ -1,5 +1,6 @@
 import { Router, Request, Response } from "express";
 import * as jwt from "express-jwt";
+import * as _ from "lodash";
 import { secret } from "../config";
 import UserService, { EditRightType } from "../service/userService";
 import User = require("../models/user");
@@ -24,14 +25,17 @@ userRouter.route('/')
 
             const userId = request['user']["id"];
 
-            debug("GET /awards");
+            debug("GET /");
             //debug("connected user : " + JSON.stringify(request['user']));
 
             UserService.checkUserRightAndRespond(userId, EditRightType.ListUsers, null, response, () => {
               User
-                .find()
+                .findFilled()
                 .then(users => {
-                  response.json({ data: users })
+                  var ret = users.map(user => {
+                    return _.omit(user, ['_id', 'salt', 'hashedPassword']);
+                  });
+                  response.json({ data: ret })
                 })
                 .catch(err => {
                   console.log(err);

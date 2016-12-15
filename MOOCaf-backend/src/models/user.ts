@@ -2,6 +2,7 @@ import Mongoose = require("mongoose");
 import * as _ from 'lodash';
 import UserCourse = require("./UserCourse");
 import UserStats = require("./UserStats");
+import Course from "./course";
 
 var debug = require('debug')('server:model:user');
 
@@ -26,7 +27,7 @@ class IUser {
    * Constructor
    * @param document
    */
-  constructor(document: {}) {
+  constructor (document: {}) {
     _.merge(this, document);
   }
 }
@@ -96,11 +97,11 @@ class User extends IUser {
    * Constructor
    * @param document
    */
-  constructor(document: {}) {
+  constructor (document: {}) {
     super(document);
   }
 
-  static count(): Promise<number> {
+  static count (): Promise<number> {
     return new Promise<number>((resolve, reject) => {
       _model.count(
         {},
@@ -114,7 +115,7 @@ class User extends IUser {
    * Find the list of user
    * @returns {Promise<IUser[]>}
    */
-  static find(): Promise < User[] > {
+  static find (): Promise < User[] > {
     // debug("find");
     return new Promise < IUser[] >((resolve, reject) => {
 
@@ -136,8 +137,59 @@ class User extends IUser {
     })
   }
 
+  /**
+   * Find the list of user (filled with stats and courses)
+   * @returns {Promise<User[]>}
+   */
+  static findFilled (): Promise < User[] > {
+    // debug("find");
+    return new Promise < IUser[] >((resolve, reject) => {
 
-  static findById(id: string): Promise < User > {
+      // Do the search
+      _model.find({})
+            .lean()
+            .exec()
+            .then(
+              (users: IUser[]) => {
+
+                var promises: Promise<IUser>[] = [];
+
+                users.forEach(user => {
+                  promises.push(
+                    new Promise<IUser>((resolve, reject) => {
+                      user['id'] = user['_id'].toString();
+                      this._fillUser(user, true)
+                          .then(u => {
+                            u = user;
+
+                            resolve(u);
+                          })
+                          .catch((err) => {
+                            reject(err);
+                          });
+                    })
+                  )
+                });
+
+                Promise.all(promises)
+                       .then(v => {
+                         resolve(v);
+                       })
+                       .catch(err => {
+                         reject(err);
+                       })
+
+
+              },
+              err => {
+                reject(err);
+              })
+      ;
+    })
+  }
+
+
+  static findById (id: string): Promise < User > {
     return new Promise < IUser >((resolve, reject) => {
       _model.findById(id)
             .lean()
@@ -165,9 +217,9 @@ class User extends IUser {
     })
   }
 
-  static findByUsername(userName: string): Promise < User > {
+  static findByUsername (userName: string): Promise < User > {
     return new Promise < IUser >((resolve, reject) => {
-      _model.findOne({username: userName})
+      _model.findOne({ username: userName })
             .lean()
             .exec()
             .then(
@@ -191,7 +243,7 @@ class User extends IUser {
     })
   }
 
-  static updateOrCreate(user: User): Promise < User > {
+  static updateOrCreate (user: User): Promise < User > {
     return new Promise < User >((resolve, reject) => {
 
       //debug(user.courses['57eaa5673f918f13b01f2cac']);
@@ -237,16 +289,17 @@ class User extends IUser {
 
 
   /**
-   * Fill the user with other data
+   * Fill the user with other data (and full with some courses and awards information)
    * @param user
+   * @param full
    * @returns {Promise<IUser>}
    * @private
    */
-  static _fillUser(user: User): Promise < User > {
+  static _fillUser (user: User, full = false): Promise < User > {
     return new Promise < IUser >((resolve, reject) => {
-      this._fillUserWithUserCourses(user)
+      this._fillUserWithUserCourses(user, full)
           .then(user => {
-            this._fillUserWithUserAwards(user)
+            this._fillUserWithUserAwards(user, full)
                 .then(user => {
                   resolve(user);
                 })
@@ -262,17 +315,49 @@ class User extends IUser {
   }
 
   /**
-   * Fill the user with user course values
+   * Fill the user with user course values (and full with some course information)
    * @param user
+   * @param full
    * @returns {Promise<IUser>}
    * @private
    */
-  static _fillUserWithUserCourses(user: User): Promise < User > {
+  static _fillUserWithUserCourses (user: User, full = false): Promise < User > {
     return new Promise < IUser >((resolve, reject) => {
       UserCourse.findByUserId(user['id'])
                 .then(courses => {
                   user.courses = courses;
-                  resolve(user);
+
+                  if (full) {
+                    var promises: Promise<void>[] = [];
+
+                    for (var courseId in user.courses) {
+                      const _courseId = courseId;
+                      promises.push(new Promise<void>((resolve, reject) => {
+                        Course.findById(_courseId)
+                              .then(course => {
+                                _.merge(user.courses[_courseId], _.pick(course, ['name']));
+                                resolve();
+                              })
+                              .catch(err => {
+                                debug("catch1");
+                                reject(err);
+                              });
+                      }));
+                    }
+
+                    Promise.all(promises)
+                           .then(() => {
+                             resolve(user);
+                           })
+                           .catch(err => {
+                             debug(err);
+                             reject(err);
+                           })
+
+                  } else {
+                    resolve(user);
+                  }
+
                 })
                 .catch(err => {
                   reject(err);
@@ -281,17 +366,29 @@ class User extends IUser {
   }
 
   /**
-   * Fill a user with stats values
+   * Fill a user with stats values (and full with some awards information)
    * @param user
+   * @param full
    * @returns {Promise<IUser>}
    * @private
    */
-  static _fillUserWithUserAwards(user: User): Promise < User > {
+  static _fillUserWithUserAwards (user: User, full = false): Promise < User > {
     return new Promise < IUser >((resolve, reject) => {
       UserStats.findByUserId(user['id'])
                .then(stats => {
                  user.stats = stats;
-                 resolve(user);
+
+                 for (var statId in user.stats) {
+                   user.stats[statId]['name'] = statId.toLocaleLowerCase().replace(/_/g, ' ');
+                   user.stats[statId]['name'] = user.stats[statId]['name'].charAt(0).toLocaleUpperCase()+user.stats[statId]['name'].slice(1);
+                 }
+
+                 if (full) {
+                   // Nothing to do
+                   resolve(user);
+                 } else {
+                   resolve(user);
+                 }
                })
                .catch(err => {
                  reject(err);

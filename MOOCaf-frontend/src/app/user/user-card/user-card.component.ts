@@ -28,6 +28,9 @@ export class UserCardComponent implements OnInit {
 
   ngOnInit() {
     this.userClosed=(this.index != 0);
+
+    this.user['courseIds'] = Object.keys(this.user['courses']);
+    this.user['statIds'] = Object.keys(this.user['stats']);
   }
 
   /**

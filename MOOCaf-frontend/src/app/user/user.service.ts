@@ -53,7 +53,7 @@ export class UserService {
    */
   checkAuthent () {
     //console.log("checkAuthent");
-    var jwt = localStorage.getItem(this.keyTokenId);
+    let jwt = localStorage.getItem(this.keyTokenId);
 
     if (!jwt || !tokenNotExpired()) {
       this.user = new User({});
@@ -91,7 +91,7 @@ export class UserService {
           .timeout(3000, new Error('Connection timeout exceeded'))
           .toPromise()
           .then(res => {
-            var data = res.json();
+            const data = res.json();
             if (data['id_token']) {
               localStorage.setItem(this.keyTokenId, data['id_token']);
               this.loggedIn = true;
@@ -101,7 +101,7 @@ export class UserService {
             reject();
           })
           .catch(error => {
-            var msg = error.statusText || error.message || 'Connection error';
+            const msg = error.statusText || error.message || 'Connection error';
             this._logger.error('Login', msg);
             this._notificationService.error('Login', msg);
             this.checkAuthent();
@@ -146,7 +146,7 @@ export class UserService {
             resolve();
           })
           .catch(error => {
-            var msg = error['_body'] || error.statusText || error.message || 'Connection error';
+            const msg = error['_body'] || error.statusText || error.message || 'Connection error';
             this._logger.error('Signup', msg);
             this._notificationService.error('Signup', msg);
             reject();
@@ -165,7 +165,10 @@ export class UserService {
     return new Promise<User[]>((resolve, reject) => {
       this._authHttp
           .get(environment.serverUrl + 'api/user', { headers: CommonHeaders.contentHeaders })
-          .map((res: Response) => res.json().data as User[])
+          .map((res: Response) => {
+            console.log(res.json().data);
+            return res.json().data as User[]
+          })
           .subscribe(
             data => {
               //console.log(data);

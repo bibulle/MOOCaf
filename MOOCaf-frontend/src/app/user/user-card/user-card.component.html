@@ -1,20 +1,36 @@
-<div class="user-content" flex="100" layout="row" [class.userOpen]="!userClosed" [class.first]="index==0">
-  <md-input flex="20" placeholder="Username" required maxlength="20" [disabled]="!edited" minlength="3"
-            title="should be a valid linux username (minuscule letters and numbers)" [(ngModel)]="user.username"
-            (keyup)="userNameChanged()" (change)="userNameChanged()" name="username"></md-input>
-  <md-input flex="20" placeholder="Firstname" required [disabled]="!edited" [(ngModel)]="user.firstname"
-            name="firstname"></md-input>
-  <md-input flex="20" placeholder="Lastname" required [disabled]="!edited" [(ngModel)]="user.lastname"
-            name="lastname"></md-input>
-  <md-input flex="20" placeholder="Email" required type="email" [disabled]="!edited" [(ngModel)]="user.email"
-            name="email"></md-input>
-  <span flex="20" class="content">{{user.username}}</span>
-  <span flex="20" class="content">{{user.firstname}}</span>
-  <span flex="20" class="content">{{user.lastname}}</span>
-  <span flex="20" class="content">{{user.email}}</span>
-  <span class="fill-remaining-space"></span>
-  <button md-icon-button class="open" (click)="toggleUserClosed()">
-    <md-icon *ngIf="userClosed">keyboard_arrow_down</md-icon>
-    <md-icon *ngIf="!userClosed">keyboard_arrow_up</md-icon>
-  </button>
+<div class="user-content" flex="100" layout="column" [class.userOpen]="!userClosed" [class.first]="index==0">
+  <div layout="row">
+    <md-input flex="20" placeholder="Username" required maxlength="20" [disabled]="!edited" minlength="3"
+              title="should be a valid linux username (minuscule letters and numbers)" [(ngModel)]="user.username"
+              (keyup)="userNameChanged()" (change)="userNameChanged()" name="username"></md-input>
+    <md-input flex="20" placeholder="Firstname" required [disabled]="!edited" [(ngModel)]="user.firstname"
+              name="firstname"></md-input>
+    <md-input flex="20" placeholder="Lastname" required [disabled]="!edited" [(ngModel)]="user.lastname"
+              name="lastname"></md-input>
+    <md-input flex="20" placeholder="Email" required type="email" [disabled]="!edited" [(ngModel)]="user.email"
+              name="email"></md-input>
+    <span flex="20" class="content">{{user.username}}</span>
+    <span flex="20" class="content">{{user.firstname}}</span>
+    <span flex="20" class="content">{{user.lastname}}</span>
+    <span flex="20" class="content">{{user.email}}</span>
+    <span class="fill-remaining-space"></span>
+    <button md-icon-button class="open" (click)="toggleUserClosed()">
+      <md-icon *ngIf="userClosed">keyboard_arrow_down</md-icon>
+      <md-icon *ngIf="!userClosed">keyboard_arrow_up</md-icon>
+    </button>
+  </div>
+  <div class="user-courses" layout="column" *ngIf="!userClosed">
+    <h3>Courses</h3>
+    <div *ngFor="let courseId of user.courseIds; let index=index; let odd=odd;" layout="row" [class.first]="index==0">
+      <div flex="30">{{user.courses[courseId].name}}</div>
+      <div flex="30">{{user.courses[courseId].percentFollowed*100 | number:'1.1-1'}} %</div>
+    </div>
+  </div>
+  <div class="user-stats" layout="column" *ngIf="!userClosed">
+    <h3>Statistics</h3>
+    <div *ngFor="let statId of user.statIds; let index=index; let odd=odd;" layout="row" [class.first]="index==0">
+      <div flex="30">{{user.stats[statId].name}}</div>
+      <div flex="30">{{user.stats[statId].userCount}}</div>
+    </div>
+  </div>
 </div>

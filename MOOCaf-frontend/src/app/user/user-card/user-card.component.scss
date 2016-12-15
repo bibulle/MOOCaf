@@ -10,7 +10,7 @@
 
 .user-content {
   padding: 0.5em;
-  align-items: center;
+  align-items: stretch;
 }
 
 .content {
@@ -35,4 +35,27 @@ md-input {
 
 .open {
   align-self: center;
+}
+
+.user-courses, .user-stats {
+  padding-left: 2em;
+  padding-right: 2em;
+}
+
+.user-courses h3, .user-stats h3 {
+  margin-bottom: 0;
+}
+
+.user-courses h3 {
+  margin-top: 0;
+}
+
+.user-courses > div, .user-stats > div {
+  padding-left: 1em;
+}
+
+.user-courses > div > div, .user-stats > div > div {
+  border-bottom: 1px solid #CCC;
+  line-height: 1em;
+  min-height: 1em;
 }
