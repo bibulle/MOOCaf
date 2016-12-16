@@ -321,7 +321,10 @@ class User extends IUser {
    * @returns {Promise<IUser>}
    * @private
    */
-  static fillUser (user: User, full = false): Promise < User > {
+  static fillUser (user: User, full?: boolean): Promise < User > {
+
+    full = full || false;
+
     return new Promise < IUser >((resolve, reject) => {
       this._fillUserWithUserCourses(user, full)
           .then(user => {
@@ -347,7 +350,9 @@ class User extends IUser {
    * @returns {Promise<IUser>}
    * @private
    */
-  static _fillUserWithUserCourses (user: User, full = false): Promise < User > {
+  static _fillUserWithUserCourses (user: User, full?: boolean): Promise < User > {
+    full = full || false;
+
     return new Promise < IUser >((resolve, reject) => {
       UserCourse.findByUserId(user['id'])
                 .then(courses => {
@@ -398,7 +403,9 @@ class User extends IUser {
    * @returns {Promise<IUser>}
    * @private
    */
-  static _fillUserWithUserAwards (user: User, full = false): Promise < User > {
+  static _fillUserWithUserAwards (user: User, full?: boolean): Promise < User > {
+    full = full || false;
+
     return new Promise < IUser >((resolve, reject) => {
       UserStats.findByUserId(user['id'])
                .then(stats => {
