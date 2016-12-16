@@ -1,3 +1,31 @@
-<p>
-  user works!
-</p>
+<div class="md-content users" flex="100" layout="column" layout-align="start stretch" [class.edited]="edited">
+
+  <div class="edit-users-buttons" *ngIf="userIsAdmin">
+    <button md-icon-button (click)="toggleEditMode()" [class.md-accent]="edited" [class.md-primary]="!edited"
+            title="Edit users">
+      <md-icon>edit</md-icon>
+    </button>
+  </div>
+  <div class="menu" layout="row" layout-align="start center">
+    <div flex="100" layout="row" layout-align="start center">
+      <div flex="50" layout="row" layout-align="center center">
+      </div>
+      <div flex="50" layout="row" layout-align="end center">
+        <md-icon>search</md-icon>
+        &nbsp;
+        <md-input placeholder="Search" flex="75" [(ngModel)]="search" (ngModelChange)="filterList()"></md-input>
+      </div>
+    </div>
+  </div>
+  <div class="header" layout="row" layout-align="start stretch">
+    <span flex="20" class="content">Login</span>
+    <span flex="20" class="content">Firstname</span>
+    <span flex="20" class="content">Lastname</span>
+    <span flex="20" class="content">Email</span>
+    <span flex="10" class="content admin">Is admin ?</span>
+  </div>
+
+  <div class="user-list" layout="column" layout-align="start stretch" flex="100">
+    <user-card class="user" *ngFor="let user of sortedUsers; let i = index" [edited]="edited" [user]="user" [index]="i" layout="row" (notifyUsersChange)="onUsersChange($event)"></user-card>
+  </div>
+</div>

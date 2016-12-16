@@ -1,0 +1,45 @@
+<div class="user-content" flex="100" layout="column" [class.userOpen]="!userClosed" [class.first]="index==0">
+  <div class="user-card-buttons" *ngIf="edited && !userClosed">
+    <button md-icon-button (click)="deleteUser()" class="md-primary" [class.md-warn]="deleteUserClicked" title="Delete user">
+      <md-icon class="delete">delete</md-icon>
+      <md-icon class="warning">announcement</md-icon>
+    </button>
+  </div>
+  <div layout="row">
+    <md-input flex="20" placeholder="Username" required maxlength="20" [disabled]="!edited" minlength="3"
+              title="should be a valid linux username (minuscule letters and numbers)" [(ngModel)]="user.username"
+              (keyup)="userNameChanged()" (change)="userNameChanged()" name="username"></md-input>
+    <md-input flex="20" placeholder="Firstname" required [disabled]="!edited" [(ngModel)]="user.firstname"
+              name="firstname" (change)="userChange()" (keyup)="userChange()"></md-input>
+    <md-input flex="20" placeholder="Lastname" required [disabled]="!edited" [(ngModel)]="user.lastname"
+              name="lastname" (change)="userChange()" (keyup)="userChange()"></md-input>
+    <md-input flex="20" placeholder="Email" required type="email" [disabled]="!edited" [(ngModel)]="user.email"
+              name="email" (change)="userChange()" (keyup)="userChange()"></md-input>
+    <md-slide-toggle flex="10" [disabled]="!edited" [(ngModel)]="user.isAdmin" (change)="userChange()"><span *ngIf="user.isAdmin">Admin</span><span *ngIf="!user.isAdmin">Not admin</span></md-slide-toggle>
+    <span flex="20" class="content">{{user.username}}</span>
+    <span flex="20" class="content">{{user.firstname}}</span>
+    <span flex="20" class="content">{{user.lastname}}</span>
+    <span flex="20" class="content">{{user.email}}</span>
+    <span flex="10" class="content admin" *ngIf="user.isAdmin">Admin</span>
+    <span flex="10" class="content admin" *ngIf="!user.isAdmin">Not admin</span>
+    <span class="fill-remaining-space"></span>
+    <button md-icon-button class="open" (click)="toggleUserClosed()">
+      <md-icon *ngIf="userClosed">keyboard_arrow_down</md-icon>
+      <md-icon *ngIf="!userClosed">keyboard_arrow_up</md-icon>
+    </button>
+  </div>
+  <div class="user-courses" layout="column" *ngIf="!userClosed">
+    <h4 class="header">Courses</h4>
+    <div *ngFor="let courseId of user.courseIds; let index=index; let odd=odd;" layout="row" [class.first]="index==0">
+      <div flex="30">{{user.courses[courseId].name}}</div>
+      <div flex="10" class="value">{{(user.courses[courseId].percentFollowed ? user.courses[courseId].percentFollowed*100 : 0) | number:'1.1-1'}} %</div>
+    </div>
+  </div>
+  <div class="user-stats" layout="column" *ngIf="!userClosed">
+    <h4 class="header">Statistics</h4>
+    <div *ngFor="let statId of user.statIds; let index=index; let odd=odd;" layout="row" [class.first]="index==0">
+      <div flex="30">{{user.stats[statId].name}}</div>
+      <div flex="10" class="value">{{user.stats[statId].userCount}}</div>
+    </div>
+  </div>
+</div>

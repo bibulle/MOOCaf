@@ -1,0 +1,38 @@
+
+.users {
+    position: relative;
+    display: flex;
+}
+
+.user-list, .header {
+    overflow-y: scroll;
+    width: 100%;
+}
+
+.header {
+    padding: 0.5em;
+}
+.header .content {
+    margin: 5px;
+    padding-right: 1px;
+}
+.header .admin {
+    margin-left: 44px;
+    font-size: 14px;
+    padding-left: 2em;
+}
+
+/*.user:first-child {*/
+    /*border-top: 1px solid #CCC;*/
+/*}*/
+
+.edit-users-buttons {
+    position: absolute;
+    right: 0;
+    top: 0;
+    z-index: 100;
+}
+
+.user-list user-card.user {
+    flex-shrink: 0;
+}

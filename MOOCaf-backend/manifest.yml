@@ -5,7 +5,7 @@ applications:
   instances: 1
   path: .
   buildpack: nodejs_buildpack
-  command: npm install && DEBUG=server:* node ./src/bin/www
+  command: npm install && npm install concurrently && DEBUG=server:* npm start
   routes:
   - route: moocaf-backend.tls.cloud.airfrance.fr
   env:

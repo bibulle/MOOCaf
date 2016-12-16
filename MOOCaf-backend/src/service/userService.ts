@@ -7,7 +7,7 @@ import { secret, length, digest } from "../config";
 import User = require("../models/user");
 
 
-var debug = require('debug')('server:service:user');
+const debug = require('debug')('server:service:user');
 
 export default class UserService {
 
@@ -68,12 +68,14 @@ export default class UserService {
    */
   private static _isUserAllowed(userId: string, right: EditRightType, objectId: string): Promise<boolean> {
     switch (right) {
-      // this one should be different
+      // TODO : this one should be different (depending on course)
       case EditRightType.EditCourse:
         return this._isUserAdmin(userId);
 
       case EditRightType.EditAward:
       case EditRightType.EditCoursesCatalogue:
+      case EditRightType.ListUsers:
+      case EditRightType.EditUser:
       default:
         return this._isUserAdmin(userId);
     }
@@ -102,5 +104,5 @@ export default class UserService {
 }
 
 export enum EditRightType {
-  EditCourse,  EditAward, EditCoursesCatalogue
+  EditCourse,  EditAward, EditCoursesCatalogue, ListUsers, EditUser
 }

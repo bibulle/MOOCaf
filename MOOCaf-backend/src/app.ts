@@ -1,12 +1,12 @@
 import * as express from "express";
 import {join} from "path";
-var cfenv = require('cfenv');
-var bodyParser = require('body-parser');
-var cors = require('cors');
+const cfenv = require('cfenv');
+const bodyParser = require('body-parser');
+const cors = require('cors');
 
 import {json} from "body-parser";
-var debug = require('debug')('server:server');
-var warn = require('debug')('server:warn');
+const debug = require('debug')('server:server');
+const warn = require('debug')('server:warn');
 
 import mongoose from './models/db';
 
@@ -14,6 +14,7 @@ import {loginRouter} from "./routes/login";
 import {courseRouter} from "./routes/course";
 import {awardRouter} from "./routes/award";
 import { jobRouter } from "./routes/job";
+import { userRouter } from "./routes/user";
 
 // Init Db access
 mongoose.init()
@@ -39,16 +40,17 @@ app.use(bodyParser.json());
 
 
 // cors stuff
-var originsWhiteList = ['http://localhost:4200'];
+let originsWhiteList = ['http://localhost:4200'];
 if (process.env['frontend']) {
   originsWhiteList = JSON.parse(process.env['frontend']);
 }
-var corsOptions = {
-  origin: function(origin, callback){
-    var isWhitelisted = originsWhiteList.indexOf(origin) !== -1;
+//noinspection JSUnusedGlobalSymbols
+const corsOptions = {
+  origin: function (origin, callback) {
+    const isWhitelisted = originsWhiteList.indexOf(origin) !== -1;
     callback(null, isWhitelisted);
   },
-  credentials:true
+  credentials: true
 };
 //noinspection TypeScriptValidateTypes
 app.use(cors(corsOptions));
@@ -62,6 +64,8 @@ app.use("/api/course", courseRouter);
 app.use("/api/award", awardRouter);
 //noinspection TypeScriptValidateTypes
 app.use("/api/job", jobRouter);
+//noinspection TypeScriptValidateTypes
+app.use("/api/user", userRouter);
 
 // error handlers
 // development error handler
@@ -72,7 +76,7 @@ if (app.get("env") === "development") {
   //noinspection TypeScriptValidateTypes
   app.use(express.static(join(__dirname, '../../node_modules')));
 
-  //noinspection TypeScriptValidateTypes
+  //noinspection TypeScriptValidateTypes,JSUnusedLocalSymbols
   app.use(function (err, req: express.Request, res: express.Response, next) {
     res.status(err.status || 500);
     res.json({
@@ -83,7 +87,7 @@ if (app.get("env") === "development") {
 }
 
 
-//noinspection TypeScriptValidateTypes
+//noinspection TypeScriptValidateTypes,JSUnusedLocalSymbols
 app.use(function (req: express.Request, res: express.Response, next) {
   res.status(404);
 

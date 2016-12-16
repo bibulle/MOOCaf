@@ -1,0 +1,110 @@
+
+:host {
+  margin: 0;
+  position: relative;
+}
+
+.user-content.userOpen {
+  border-top: 1px solid #CCC;
+  border-bottom: 1px solid #CCC;
+}
+
+.user-content {
+  padding: 0.5em;
+  align-items: stretch;
+}
+
+.content {
+  margin: 5px;
+  padding-right: 1px;
+}
+
+.userOpen .content, md-input, md-slide-toggle {
+  display: none;
+}
+
+.content, .userOpen md-input, .userOpen md-slide-toggle {
+  display: inherit;
+}
+
+.admin, md-slide-toggle {
+  font-style: italic;
+  font-size: 14px;
+  padding-left: 2em;
+}
+.admin {
+  margin-left: 44px;
+}
+
+md-input {
+  margin: 5px;
+}
+
+.fill-remaining-space {
+  flex: 1 1 auto;
+}
+
+.open {
+  align-self: center;
+}
+
+.user-courses, .user-stats {
+  padding-left: 2em;
+  padding-right: 2em;
+}
+
+.user-courses h4, .user-stats h4 {
+  margin-bottom: 0;
+}
+
+.user-courses h4 {
+  margin-top: 0;
+}
+
+.user-courses > div, .user-stats > div {
+  padding-left: 1em;
+}
+
+.user-courses > div > div, .user-stats > div > div {
+  border-bottom: 1px solid #CCC;
+  //line-height: 1em;
+  //min-height: 1em;
+}
+.value {
+  text-align: end;
+}
+
+.user-card-buttons {
+  position: absolute;
+  right: 40px;
+  top: 0;
+  z-index: 20;
+}
+
+.user-card-buttons .warning {
+  display: none;
+  position: absolute;
+  top: -0.8em;
+  left: 0.4em;
+  font-size: 3em;
+}
+
+.user-card-buttons .md-warn .warning {
+  display: inherit;
+}
+
+.user-card-buttons .material-icons {
+  font-size: 18px;
+}
+
+.award-card-buttons md-icon {
+  width: 18px;
+  height: 18px;
+}
+
+.award-card-buttons [md-icon-button] {
+  width: 30px;
+  height: 30px;
+  line-height: 18px;
+}
+
