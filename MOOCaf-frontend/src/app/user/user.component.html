@@ -17,6 +17,13 @@
       </div>
     </div>
   </div>
+  <div class="header" layout="row" layout-align="start stretch">
+    <span flex="20" class="content">Login</span>
+    <span flex="20" class="content">Firstname</span>
+    <span flex="20" class="content">Lastname</span>
+    <span flex="20" class="content">Email</span>
+    <span flex="10" class="content admin">Is admin ?</span>
+  </div>
 
   <div class="user-list" layout="column" layout-align="start stretch" flex="100">
     <user-card class="user" *ngFor="let user of users; let i = index" [edited]="edited" [user]="user" [index]="i" layout="row"></user-card>

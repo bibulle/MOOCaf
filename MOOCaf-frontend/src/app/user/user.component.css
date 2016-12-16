@@ -4,9 +4,22 @@
     display: flex;
 }
 
-.user-list {
+.user-list, .header {
     overflow-y: scroll;
     width: 100%;
+}
+
+.header {
+    padding: 0.5em;
+}
+.header .content {
+    margin: 5px;
+    padding-right: 1px;
+}
+.header .admin {
+    margin-left: 44px;
+    font-size: 14px;
+    padding-left: 2em;
 }
 
 /*.user:first-child {*/
