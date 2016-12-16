@@ -1,7 +1,7 @@
 import { Component, OnInit, Input, NgModule } from "@angular/core";
 import { CommonModule } from "@angular/common";
 import { FormsModule } from "@angular/forms";
-import { MdButtonModule, MdInputModule, MdIconModule } from "@angular/material";
+import { MdButtonModule, MdInputModule, MdIconModule, MdSlideToggleModule } from "@angular/material";
 import { User } from "../user";
 
 @Component({
@@ -27,7 +27,7 @@ export class UserCardComponent implements OnInit {
   constructor() { }
 
   ngOnInit() {
-    this.userClosed=(this.index != 0);
+    //this.userClosed=(this.index != 0);
 
     this.user['courseIds'] = Object.keys(this.user['courses']);
     this.user['statIds'] = Object.keys(this.user['stats']);
@@ -67,6 +67,7 @@ export class UserCardComponent implements OnInit {
     CommonModule,
     MdButtonModule,
     MdInputModule,
+    MdSlideToggleModule,
     MdIconModule.forRoot(),
     FormsModule
   ],

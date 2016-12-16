@@ -15,14 +15,24 @@
 
 .content {
   margin: 5px;
+  padding-right: 1px;
 }
 
-.userOpen .content, md-input {
+.userOpen .content, md-input, md-slide-toggle {
   display: none;
 }
 
-.content, .userOpen md-input {
+.content, .userOpen md-input, .userOpen md-slide-toggle {
   display: inherit;
+}
+
+.admin, md-slide-toggle {
+  font-style: italic;
+  font-size: 14px;
+  padding-left: 2em;
+}
+.admin {
+  margin-left: 44px;
 }
 
 md-input {
@@ -56,6 +66,9 @@ md-input {
 
 .user-courses > div > div, .user-stats > div > div {
   border-bottom: 1px solid #CCC;
-  line-height: 1em;
-  min-height: 1em;
+  //line-height: 1em;
+  //min-height: 1em;
+}
+.value {
+  text-align: end;
 }

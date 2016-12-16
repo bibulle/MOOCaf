@@ -18,7 +18,7 @@
     </div>
   </div>
 
-  <div class="user-list" layout="row" layout-align="start start" layout-wrap flex="100">
-    <user-card class="user" *ngFor="let user of users; let i = index" flex="100" [edited]="edited" [user]="user" [index]="i" layout="row"></user-card>
+  <div class="user-list" layout="column" layout-align="start stretch" flex="100">
+    <user-card class="user" *ngFor="let user of users; let i = index" [edited]="edited" [user]="user" [index]="i" layout="row"></user-card>
   </div>
 </div>
