@@ -26,6 +26,6 @@
   </div>
 
   <div class="user-list" layout="column" layout-align="start stretch" flex="100">
-    <user-card class="user" *ngFor="let user of sortedUsers; let i = index" [edited]="edited" [user]="user" [index]="i" layout="row"></user-card>
+    <user-card class="user" *ngFor="let user of sortedUsers; let i = index" [edited]="edited" [user]="user" [index]="i" layout="row" (notifyUsersChange)="onUsersChange($event)"></user-card>
   </div>
 </div>

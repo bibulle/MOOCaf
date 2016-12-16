@@ -4,7 +4,7 @@ import UserCourse = require("./UserCourse");
 import UserStats = require("./UserStats");
 import Course from "./course";
 
-var debug = require('debug')('server:model:user');
+const debug = require('debug')('server:model:user');
 
 class IUser {
   username: string;
@@ -36,11 +36,11 @@ interface IUserModel extends IUser, Mongoose.Document {
 }
 
 /**
- * MongooseSchema
- * @type {"mongoose".Schema}
- * @private
- */
-var _schema: Mongoose.Schema = new Mongoose.Schema({
+* MongooseSchema
+* @type {"mongoose".Schema}
+* @private
+*/
+const _schema: Mongoose.Schema = new Mongoose.Schema({
   username: {
     type: String,
     require: true
@@ -89,7 +89,7 @@ var _schema: Mongoose.Schema = new Mongoose.Schema({
  * @type {Model<IUser>}
  * @private
  */
-var _model = Mongoose.model < IUserModel >('User', _schema);
+const _model = Mongoose.model < IUserModel >('User', _schema);
 
 class User extends IUser {
 
@@ -152,13 +152,13 @@ class User extends IUser {
             .then(
               (users: IUser[]) => {
 
-                var promises: Promise<IUser>[] = [];
+                const promises: Promise<IUser>[] = [];
 
                 users.forEach(user => {
                   promises.push(
                     new Promise<IUser>((resolve, reject) => {
                       user['id'] = user['_id'].toString();
-                      this._fillUser(user, true)
+                      this.fillUser(user, true)
                           .then(u => {
                             u = user;
 
@@ -201,7 +201,7 @@ class User extends IUser {
                 } else {
                   user['id'] = user['_id'].toString();
 
-                  this._fillUser(user)
+                  this.fillUser(user)
                       .then(user => {
                         resolve(user);
                       })
@@ -226,7 +226,7 @@ class User extends IUser {
               (user: IUser) => {
                 if (user) {
                   user['id'] = user['_id'].toString();
-                  this._fillUser(user)
+                  this.fillUser(user)
                       .then(user => {
                         resolve(user);
                       })
@@ -255,7 +255,7 @@ class User extends IUser {
               .then(
                 (user: User) => {
                   user['id'] = user['_id'].toString();
-                  this._fillUser(user)
+                  this.fillUser(user)
                       .then(user => {
                         resolve(user);
                       })
@@ -272,7 +272,7 @@ class User extends IUser {
                 user => {
                   user = user['_doc'];
                   user['id'] = user['_id'].toString();
-                  this._fillUser(user)
+                  this.fillUser(user)
                       .then(user => {
                         resolve(user);
                       })
@@ -287,6 +287,32 @@ class User extends IUser {
     });
   }
 
+  /**
+   * Delete a user
+   * @param userId
+   * @returns {Promise<void>}
+   */
+  static remove(userId: string): Promise < void > {
+    //debug("remove");
+    return new Promise < void >((resolve, reject) => {
+
+      // Do the search
+      _model.remove({_id: userId})
+                 .lean()
+                 .exec()
+                 .then(
+                   () => {
+                     resolve();
+                   },
+                   err => {
+                     debug("remove " + err);
+                     reject(err);
+                   })
+      ;
+    })
+  }
+
+
 
   /**
    * Fill the user with other data (and full with some courses and awards information)
@@ -295,7 +321,7 @@ class User extends IUser {
    * @returns {Promise<IUser>}
    * @private
    */
-  static _fillUser (user: User, full = false): Promise < User > {
+  static fillUser (user: User, full = false): Promise < User > {
     return new Promise < IUser >((resolve, reject) => {
       this._fillUserWithUserCourses(user, full)
           .then(user => {
@@ -328,9 +354,9 @@ class User extends IUser {
                   user.courses = courses;
 
                   if (full) {
-                    var promises: Promise<void>[] = [];
+                    const promises: Promise<void>[] = [];
 
-                    for (var courseId in user.courses) {
+                    for (let courseId in user.courses) {
                       const _courseId = courseId;
                       promises.push(new Promise<void>((resolve, reject) => {
                         Course.findById(_courseId)
@@ -378,7 +404,7 @@ class User extends IUser {
                .then(stats => {
                  user.stats = stats;
 
-                 for (var statId in user.stats) {
+                 for (let statId in user.stats) {
                    user.stats[statId]['name'] = statId.toLocaleLowerCase().replace(/_/g, ' ');
                    user.stats[statId]['name'] = user.stats[statId]['name'].charAt(0).toLocaleUpperCase()+user.stats[statId]['name'].slice(1);
                  }

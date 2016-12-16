@@ -15,6 +15,7 @@ import { NotificationService } from "../widget/notification/notification.service
 export class UserService {
   private loggedIn = false;
 
+  private userUrl = environment.serverUrl + 'api/user';
 
   private user = new User({});
 
@@ -164,7 +165,7 @@ export class UserService {
   getUsers (): Promise<User[]> {
     return new Promise<User[]>((resolve, reject) => {
       this._authHttp
-          .get(environment.serverUrl + 'api/user', { headers: CommonHeaders.contentHeaders })
+          .get(this.userUrl, { headers: CommonHeaders.contentHeaders })
           .map((res: Response) => {
             console.log(res.json().data);
             return res.json().data as User[]
@@ -186,4 +187,53 @@ export class UserService {
     })
 
   }
+
+  /**
+   * Save a user
+   * @param user
+   * @returns {Promise<User>}
+   */
+  save (user: User): Promise<User> {
+    return new Promise<User>((resolve, reject) => {
+      this._authHttp
+          .put(this.userUrl, user, { headers: CommonHeaders.contentHeaders })
+          .toPromise()
+          .then(res => {
+            resolve(res.json().data);
+          })
+          .catch(error => {
+            console.log(error);
+            reject(error);
+          });
+
+    });
+  }
+
+  /**
+   * remove a user
+   * @param user
+   * @returns {Promise<Award[]>}
+   */
+  remove (user: User): Promise<User[]> {
+
+    return new Promise<User[]>((resolve, reject) => {
+      this._authHttp
+          .delete(`${this.userUrl}/${user.id}`, { headers: CommonHeaders.contentHeaders })
+          .map((res: Response) => res.json().data as User[])
+          .subscribe(
+            data => {
+              //console.log(data);
+              resolve(data);
+            },
+            err => {
+              if (err._body && (err._body == "WRONG_USER")) {
+                this.logout();
+                reject("You have been disconnected");
+              } else {
+                reject(err);
+              }
+            });
+    })
+  }
+
 }

@@ -1,6 +1,7 @@
 
 :host {
   margin: 0;
+  position: relative;
 }
 
 .user-content.userOpen {
@@ -72,3 +73,38 @@ md-input {
 .value {
   text-align: end;
 }
+
+.user-card-buttons {
+  position: absolute;
+  right: 40px;
+  top: 0;
+  z-index: 20;
+}
+
+.user-card-buttons .warning {
+  display: none;
+  position: absolute;
+  top: -0.8em;
+  left: 0.4em;
+  font-size: 3em;
+}
+
+.user-card-buttons .md-warn .warning {
+  display: inherit;
+}
+
+.user-card-buttons .material-icons {
+  font-size: 18px;
+}
+
+.award-card-buttons md-icon {
+  width: 18px;
+  height: 18px;
+}
+
+.award-card-buttons [md-icon-button] {
+  width: 30px;
+  height: 30px;
+  line-height: 18px;
+}
+

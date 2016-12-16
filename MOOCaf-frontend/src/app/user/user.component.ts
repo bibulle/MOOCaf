@@ -73,6 +73,18 @@ export class UserComponent implements OnInit {
   }
 
   /**
+   * THe user list has changed
+   * @param users
+   */
+  onUsersChange(users: User[]) {
+    console.log(users);
+    this.users = users;
+    this.previousSearch=this.search+"-";
+    this._filterList(this.search);
+  }
+
+
+  /**
    * Really sort the course list
    * @param search the filter to apply
    * @private
