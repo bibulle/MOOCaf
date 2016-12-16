@@ -13,7 +13,7 @@
       <div flex="50" layout="row" layout-align="end center">
         <md-icon>search</md-icon>
         &nbsp;
-        <md-input placeholder="Search" #cataloguesearch flex="75" [(ngModel)]="search" (ngModelChange)="filterList()"></md-input>
+        <md-input placeholder="Search" flex="75" [(ngModel)]="search" (ngModelChange)="filterList()"></md-input>
       </div>
     </div>
   </div>
@@ -26,6 +26,6 @@
   </div>
 
   <div class="user-list" layout="column" layout-align="start stretch" flex="100">
-    <user-card class="user" *ngFor="let user of users; let i = index" [edited]="edited" [user]="user" [index]="i" layout="row"></user-card>
+    <user-card class="user" *ngFor="let user of sortedUsers; let i = index" [edited]="edited" [user]="user" [index]="i" layout="row"></user-card>
   </div>
 </div>
