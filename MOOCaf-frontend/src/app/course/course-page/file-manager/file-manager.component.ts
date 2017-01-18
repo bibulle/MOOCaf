@@ -1,6 +1,8 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
-import { MdDialogRef } from "@angular/material";
-import { FileUploader, FileItem, ParsedResponseHeaders } from "ng2-file-upload";
+import { Component, OnInit, ViewChild, NgModule } from '@angular/core';
+import { MdDialogRef, MdIconModule, MdDialogModule, MdTooltipModule, MdProgressBarModule } from "@angular/material";
+import { FileUploader, FileItem, FileUploadModule } from "ng2-file-upload";
+import { CommonModule } from "@angular/common";
+import { FormsModule } from "@angular/forms";
 
 const URL = '/api/';
 
@@ -23,7 +25,8 @@ export class FileManagerComponent implements OnInit {
 
   ngOnInit () {
 
-    this.uploader.onErrorItem = (item: FileItem, response: string, status: number, headers: ParsedResponseHeaders) => {
+    this.uploader.onErrorItem = (item: FileItem,
+                                 response: string) => {
       item['errorMessage'] = response;
     }
 
@@ -39,3 +42,27 @@ export class FileManagerComponent implements OnInit {
   }
 
 }
+
+@NgModule({
+  imports: [
+    CommonModule,
+    MdIconModule,
+    MdDialogModule.forRoot(),
+    MdTooltipModule,
+    MdProgressBarModule,
+    FormsModule,
+    FileUploadModule,
+  ],
+  declarations: [
+    FileManagerComponent
+  ],
+  entryComponents: [
+    FileManagerComponent
+  ],
+  exports: [
+    FileManagerComponent
+  ]
+})
+export class FileManagerModule {
+}
+
