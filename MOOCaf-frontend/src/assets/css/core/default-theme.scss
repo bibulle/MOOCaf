@@ -2,6 +2,9 @@
 //@import 'theme-functions';
 //@import 'palette';
 
+// Include non-theme styles for core.
+@include md-core();
+
 // Person creating a theme writes variables like this:
 $md-is-dark-theme: false !default;
 

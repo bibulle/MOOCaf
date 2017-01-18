@@ -12,28 +12,34 @@
       </button>
       <div class="content-part-buttons" *ngIf="userIsAdmin">
         <button md-icon-button (click)="moveUp()" class="md-primary"
-                *ngIf="edited && (selectedPartNums[selectedPartNums.length-1] != 0)" title="Move up">
+                *ngIf="edited && (selectedPartNums[selectedPartNums.length-1] != 0)"
+                md-tooltip="Move up" tooltip-position="before">
           <md-icon>arrow_upward</md-icon>
         </button>
         <button md-icon-button (click)="moveDown()" class="md-primary" *ngIf="edited && !selectedPartIsLast"
-                title="Move down">
+                md-tooltip="Move down" tooltip-position="before">
           <md-icon>arrow_downward</md-icon>
         </button>
         <button md-icon-button (click)="addPageChild()" class="md-primary" *ngIf="edited && (selectedPartLevel < 2)"
-                title="Add a child page">
+                md-tooltip="Add a child page" tooltip-position="before">
           <md-icon>playlist_add</md-icon>
         </button>
         <button md-icon-button (click)="addPageSibling()" class="md-primary" *ngIf="edited"
-                title="Add a sibling page">
+                md-tooltip="Add a sibling page" tooltip-position="before">
           <md-icon>note_add</md-icon>
         </button>
+        <button md-icon-button (click)="openFilesManagerDialog()" class="md-primary" *ngIf="edited"
+                md-tooltip="Manage files" tooltip-position="before">
+          <md-icon>attachment</md-icon>
+        </button>
         <button md-icon-button (click)="deletePage()" class="md-primary" [class.md-warn]="deletePartClicked"
-                *ngIf="edited" title="Delete page">
+                *ngIf="edited"
+                md-tooltip="Delete page" tooltip-position="before">
           <md-icon class="delete">delete</md-icon>
           <md-icon class="warning">announcement</md-icon>
         </button>
         <button md-icon-button (click)="toggleEditMode()" [class.md-accent]="edited" [class.md-primary]="!edited"
-                title="Edit page">
+                md-tooltip="Edit page" tooltip-position="before">
           <md-icon>edit</md-icon>
         </button>
       </div>
