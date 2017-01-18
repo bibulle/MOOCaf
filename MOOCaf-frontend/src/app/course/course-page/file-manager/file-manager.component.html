@@ -18,7 +18,7 @@
       <div flex="10" class="status" layout="column" layout-align="center center">
         <md-icon *ngIf="item.isSuccess" md-tooltip="Ok">check</md-icon>
         <md-icon *ngIf="item.isCancel" md-tooltip="Canceled">cancel</md-icon>
-        <md-icon *ngIf="item.isError" class="md-warn" md-tooltip="Error{{(item.errorMessage ? ' : '+ item.errorMessage : '')}}">error</md-icon>
+        <md-icon *ngIf="item.isError" class="md-warn" md-tooltip="{{(item.errorMessage ? item.errorMessage : 'Error')}}">error</md-icon>
       </div>
       <div flex="5" *ngIf="!item.isUploading" layout="column" layout-align="center center">
         <button md-mini-fab class="md-primary action" md-tooltip="Upload" (click)="item.upload()"
@@ -49,6 +49,6 @@
       <button md-raised-button class="md-primary" (click)="uploader.uploadAll()" [disabled]="!uploader.getNotUploadedItems().length">Upload all</button>
 
     </div>
-    <input #fileInput type="file" ng2FileSelect [uploader]="uploader" class="hidden-input"/>
+    <input #fileInput type="file" ng2FileSelect [uploader]="uploader" class="hidden-input" multiple/>
   </div>
 </div>

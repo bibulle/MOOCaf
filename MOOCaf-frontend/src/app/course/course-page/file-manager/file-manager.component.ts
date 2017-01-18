@@ -1,11 +1,9 @@
 import { Component, OnInit, ViewChild, NgModule } from '@angular/core';
 import { MdDialogRef, MdIconModule, MdDialogModule, MdTooltipModule, MdProgressBarModule } from "@angular/material";
-import { FileUploader, FileItem, FileUploadModule } from "ng2-file-upload";
+import { FileUploader, FileUploadModule } from "ng2-file-upload";
 import { CommonModule } from "@angular/common";
 import { FormsModule } from "@angular/forms";
-
-const URL = '/api/';
-
+import { FileManagerService } from "./file-manager.service";
 
 @Component({
   selector: 'app-file-manager',
@@ -14,22 +12,17 @@ const URL = '/api/';
 })
 export class FileManagerComponent implements OnInit {
 
-  public uploader: FileUploader = new FileUploader({ url: URL });
+  public uploader: FileUploader;
   public hasBaseDropZoneOver: boolean = false;
 
   @ViewChild('fileInput') fileInput;
 
-  constructor (
-    public dialogRef: MdDialogRef<FileManagerComponent>
-  ) { }
+  constructor (public dialogRef: MdDialogRef<FileManagerComponent>,
+               private _fileManagerService: FileManagerService) {}
 
   ngOnInit () {
 
-    this.uploader.onErrorItem = (item: FileItem,
-                                 response: string) => {
-      item['errorMessage'] = response;
-    }
-
+    this.uploader = this._fileManagerService.getUploader();
 
   }
 
@@ -58,6 +51,9 @@ export class FileManagerComponent implements OnInit {
   ],
   entryComponents: [
     FileManagerComponent
+  ],
+  providers: [
+    FileManagerService
   ],
   exports: [
     FileManagerComponent
