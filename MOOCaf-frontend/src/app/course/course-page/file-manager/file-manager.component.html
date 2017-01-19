@@ -7,29 +7,29 @@
         <div class="item" layout="column">
           <strong class="name">{{ item?.file?.name }}</strong>
           <div class="sizes" layout="column" layout-align="center center">
-            <span class="size" *ngIf="item?.file?.size >= 1024*1024">{{ item?.file?.size/1024/1024 | number:'1.1-1' }} MB</span>
+            <span class="size" *ngIf="item?.file?.size >= 1024*1024" [class.too-large]="item?.file?.size >= 10*1024*1024" md-tooltip="limited to 10Mb">{{ item?.file?.size/1024/1024 | number:'1.1-1' }} MB</span>
             <span class="size" *ngIf="(item?.file?.size >= 1024) && (item?.file?.size < 1024*1024)  ">{{ item?.file?.size/1024 | number:'1.1-1' }} KB</span>
             <span class="size" *ngIf="item?.file?.size < 1024">{{ item?.file?.size | number:'1.0' }}  B</span>
           </div>
         </div>
-        <md-progress-bar *ngIf="item.progress > 0" class="progress" mode="determinate"
+        <md-progress-bar *ngIf="item.progress >= 0" class="progress" mode="determinate"
                          value="{{item.progress}}"></md-progress-bar>
       </div>
       <div flex="10" class="status" layout="column" layout-align="center center">
-        <md-icon *ngIf="item.isSuccess" md-tooltip="Ok">check</md-icon>
-        <md-icon *ngIf="item.isCancel" md-tooltip="Canceled">cancel</md-icon>
-        <md-icon *ngIf="item.isError" class="md-warn" md-tooltip="{{(item.errorMessage ? item.errorMessage : 'Error')}}">error</md-icon>
+        <md-icon *ngIf="item.isSuccess" class="md-primary" md-tooltip="Ok">check</md-icon>
+        <md-icon *ngIf="item.isCancel"  class="md-primary" md-tooltip="Canceled">pause</md-icon>
+        <md-icon *ngIf="item.isError"   class="md-warn"    md-tooltip="{{(item.errorMessage ? item.errorMessage : 'Error')}}">clear</md-icon>
       </div>
       <div flex="5" *ngIf="!item.isUploading" layout="column" layout-align="center center">
         <button md-mini-fab class="md-primary action" md-tooltip="Upload" (click)="item.upload()"
-                [disabled]="item.isReady || item.isUploading || item.isSuccess">
+                [disabled]="item.isReady || item.isUploading || item.isSuccess || item.isError">
           <md-icon>file_upload</md-icon>
         </button>
       </div>
       <div flex="5" *ngIf="item.isUploading" layout="column" layout-align="center center">
         <button md-mini-fab class="md-primary action" md-tooltip="Cancel" (click)="item.cancel()"
                 [disabled]="!item.isUploading">
-          <md-icon>cancel</md-icon>
+          <md-icon>clear</md-icon>
         </button>
       </div>
       <div flex="5" layout="column" layout-align="center center">
@@ -46,7 +46,9 @@
       </button>
       <span class="fill-remaining-space"></span>
       <button md-raised-button class="cancel" md-dialog-close (click)="dialogRef.close('cancel')">Cancel</button>
-      <button md-raised-button class="md-primary" (click)="uploader.uploadAll()" [disabled]="!uploader.getNotUploadedItems().length">Upload all</button>
+      <button md-raised-button class="remove-all" (click)="uploader.clearQueue()" [disabled]="!uploader.queue.length">Remove all</button>
+      <button md-raised-button class="md-primary" (click)="uploader.uploadAll()" [disabled]="!uploader.getNotUploadedItems().length || uploader.isUploading">Upload all <md-progress-bar *ngIf="uploader.progress > 0" class="progress" mode="determinate"
+                                                                                                                                                                 value="{{uploader.progress}}"></md-progress-bar></button>
 
     </div>
     <input #fileInput type="file" ng2FileSelect [uploader]="uploader" class="hidden-input" multiple/>

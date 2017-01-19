@@ -15,6 +15,7 @@ import {courseRouter} from "./routes/course";
 import {awardRouter} from "./routes/award";
 import { jobRouter } from "./routes/job";
 import { userRouter } from "./routes/user";
+import { filesRouter } from "./routes/files";
 
 // Init Db access
 mongoose.init()
@@ -66,6 +67,8 @@ app.use("/api/award", awardRouter);
 app.use("/api/job", jobRouter);
 //noinspection TypeScriptValidateTypes
 app.use("/api/user", userRouter);
+//noinspection TypeScriptValidateTypes
+app.use("/api/files", filesRouter);
 
 // error handlers
 // development error handler

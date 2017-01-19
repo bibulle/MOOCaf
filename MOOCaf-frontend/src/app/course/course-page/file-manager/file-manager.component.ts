@@ -12,6 +12,7 @@ import { FileManagerService } from "./file-manager.service";
 })
 export class FileManagerComponent implements OnInit {
 
+  public courseId: string;
   public uploader: FileUploader;
   public hasBaseDropZoneOver: boolean = false;
 
@@ -22,7 +23,13 @@ export class FileManagerComponent implements OnInit {
 
   ngOnInit () {
 
-    this.uploader = this._fileManagerService.getUploader();
+    this.uploader = this._fileManagerService.getUploader(this.courseId);
+
+    this.dialogRef.afterClosed().subscribe(() => {
+      this.uploader.cancelAll();
+      this.uploader.clearQueue();
+    });
+
 
   }
 

@@ -43,6 +43,9 @@
           bottom: -0.8em;
           right: 0;
           font-size: 0.8em;
+          .too-large {
+            color: md-color($md-warn);
+          }
         }
       }
       .name {
@@ -87,13 +90,20 @@
       flex: 1 1 auto;
     }
     .cancel {
-      margin-right: 2em;
+      margin-right: 1em;
+    }
+    .remove-all {
+      margin-right: 1em;
+    }
+    .progress {
+      position: absolute;
+      left: 0;
+      bottom: 3px;
     }
   }
 
   .hidden-input {
     display: none;
   }
-
 
 }
