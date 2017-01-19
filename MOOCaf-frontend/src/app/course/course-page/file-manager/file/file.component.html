@@ -1,0 +1,20 @@
+<div *ngIf="file">
+  <div layout="row" *ngIf="level > 0" class="file">
+    <div class="tab" *ngFor="let n of getArrayOfNumber(level-1)">&nbsp;</div>
+    <div class="arrow" [class.open]="open">
+      <md-icon *ngIf="file.isDirectory" class="down md-primary" (click)="clickArrow()">keyboard_arrow_down</md-icon>
+      <md-icon *ngIf="file.isDirectory" class="right md-primary" (click)="clickArrow()">keyboard_arrow_right</md-icon>
+    </div>
+    <div class="icon">
+      <md-icon *ngIf="file.isDirectory" class="md-primary">folder</md-icon>
+      <md-icon *ngIf="!file.isDirectory" class="md-primary">insert_drive_file</md-icon>
+    </div>
+    <div layout="column" layout-align="center start" class="name">
+      <strong>{{file.name}}</strong>
+    </div>
+    <div flex="10" class="date">{{file.date | date:"yyyy"}}</div>
+    <div flex="10" class="size">{{file.size}}</div>
+  </div>
+  <app-file *ngFor="let file of file.children" [file]="file" [level]="level+1" class="children"
+            [class.open]="open || (level == 0)"></app-file>
+</div>

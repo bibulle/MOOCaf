@@ -2,17 +2,20 @@ import { Injectable } from '@angular/core';
 import { environment } from "../../../../environments/environment";
 import { FileUploader, FileItem } from "ng2-file-upload";
 import { AuthHttp } from "angular2-jwt";
+import { Response } from "@angular/http";
+import { UserService } from "../../../user/user.service";
 
 @Injectable()
 export class FileManagerService {
 
-  private filesUrl = environment.serverUrl + 'api/files/upload';
+  private filesUrl = environment.serverUrl + 'api/files';
 
-  private _uploader: FileUploader = new FileUploader({ url: this.filesUrl, removeAfterUpload: false });
+  private _uploader: FileUploader = new FileUploader({ url: this.filesUrl + "/upload", removeAfterUpload: false });
   private _currentCourseId: string = "";
   private _lastJwtToken = "";
 
-  constructor (private _authHttp: AuthHttp) {
+  constructor (private _authHttp: AuthHttp,
+               private _userService: UserService) {
     this._uploader.onErrorItem = (item: FileItem, response: string) => {
 
       item['errorMessage'] = response;
@@ -42,11 +45,58 @@ export class FileManagerService {
 
     this._uploader.setOptions({
       additionalParameter: { courseId: courseId },
-      authToken: "Bearer "+this._lastJwtToken
+      authToken: "Bearer " + this._lastJwtToken
     });
 
     //console.log(this._uploader);
     return this._uploader;
   }
 
+
+  public getFiles (courseId: string): Promise<File> {
+    // console.log("getFile");
+    return new Promise<File>((resolve, reject) => {
+
+      this._authHttp.get(this.filesUrl + "/" + courseId)
+          .map((res: Response) => res.json().data as File)
+          .subscribe(
+            (file: File) => {
+              this._setDateToFile(file);
+              console.log(file);
+              resolve(file);
+            },
+            err => {
+              if (err['_body'] && (err['_body'] == "WRONG_USER")) {
+                this._userService.logout();
+                reject("You have been disconnected");
+              } else {
+                reject(err);
+              }
+            },
+          );
+    });
+  }
+
+  private _setDateToFile(file:File) {
+    file.date = new Date(file.date);
+
+    if (file.children) {
+      file.children.forEach(f => {
+        this._setDateToFile(f);
+      })
+    }
+  }
+
 }
+
+export class File {
+  name: string;
+  path: string;
+  isDirectory: boolean;
+  size: number;
+  date: Date;
+
+  children: File[];
+  
+}
+

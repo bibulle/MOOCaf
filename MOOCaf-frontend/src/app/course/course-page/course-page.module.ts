@@ -20,7 +20,7 @@ import { FileManagerModule } from "./file-manager/file-manager.component";
     FileManagerModule,
   ],
   declarations: [
-    CoursePageComponent,
+    CoursePageComponent
   ],
   entryComponents: [
   ],

@@ -5,6 +5,15 @@
     width: 50vw;
   }
 
+  .files {
+    h3 {
+      border-bottom: solid;
+      margin-bottom: 0.5em;
+      margin-top: 0;
+      color: md-color($md-primary);
+    }
+  }
+
   .upload-queue {
     h3 {
       border-bottom: solid;

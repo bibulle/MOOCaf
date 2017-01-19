@@ -3,7 +3,9 @@ import { MdDialogRef, MdIconModule, MdDialogModule, MdTooltipModule, MdProgressB
 import { FileUploader, FileUploadModule } from "ng2-file-upload";
 import { CommonModule } from "@angular/common";
 import { FormsModule } from "@angular/forms";
-import { FileManagerService } from "./file-manager.service";
+import { FileManagerService, File } from "./file-manager.service";
+import { FileComponent } from "./file/file.component";
+import { NotificationService } from "../../../widget/notification/notification.service";
 
 @Component({
   selector: 'app-file-manager',
@@ -13,13 +15,18 @@ import { FileManagerService } from "./file-manager.service";
 export class FileManagerComponent implements OnInit {
 
   public courseId: string;
+
+  private directory: File;
+
   public uploader: FileUploader;
   public hasBaseDropZoneOver: boolean = false;
+
 
   @ViewChild('fileInput') fileInput;
 
   constructor (public dialogRef: MdDialogRef<FileManagerComponent>,
-               private _fileManagerService: FileManagerService) {}
+               private _fileManagerService: FileManagerService,
+               private _notificationService: NotificationService) {}
 
   ngOnInit () {
 
@@ -29,6 +36,17 @@ export class FileManagerComponent implements OnInit {
       this.uploader.cancelAll();
       this.uploader.clearQueue();
     });
+
+    // console.log("before Getfile");
+    this._fileManagerService.getFiles(this.courseId)
+        .then((directory) => {
+          console.log(directory);
+          this.directory = directory;
+        })
+        .catch((err) => {
+          console.log(err);
+          this._notificationService.error("Error", err)
+        })
 
 
   }
@@ -43,6 +61,7 @@ export class FileManagerComponent implements OnInit {
 
 }
 
+
 @NgModule({
   imports: [
     CommonModule,
@@ -51,10 +70,11 @@ export class FileManagerComponent implements OnInit {
     MdTooltipModule,
     MdProgressBarModule,
     FormsModule,
-    FileUploadModule,
+    FileUploadModule
   ],
   declarations: [
-    FileManagerComponent
+    FileManagerComponent,
+    FileComponent
   ],
   entryComponents: [
     FileManagerComponent

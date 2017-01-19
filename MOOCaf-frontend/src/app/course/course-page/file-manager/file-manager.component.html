@@ -1,4 +1,8 @@
 <div layout="column">
+  <div layout="column" class="files">
+    <h3>Files</h3>
+    <app-file [file]="directory" [level]="0"></app-file>
+  </div>
   <div layout="column" class="upload-queue">
     <h3>Upload queue</h3>
     <div *ngIf="uploader?.queue?.length == 0" class="empty-queue"></div>
@@ -7,7 +11,8 @@
         <div class="item" layout="column">
           <strong class="name">{{ item?.file?.name }}</strong>
           <div class="sizes" layout="column" layout-align="center center">
-            <span class="size" *ngIf="item?.file?.size >= 1024*1024" [class.too-large]="item?.file?.size >= 10*1024*1024" md-tooltip="limited to 10Mb">{{ item?.file?.size/1024/1024 | number:'1.1-1' }} MB</span>
+            <span class="size" *ngIf="item?.file?.size >= 1024*1024"
+                  [class.too-large]="item?.file?.size >= 10*1024*1024" md-tooltip="limited to 10Mb">{{ item?.file?.size/1024/1024 | number:'1.1-1' }} MB</span>
             <span class="size" *ngIf="(item?.file?.size >= 1024) && (item?.file?.size < 1024*1024)  ">{{ item?.file?.size/1024 | number:'1.1-1' }} KB</span>
             <span class="size" *ngIf="item?.file?.size < 1024">{{ item?.file?.size | number:'1.0' }}  B</span>
           </div>
@@ -17,8 +22,10 @@
       </div>
       <div flex="10" class="status" layout="column" layout-align="center center">
         <md-icon *ngIf="item.isSuccess" class="md-primary" md-tooltip="Ok">check</md-icon>
-        <md-icon *ngIf="item.isCancel"  class="md-primary" md-tooltip="Canceled">pause</md-icon>
-        <md-icon *ngIf="item.isError"   class="md-warn"    md-tooltip="{{(item.errorMessage ? item.errorMessage : 'Error')}}">clear</md-icon>
+        <md-icon *ngIf="item.isCancel" class="md-primary" md-tooltip="Canceled">pause</md-icon>
+        <md-icon *ngIf="item.isError" class="md-warn"
+                 md-tooltip="{{(item.errorMessage ? item.errorMessage : 'Error')}}">clear
+        </md-icon>
       </div>
       <div flex="5" *ngIf="!item.isUploading" layout="column" layout-align="center center">
         <button md-mini-fab class="md-primary action" md-tooltip="Upload" (click)="item.upload()"
@@ -41,14 +48,20 @@
 
     <div class="buttons" layout="row" layout-align="start center">
       <button md-fab md-tooltip="Select or drop a file" (click)="selectFile()" class="button-select-file md-primary"
-              ng2FileDrop [class.file-over]="hasBaseDropZoneOver" (fileOver)="fileOverBase($event)" [uploader]="uploader">
+              ng2FileDrop [class.file-over]="hasBaseDropZoneOver" (fileOver)="fileOverBase($event)"
+              [uploader]="uploader">
         <md-icon>add</md-icon>
       </button>
       <span class="fill-remaining-space"></span>
       <button md-raised-button class="cancel" md-dialog-close (click)="dialogRef.close('cancel')">Cancel</button>
-      <button md-raised-button class="remove-all" (click)="uploader.clearQueue()" [disabled]="!uploader.queue.length">Remove all</button>
-      <button md-raised-button class="md-primary" (click)="uploader.uploadAll()" [disabled]="!uploader.getNotUploadedItems().length || uploader.isUploading">Upload all <md-progress-bar *ngIf="uploader.progress > 0" class="progress" mode="determinate"
-                                                                                                                                                                 value="{{uploader.progress}}"></md-progress-bar></button>
+      <button md-raised-button class="remove-all" (click)="uploader.clearQueue()" [disabled]="!uploader.queue.length">
+        Remove all
+      </button>
+      <button md-raised-button class="md-primary" (click)="uploader.uploadAll()"
+              [disabled]="!uploader.getNotUploadedItems().length || uploader.isUploading">Upload all
+        <md-progress-bar *ngIf="uploader.progress > 0" class="progress" mode="determinate"
+                         value="{{uploader.progress}}"></md-progress-bar>
+      </button>
 
     </div>
     <input #fileInput type="file" ng2FileSelect [uploader]="uploader" class="hidden-input" multiple/>
