@@ -49,7 +49,7 @@ export class FileComponent implements OnInit {
   }
 
   copiedToClipboard(url) {
-    this._notificationService.info("Success", `URL has been copied to clipboard (${url})`);
+    this._notificationService.info("Success", `URL has been copied to clipboard`);
     this.dialogRef.close('urlCopied');
   }
 

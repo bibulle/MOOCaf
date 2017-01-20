@@ -59,7 +59,7 @@ export class FileManagerService {
    * @private
    */
   _updateFilesObservable() {
-    console.log("_updateFilesObservable");
+    // console.log("_updateFilesObservable");
     this._getFiles(this._currentCourseId)
       .then(file => {
         this.currentRootFileSubject.next(file);
@@ -106,7 +106,7 @@ export class FileManagerService {
           .subscribe(
             (file: File) => {
               this._setDateToFile(file);
-              console.log(file);
+              // console.log(file);
               resolve(file);
             },
             err => {
