@@ -5,7 +5,8 @@ import { CommonModule } from "@angular/common";
 import { FormsModule } from "@angular/forms";
 import { FileManagerService, File } from "./file-manager.service";
 import { FileComponent } from "./file/file.component";
-import { NotificationService } from "../../../widget/notification/notification.service";
+import { ClipboardModule } from "ngx-clipboard";
+import { environment } from "../../../../environments/environment";
 
 @Component({
   selector: 'app-file-manager',
@@ -17,6 +18,7 @@ export class FileManagerComponent implements OnInit {
   public courseId: string;
 
   private directory: File;
+  private downloadBaseUrl: string;
 
   public uploader: FileUploader;
   public hasBaseDropZoneOver: boolean = false;
@@ -24,31 +26,35 @@ export class FileManagerComponent implements OnInit {
 
   @ViewChild('fileInput') fileInput;
 
+  private _filesSubscription = null;
+
   constructor (public dialogRef: MdDialogRef<FileManagerComponent>,
-               private _fileManagerService: FileManagerService,
-               private _notificationService: NotificationService) {}
+               private _fileManagerService: FileManagerService) {}
 
   ngOnInit () {
 
+    // Get the uploader
     this.uploader = this._fileManagerService.getUploader(this.courseId);
 
+    // Clean on dialog closing
     this.dialogRef.afterClosed().subscribe(() => {
       this.uploader.cancelAll();
       this.uploader.clearQueue();
     });
 
-    // console.log("before Getfile");
-    this._fileManagerService.getFiles(this.courseId)
-        .then((directory) => {
-          console.log(directory);
-          this.directory = directory;
-        })
-        .catch((err) => {
-          console.log(err);
-          this._notificationService.error("Error", err)
-        })
+    // How to get the ulpoaded files ?
+    this.downloadBaseUrl = `${environment.serverUrl}file/${this.courseId}`;
 
+    // Subscribe to files changes
+    this._filesSubscription = this._fileManagerService.currentRootFileObservable()
+                                  .subscribe((file) => {
+                                    this.directory = file;
+                                  })
+  }
 
+  //noinspection JSUnusedGlobalSymbols
+  ngOnDestroy () {
+    this._filesSubscription.unsubscribe();
   }
 
   public fileOverBase (e: any): void {
@@ -70,6 +76,7 @@ export class FileManagerComponent implements OnInit {
     MdTooltipModule,
     MdProgressBarModule,
     FormsModule,
+    ClipboardModule,
     FileUploadModule
   ],
   declarations: [

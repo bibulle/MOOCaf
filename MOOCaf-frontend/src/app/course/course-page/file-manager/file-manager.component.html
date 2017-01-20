@@ -1,11 +1,12 @@
 <div layout="column">
   <div layout="column" class="files">
     <h3>Files</h3>
-    <app-file [file]="directory" [level]="0"></app-file>
+    <div *ngIf="!directory?.children || (directory?.children?.length == 0)" class="empty-files">Empty</div>
+    <app-file [file]="directory" [level]="0" [downloadBaseUrl]="downloadBaseUrl" [courseId]="courseId"></app-file>
   </div>
   <div layout="column" class="upload-queue">
     <h3>Upload queue</h3>
-    <div *ngIf="uploader?.queue?.length == 0" class="empty-queue"></div>
+    <div *ngIf="uploader?.queue?.length == 0" class="empty-queue">Empty</div>
     <div *ngFor="let item of uploader.queue" layout="row" class="content">
       <div flex="80" layout="column" layout-align="center stretch">
         <div class="item" layout="column">

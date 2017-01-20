@@ -12,9 +12,26 @@
     <div layout="column" layout-align="center start" class="name">
       <strong>{{file.name}}</strong>
     </div>
-    <div flex="10" class="date">{{file.date | date:"yyyy"}}</div>
-    <div flex="10" class="size">{{file.size}}</div>
+    <div flex="10" class="date" layout="column" layout-align="center center">
+      <div *ngIf="isDateToday()">{{file.date | date:"shortTime"}}</div>
+      <div *ngIf="!isDateToday()">{{file.date | date:"shortDate"}}</div>
+    </div>
+    <div flex="10" class="size" layout="column" layout-align="center end">
+      <span class="size" *ngIf="file.size >= 1024*1024" [class.too-large]="file.size >= 10*1024*1024">{{ file.size/1024/1024 | number:'1.1-1' }} MB</span>
+      <span class="size" *ngIf="(file.size >= 1024) && (file.size < 1024*1024)  ">{{ file.size/1024 | number:'1.1-1' }} KB</span>
+      <span class="size" *ngIf="file.size < 1024">{{ file.size | number:'1.0' }}  B</span>
+    </div>
+    <div layout="row" layout-align="center center" class="actions">
+      <button md-mini-fab class="md-primary action" *ngIf="!file.isDirectory" md-tooltip="get Url to be past into markdown" ngxClipboard [cbContent]="downloadBaseUrl+file.path" (cbOnSuccess)="copiedToClipboard(downloadBaseUrl+file.path)">
+        <md-icon>link</md-icon>
+      </button>
+      <div class="action" *ngIf="file.isDirectory" ></div>
+      <button md-mini-fab class="md-primary action" md-tooltip="Delete" (click)="deleteFile()" [class.md-warn]="deleteClicked">
+        <md-icon>delete</md-icon>
+        <md-icon class="warning md-warn">announcement</md-icon>
+      </button>
+    </div>
   </div>
-  <app-file *ngFor="let file of file.children" [file]="file" [level]="level+1" class="children"
+  <app-file *ngFor="let file of file.children" [file]="file" [level]="level+1" [downloadBaseUrl]="downloadBaseUrl" [courseId]="courseId" class="children"
             [class.open]="open || (level == 0)"></app-file>
 </div>

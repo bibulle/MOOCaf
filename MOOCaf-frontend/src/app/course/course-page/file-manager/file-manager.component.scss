@@ -12,6 +12,11 @@
       margin-top: 0;
       color: md-color($md-primary);
     }
+    .empty-files {
+      font-size: 0.8em;
+      font-weight: bold;
+      padding-left: 54px;
+    }
   }
 
   .upload-queue {
@@ -19,6 +24,11 @@
       border-bottom: solid;
       margin-bottom: 0.5em;
       color: md-color($md-primary);
+    }
+    .empty-queue {
+      font-size: 0.8em;
+      font-weight: bold;
+      padding-left: 54px;
     }
     .header {
       border-bottom: 2px solid;
