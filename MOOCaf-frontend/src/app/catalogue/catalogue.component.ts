@@ -10,7 +10,7 @@ import { UserService } from "../user/user.service";
 @Component({
   selector: 'catalogue',
   templateUrl: './catalogue.component.html',
-  styleUrls: ['./catalogue.component.css']
+  styleUrls: ['./catalogue.component.scss']
 })
 export class CatalogueComponent implements OnInit {
 
@@ -153,7 +153,7 @@ export class CatalogueComponent implements OnInit {
    * @private
    */
   private _filterList(filter: {}) {
-    var filterJson = JSON.stringify(filter);
+    const filterJson = JSON.stringify(filter);
     if (this.previousFilterJson === filterJson) {
       return;
     }
@@ -162,7 +162,7 @@ export class CatalogueComponent implements OnInit {
 
     this.sortedCourses = this.courses
                              .filter(f => {
-                                 var ret = true;
+                                 let ret = true;
                                  ret = ret && ((filter['favorite'] != 1) || (f.isFavorite));
                                  ret = ret && ((filter['favorite'] != 2) || (!f.isFavorite));
 

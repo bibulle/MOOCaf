@@ -1,3 +1,5 @@
+@import "../../assets/css/all";
+
 .menu {
   max-height: 3em;
   min-height: 3em;
@@ -66,6 +68,25 @@
   display: inherit;
 }
 
-course-card {
-  /*margin: 8px;*/
+[layout="row"] course-card[flex="30"] {
+  @media (max-width: $layout-breakpoint-md) {
+    flex: 1 1 50%;
+    max-width: 50%;
+  }
+  @media (max-width: $layout-breakpoint-xs) {
+    flex: 1 1 100%;
+    max-width: 100%;
+  }
 }
+
+[layout="row"] course-card[flex="30"].edited {
+  @media (max-width: $layout-breakpoint-lg) {
+    flex: 1 1 50%;
+    max-width: 50%;
+  }
+  @media (max-width: $layout-breakpoint-md) {
+    flex: 1 1 100%;
+    max-width: 100%;
+  }
+}
+

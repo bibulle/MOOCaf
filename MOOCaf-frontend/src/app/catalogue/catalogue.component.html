@@ -34,6 +34,6 @@
     </div>
   </div>
   <div class="catalogue-list" layout="row" layout-wrap layout-align="space-around" scroll-detector="catalogue-list">
-    <course-card class="course" flex="30" *ngFor="let course of sortedCourses" [course]="course" [edited]="edited" (notifyCoursesChange)='onCoursesChange($event)'></course-card>
+    <course-card class="course" flex="30" *ngFor="let course of sortedCourses" [course]="course" [edited]="edited" [class.edited]="edited" (notifyCoursesChange)='onCoursesChange($event)'></course-card>
   </div>
 </div>
