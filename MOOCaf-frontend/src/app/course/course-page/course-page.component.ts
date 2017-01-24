@@ -8,6 +8,8 @@ import { Router, ActivatedRoute } from "@angular/router";
 import { ParagraphType } from "../../paragraph/paragraph-type.enum";
 import { Paragraph } from "../../paragraph/paragraph";
 import { UserService } from "../../user/user.service";
+import { MdDialogRef, MdDialog } from "@angular/material";
+import { FileManagerComponent } from "./file-manager/file-manager.component";
 
 @Component({
   selector: 'course-page',
@@ -36,12 +38,15 @@ export class CoursePageComponent implements OnInit {
 
   private userIsAdmin: boolean = false;
 
-  constructor(private route: ActivatedRoute,
-              public router: Router,
-              private _logger: Logger,
-              private _courseService: CourseService,
-              private _notificationService: NotificationService,
-              private _userService: UserService) {
+  dialogRef: MdDialogRef<FileManagerComponent>;
+
+  constructor (private route: ActivatedRoute,
+               public router: Router,
+               private _logger: Logger,
+               private _courseService: CourseService,
+               private _notificationService: NotificationService,
+               private _userService: UserService,
+               private _dialog: MdDialog) {
 
     /// Get current course count
     this._courseService.currentCourseObservable().subscribe(
@@ -58,7 +63,7 @@ export class CoursePageComponent implements OnInit {
    *     Second a specific class (known with it's Id)
    */
 
-  ngOnInit() {
+  ngOnInit () {
 
     // check user right
     this._userService.userObservable().subscribe(
@@ -124,7 +129,7 @@ export class CoursePageComponent implements OnInit {
    * The selected part content change
    * @param selectedPart:CoursePart
    */
-  onNotifySelectedPartContent(selectedPart: CoursePart) {
+  onNotifySelectedPartContent (selectedPart: CoursePart) {
     //this._logger.debug("onNotifySelectedPartContent "+selectedPart);
 
     this.selectedPart = selectedPart;
@@ -134,15 +139,15 @@ export class CoursePageComponent implements OnInit {
    * The selected part Num change
    * @param selectedPartNums:number[]
    */
-  onNotifySelectedPartNum(selectedPartNums: number[]) {
+  onNotifySelectedPartNum (selectedPartNums: number[]) {
     //this._logger.debug("onNotifySelectedPart "+selectedPartNums);
 
 
-    var selectedPartLevel = 1;
-    var isLast = (selectedPartNums[0] == this.course.parts.length - 1);
-    var selectedPart = this.course.parts[selectedPartNums[0]];
+    let selectedPartLevel = 1;
+    let isLast = (selectedPartNums[0] == this.course.parts.length - 1);
+    let selectedPart = this.course.parts[selectedPartNums[0]];
 
-    var workingArray = selectedPartNums.slice(1);
+    let workingArray = selectedPartNums.slice(1);
 
     while (workingArray.length != 0) {
       selectedPartLevel++;
@@ -175,26 +180,26 @@ export class CoursePageComponent implements OnInit {
     this._previousValue = this.selectedPart.title;
   }
 
-  toggleEditMode() {
+  toggleEditMode () {
     this.edited = !this.edited;
   }
 
   /**
    * The editor field has been changed
    */
-  editorChange() {
+  editorChange () {
     if (this._previousValue !== this.selectedPart.title) {
       this.subjectEditor
           .next(this.selectedPart);
     }
   }
 
-  moveUp() {
+  moveUp () {
     //this._logger.debug("moveUp");
     this._move(-1);
   }
 
-  moveDown() {
+  moveDown () {
     //this._logger.debug("moveDown");
     this._move(+1);
   }
@@ -204,7 +209,7 @@ export class CoursePageComponent implements OnInit {
    * @param direction (+1 for down or -1 for up)
    * @private
    */
-  _move(direction: number) {
+  _move (direction: number) {
     let newSelectedPartNums = this.selectedPartNums.slice(0, -1);
     newSelectedPartNums.push(this.selectedPartNums[this.selectedPartNums.length - 1] + direction);
 
@@ -221,7 +226,7 @@ export class CoursePageComponent implements OnInit {
         });
   }
 
-  addPageChild() {
+  addPageChild () {
     //this._logger.debug("addPageChild");
 
     let lastChildPartNums = this.selectedPartNums.slice();
@@ -230,7 +235,7 @@ export class CoursePageComponent implements OnInit {
     this._addPage(lastChildPartNums);
   }
 
-  addPageSibling() {
+  addPageSibling () {
     //this._logger.debug("addPageSibling");
 
     let newPartNums = this.selectedPartNums.slice(0, -1);
@@ -244,7 +249,7 @@ export class CoursePageComponent implements OnInit {
    * @param newPartNums
    * @private
    */
-  _addPage(newPartNums) {
+  _addPage (newPartNums) {
     //this._logger.debug("_addPage("+newPartNums+")");
 
     this._courseService.addPart(this.course.id, newPartNums)
@@ -261,7 +266,7 @@ export class CoursePageComponent implements OnInit {
         });
   }
 
-  deletePage() {
+  deletePage () {
     if (!this.deletePartClicked) {
       this.deletePartClicked = true;
       setTimeout(() => {
@@ -299,7 +304,7 @@ export class CoursePageComponent implements OnInit {
    * @returns number[] or null
    * @private
    */
-  _getFirstPartNotFinished(parts: CoursePart[]): number[] {
+  _getFirstPartNotFinished (parts: CoursePart[]): number[] {
 
     let ret = null;
 
@@ -330,6 +335,20 @@ export class CoursePageComponent implements OnInit {
     });
 
     return ret;
+
+  }
+
+
+  openFilesManagerDialog () {
+    this.dialogRef = this._dialog
+                         .open(FileManagerComponent, {
+                           disableClose: false
+                         });
+    this.dialogRef.componentInstance.courseId = this.course.id;
+
+    this.dialogRef.afterClosed().subscribe(() => {
+      this.dialogRef = null;
+    });
 
   }
 

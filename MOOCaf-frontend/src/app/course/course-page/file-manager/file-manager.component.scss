@@ -1,0 +1,128 @@
+@import "../../../../assets/css/all";
+
+:host {
+  > div {
+    width: 50vw;
+  }
+
+  .files {
+    h3 {
+      border-bottom: solid;
+      margin-bottom: 0.5em;
+      margin-top: 0;
+      color: md-color($md-primary);
+    }
+    .empty-files {
+      font-size: 0.8em;
+      font-weight: bold;
+      padding-left: 54px;
+    }
+  }
+
+  .upload-queue {
+    h3 {
+      border-bottom: solid;
+      margin-bottom: 0.5em;
+      color: md-color($md-primary);
+    }
+    .empty-queue {
+      font-size: 0.8em;
+      font-weight: bold;
+      padding-left: 54px;
+    }
+    .header {
+      border-bottom: 2px solid;
+      .size {
+        text-align: center;
+      }
+      .status {
+        text-align: center;
+      }
+      .name {
+        padding-top: 8px;
+        padding-bottom: 8px;
+      }
+    }
+
+    .content {
+      border-bottom: 1px solid md-color($md-background, 200);
+      font-size: 0.8em;
+      > div {
+        padding-top: 8px;
+        padding-bottom: 8px;
+      }
+      .status {
+        padding-top: 0;
+        padding-bottom: 0;
+      }
+      .item {
+        position: relative;
+        .sizes {
+          position: absolute;
+          bottom: -0.8em;
+          right: 0;
+          font-size: 0.8em;
+          .too-large {
+            color: md-color($md-warn);
+          }
+        }
+      }
+      .name {
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        overflow: hidden;
+      }
+      md-progress-bar {
+        padding-top: 0.5em;
+      }
+      .action {
+        width: 18px;
+        height: 18px;
+        line-height: 18px;
+        md-icon {
+          font-size: 14px;
+          width: 14px;
+          height: 14px;
+          margin-left: 0;
+          margin-top: -11px;
+        }
+      }
+    }
+  }
+
+  .buttons {
+
+    margin-top: 0.5em;
+
+    .button-select-file {
+      border: dotted 3px md-color($md-primary, 200);
+
+      &.file-over {
+        border: dotted 3px md-color($md-primary, 700);
+      }
+      md-icon {
+        line-height: 18px;
+      }
+    }
+
+    .fill-remaining-space {
+      flex: 1 1 auto;
+    }
+    .cancel {
+      margin-right: 1em;
+    }
+    .remove-all {
+      margin-right: 1em;
+    }
+    .progress {
+      position: absolute;
+      left: 0;
+      bottom: 3px;
+    }
+  }
+
+  .hidden-input {
+    display: none;
+  }
+
+}

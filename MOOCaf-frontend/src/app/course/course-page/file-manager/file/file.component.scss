@@ -1,0 +1,84 @@
+@import "../../../../../assets/css/all";
+
+:host {
+  .file {
+    border-bottom: 1px solid md-color($md-background, 200);
+    font-size: 0.8em;
+
+    > div {
+      padding-top: 8px;
+      padding-bottom: 8px;
+    }
+
+    .tab {
+      width: 24px;
+    }
+    .arrow {
+      width: 24px;
+      .down {
+        display: none;
+      }
+      .right {
+        display: block;
+      }
+
+      &.open {
+        .down {
+          display: block;
+        }
+        .right {
+          display: none;
+        }
+      }
+    }
+    .icon {
+      width: 24px;
+    }
+    .name {
+      flex: 1 1 auto;
+      padding-left: 6px;
+      strong {
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        overflow: hidden;
+      }
+    }
+    .actions {
+      padding-left: 0.5em;
+      .action {
+        width: 18px;
+        height: 18px;
+        line-height: 18px;
+        margin-left: 3px;
+        md-icon {
+          font-size: 14px;
+          width: 14px;
+          height: 14px;
+          margin-left: 0;
+          margin-top: -11px;
+        }
+        .warning {
+          display: none;
+          position: absolute;
+          top: -22px;
+          left: 9px;
+          font-size: 24px;
+        }
+
+        &.md-warn .warning {
+          display: inherit;
+        }
+
+      }
+    }
+
+  }
+
+  .children {
+    display: none;
+    &.open {
+      display: block;
+    }
+  }
+}
+
