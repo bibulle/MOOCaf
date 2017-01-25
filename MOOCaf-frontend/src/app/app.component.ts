@@ -42,7 +42,7 @@ export class AppComponent {
 
   ngOnInit () {
     // Has the user some "current course"
-    this._courseService.currentCourseObservable().subscribe(
+    this._courseService.currentCourseCountObservable().subscribe(
       count => {
         this.countCurrentCourses = count;
       }

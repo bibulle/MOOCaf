@@ -18,9 +18,10 @@ export class CoursePageComponent implements OnInit {
 
   private currentCourseCount = 0;
 
+  private courseId: string;
   private course: Course;
 
-  private selectedPartNums: number[] = [0];
+  private selectedPartNums: number[];
   private selectedPart: CoursePart;
   private selectedPartLevel: number;
   private selectedPartIsLast: boolean;
@@ -36,15 +37,15 @@ export class CoursePageComponent implements OnInit {
 
   private userIsAdmin: boolean = false;
 
-  constructor(private route: ActivatedRoute,
-              public router: Router,
-              private _logger: Logger,
-              private _courseService: CourseService,
-              private _notificationService: NotificationService,
-              private _userService: UserService) {
+  constructor (private route: ActivatedRoute,
+               public router: Router,
+               private _logger: Logger,
+               private _courseService: CourseService,
+               private _notificationService: NotificationService,
+               private _userService: UserService) {
 
     /// Get current course count
-    this._courseService.currentCourseObservable().subscribe(
+    this._courseService.currentCourseCountObservable().subscribe(
       count => {
         this.currentCourseCount = count;
       }
@@ -58,7 +59,7 @@ export class CoursePageComponent implements OnInit {
    *     Second a specific class (known with it's Id)
    */
 
-  ngOnInit() {
+  ngOnInit () {
 
     // check user right
     this._userService.userObservable().subscribe(
@@ -67,9 +68,60 @@ export class CoursePageComponent implements OnInit {
       });
 
 
-    let id = this.route.snapshot.params['id'];
+    this.courseId = this.route.snapshot.params['id'];
 
-    this._courseService.getCourse(id)
+    this.onNotifySelectedPartNum(null);
+
+    // Action defined when editor is edited
+    if (!this.subjectEditor) {
+      this.subjectEditor = new Subject<CoursePart>();
+      this.subjectEditor
+          .debounceTime(500)
+          .subscribe(
+            coursePart => {
+              //console.log(coursePart);
+              return this._courseService.saveCoursePart(this.courseId, this.selectedPartNums, coursePart)
+                         .then(coursePart => {
+                           this._notificationService.message("All your modifications have been saved...");
+
+                           this.selectedPart = coursePart;
+                           this._previousValue = this.selectedPart.title;
+                         })
+                         .catch(error => {
+                           this._logger.error(error);
+                           this._notificationService.error("System error !!", "Error saving you changes !!\n\t" + (error.statusText || error.message || error.error || error));
+                         });
+            },
+            error => {
+              this._logger.error(error)
+            }
+          );
+    }
+
+  }
+
+
+  /**
+   * The selected part content change
+   * @param selectedPart:CoursePart
+   */
+  onNotifySelectedPartContent (selectedPart: CoursePart) {
+    //this._logger.debug("onNotifySelectedPartContent "+selectedPart);
+
+    this.selectedPart = selectedPart;
+  }
+
+  /**
+   * The selected part Num change
+   * @param selectedPartNums:number[]
+   */
+  onNotifySelectedPartNum (selectedPartNums: number[]) {
+    //this._logger.debug("onNotifySelectedPart "+selectedPartNums);
+
+    this.selectedPartNums = selectedPartNums;
+
+    // Reload the course
+    this._courseService.getCourse(this.courseId)
         .then(course => {
 
           //this._logger.debug(course);
@@ -84,117 +136,75 @@ export class CoursePageComponent implements OnInit {
           //console.log(course);
 
           // calculate the part to select (the first not finished)
-          this.selectedPartNums = this._getFirstPartNotFinished(this.course.parts) || [0];
-
-          // Action defined when editor is edited
-          if (!this.subjectEditor) {
-            this.subjectEditor = new Subject<CoursePart>();
-            this.subjectEditor
-                .debounceTime(500)
-                .subscribe(
-                  coursePart => {
-                    //console.log(coursePart);
-                    return this._courseService.saveCoursePart(this.course.id, this.selectedPartNums, coursePart)
-                               .then(coursePart => {
-                                 this._notificationService.message("All your modifications have been saved...");
-
-                                 this.selectedPart = coursePart;
-                                 this._previousValue = this.selectedPart.title;
-                               })
-                               .catch(error => {
-                                 this._logger.error(error);
-                                 this._notificationService.error("System error !!", "Error saving you changes !!\n\t" + (error.statusText || error.message || error.error || error));
-                               });
-                  },
-                  error => {
-                    this._logger.error(error)
-                  }
-                );
+          if (this.selectedPartNums == null) {
+            console.log("calculate the part to select");
+            this.selectedPartNums = this._getFirstPartNotFinished(this.course.parts) || [0];
           }
 
+
+          // Just get the selectPart Object from the course
+          let selectedPartLevel = 1;
+          let isLast = (this.selectedPartNums[0] == this.course.parts.length - 1);
+          let selectedPart = this.course.parts[this.selectedPartNums[0]];
+
+          let workingArray = this.selectedPartNums.slice(1);
+
+          while (workingArray.length != 0) {
+            selectedPartLevel++;
+            isLast = (workingArray[0] == selectedPart.parts.length - 1);
+            selectedPart = selectedPart.parts[workingArray[0]];
+
+            workingArray = workingArray.slice(1);
+          }
+
+          this.selectedPart = selectedPart;
+          this.selectedPartLevel = selectedPartLevel;
+          this.selectedPartIsLast = isLast;
+
+          // Add an empty markdown paragraph if none
+          if (!selectedPart.contents || (selectedPart.contents.length == 0)) {
+            selectedPart.contents = [
+              new Paragraph({
+                type: ParagraphType.MarkDown,
+                content: ""
+              })
+            ];
+            // and save it
+            this._courseService.saveCoursePart(this.course.id, this.selectedPartNums, selectedPart)
+                .then(coursePart => {
+                  this.selectedPart = coursePart;
+                })
+          }
+
+          this._previousValue = this.selectedPart.title;
         })
         .catch(err => {
           this._logger.error(err);
           this._notificationService.error("Error", err)
         });
+
   }
 
-
-  /**
-   * The selected part content change
-   * @param selectedPart:CoursePart
-   */
-  onNotifySelectedPartContent(selectedPart: CoursePart) {
-    //this._logger.debug("onNotifySelectedPartContent "+selectedPart);
-
-    this.selectedPart = selectedPart;
-  }
-
-  /**
-   * The selected part Num change
-   * @param selectedPartNums:number[]
-   */
-  onNotifySelectedPartNum(selectedPartNums: number[]) {
-    //this._logger.debug("onNotifySelectedPart "+selectedPartNums);
-
-
-    var selectedPartLevel = 1;
-    var isLast = (selectedPartNums[0] == this.course.parts.length - 1);
-    var selectedPart = this.course.parts[selectedPartNums[0]];
-
-    var workingArray = selectedPartNums.slice(1);
-
-    while (workingArray.length != 0) {
-      selectedPartLevel++;
-      isLast = (workingArray[0] == selectedPart.parts.length - 1);
-      selectedPart = selectedPart.parts[workingArray[0]];
-
-      workingArray = workingArray.slice(1);
-    }
-
-    this.selectedPart = selectedPart;
-    this.selectedPartLevel = selectedPartLevel;
-    this.selectedPartNums = selectedPartNums;
-    this.selectedPartIsLast = isLast;
-
-    // Add an empty markdown paragraph if none
-    if (!selectedPart.contents || (selectedPart.contents.length == 0)) {
-      selectedPart.contents = [
-        new Paragraph({
-          type: ParagraphType.MarkDown,
-          content: ""
-        })
-      ];
-      // and save it
-      this._courseService.saveCoursePart(this.course.id, this.selectedPartNums, selectedPart)
-          .then(coursePart => {
-            this.selectedPart = coursePart;
-          })
-    }
-
-    this._previousValue = this.selectedPart.title;
-  }
-
-  toggleEditMode() {
+  toggleEditMode () {
     this.edited = !this.edited;
   }
 
   /**
    * The editor field has been changed
    */
-  editorChange() {
+  editorChange () {
     if (this._previousValue !== this.selectedPart.title) {
       this.subjectEditor
           .next(this.selectedPart);
     }
   }
 
-  moveUp() {
+  moveUp () {
     //this._logger.debug("moveUp");
     this._move(-1);
   }
 
-  moveDown() {
+  moveDown () {
     //this._logger.debug("moveDown");
     this._move(+1);
   }
@@ -204,7 +214,7 @@ export class CoursePageComponent implements OnInit {
    * @param direction (+1 for down or -1 for up)
    * @private
    */
-  _move(direction: number) {
+  _move (direction: number) {
     let newSelectedPartNums = this.selectedPartNums.slice(0, -1);
     newSelectedPartNums.push(this.selectedPartNums[this.selectedPartNums.length - 1] + direction);
 
@@ -221,7 +231,7 @@ export class CoursePageComponent implements OnInit {
         });
   }
 
-  addPageChild() {
+  addPageChild () {
     //this._logger.debug("addPageChild");
 
     let lastChildPartNums = this.selectedPartNums.slice();
@@ -230,7 +240,7 @@ export class CoursePageComponent implements OnInit {
     this._addPage(lastChildPartNums);
   }
 
-  addPageSibling() {
+  addPageSibling () {
     //this._logger.debug("addPageSibling");
 
     let newPartNums = this.selectedPartNums.slice(0, -1);
@@ -244,7 +254,7 @@ export class CoursePageComponent implements OnInit {
    * @param newPartNums
    * @private
    */
-  _addPage(newPartNums) {
+  _addPage (newPartNums) {
     //this._logger.debug("_addPage("+newPartNums+")");
 
     this._courseService.addPart(this.course.id, newPartNums)
@@ -261,7 +271,7 @@ export class CoursePageComponent implements OnInit {
         });
   }
 
-  deletePage() {
+  deletePage () {
     if (!this.deletePartClicked) {
       this.deletePartClicked = true;
       setTimeout(() => {
@@ -299,7 +309,7 @@ export class CoursePageComponent implements OnInit {
    * @returns number[] or null
    * @private
    */
-  _getFirstPartNotFinished(parts: CoursePart[]): number[] {
+  _getFirstPartNotFinished (parts: CoursePart[]): number[] {
 
     let ret = null;
 

@@ -29,7 +29,7 @@ export class CourseService {
     this._userService.userObservable().subscribe(
       user => {
         if (user.username) {
-          this.checkCurrentCourse();
+          this.checkCurrentCourseCount();
         } else {
           this.currentCourseCountSubject.next(0);
         }
@@ -41,14 +41,14 @@ export class CourseService {
   /**
    * Subscribe to know if current course changes
    */
-  currentCourseObservable(): Observable<number> {
+  currentCourseCountObservable(): Observable<number> {
     return this.currentCourseCountSubject;
   }
 
   /**
    * local method to check if the user have some current courses
    */
-  private checkCurrentCourse() {
+  private checkCurrentCourseCount () {
     this.getCourses(true)
         .then(lst => {
           this.currentCourseCountSubject.next(lst.length);
@@ -167,9 +167,9 @@ export class CourseService {
                .toPromise()
                .then(response => {
                  // check if something change in current course thing
-                 this.checkCurrentCourse();
+                 this.checkCurrentCourseCount();
 
-                 var course = response.json().data as Course;
+                 const course = response.json().data as Course;
                  CourseService.retrieveDates(course);
                  CourseService.calcBooleans(course);
                  return course;
@@ -215,7 +215,7 @@ export class CourseService {
                .toPromise()
                .then(res => {
                  //this._service.success("Saved", "your change have been saved");
-                 var course = res.json().data as Course;
+                 const course = res.json().data as Course;
                  CourseService.retrieveDates(course);
                  CourseService.calcBooleans(course);
                  return course;
@@ -405,7 +405,7 @@ export class CourseService {
    */
   saveUserValues(course: Course): Promise < Course > {
 
-    var userChoice = {
+    const userChoice = {
       //courseId: course.id,
       isFavorite: course.isFavorite,
       dateSeen: course.dateSeen,
@@ -419,9 +419,9 @@ export class CourseService {
                .toPromise()
                .then(res => {
                  // check if something change in current course thing
-                 this.checkCurrentCourse();
+                 this.checkCurrentCourseCount();
 
-                 var course = res.json().data as Course;
+                 const course = res.json().data as Course;
                  CourseService.retrieveDates(course);
                  CourseService.calcBooleans(course);
                  return course;
@@ -437,7 +437,7 @@ export class CourseService {
    */
   saveUserChoice(courseId: string, paragraph: Paragraph): Promise<Paragraph> {
 
-    var userChoice = {
+    const userChoice = {
       userChoice: paragraph.userChoice,
       userDone: paragraph.userDone
     };
@@ -448,7 +448,7 @@ export class CourseService {
                .toPromise()
                .then(res => {
                  // check if something change in current course thing
-                 this.checkCurrentCourse();
+                 this.checkCurrentCourseCount();
 
                  return res.json().data;
                })
@@ -456,14 +456,14 @@ export class CourseService {
   }
 
   /**
-   * test user choice (exec it on the serveur... for telnet or whatever)
+   * test user choice (exec it on the server... for telnet or whatever)
    * @param courseId
    * @param paragraph
    * @returns {Promise<Job>}
    */
   testUserChoice(courseId: string, paragraph: Paragraph): Promise<Job> {
 
-    var userChoice = {
+    const userChoice = {
       userChoice: paragraph.userChoice
     };
 
@@ -473,7 +473,7 @@ export class CourseService {
                .toPromise()
                .then(res => {
                  // check if something change in current course thing
-                 this.checkCurrentCourse();
+                 this.checkCurrentCourseCount();
 
                  return res.json().data;
                })
@@ -488,7 +488,7 @@ export class CourseService {
    */
   checkUserChoice(courseId: string, paragraph: Paragraph): Promise<Job> {
 
-    var userChoice = {
+    const userChoice = {
       userChoice: paragraph.userChoice
     };
 
@@ -498,7 +498,7 @@ export class CourseService {
                .toPromise()
                .then(res => {
                  // check if something change in current course thing
-                 this.checkCurrentCourse();
+                 this.checkCurrentCourseCount();
 
                  return res.json().data;
                })
@@ -519,7 +519,7 @@ export class CourseService {
       error = error.json()
     }
 
-    var msg = error.message || error;
+    const msg = error.message || error;
 
     logger.error('An error occurred : ' + msg);
 
@@ -527,7 +527,7 @@ export class CourseService {
   }
 
   /**
-   * Methode to update the new value of the course
+   * Method to update the new value of the course
    * @param course
    */
   static calcBooleans(course: Course) {
