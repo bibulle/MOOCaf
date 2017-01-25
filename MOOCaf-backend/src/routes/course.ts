@@ -2,7 +2,7 @@ import { Router, Response, Request } from "express";
 import * as jwt from "express-jwt";
 import * as _ from "lodash";
 import { secret } from "../config";
-var debug = require('debug')('server:routes:course');
+const debug = require('debug')('server:routes:course');
 import Course from "../models/course";
 import User = require("../models/user");
 import UserChoice = require("../models/userChoice");
@@ -28,7 +28,7 @@ import JobService from "../service/jobService";
 const courseRouter: Router = Router();
 
 // Add JWT management
-var jwtCheck = jwt({
+const jwtCheck = jwt({
   secret: secret
 });
 //noinspection TypeScriptValidateTypes
@@ -57,11 +57,11 @@ courseRouter.route('/add')
               //debug("GET /add");
               //debug("connected user : " + JSON.stringify(request['user']));
 
-              var userId = request['user']["id"];
+              const userId = request['user']["id"];
 
               UserService.checkUserRightAndRespond(userId, EditRightType.EditCoursesCatalogue, null, response, () => {
 
-                var newCourse = new Course({
+                const newCourse = new Course({
                   name: "new Course",
                   description: "Course description",
                 });
@@ -95,11 +95,11 @@ courseRouter.route('/:course_id')
             // ====================================
             .put((request: Request, response: Response) => {
 
-              var course = new Course(request.body);
+              const course = new Course(request.body);
               //debug(course);
               //debug("PUT /" + request.params.course_id);
 
-              var userId = request['user']["id"];
+              const userId = request['user']["id"];
               UserService.checkUserRightAndRespond(userId, EditRightType.EditCourse, course['id'], response, () => {
 
                 Course.updateOrCreate(course)
@@ -126,7 +126,7 @@ courseRouter.route('/:course_id')
 
               debug("DELETE /" + courseId);
 
-              var userId = request['user']["id"];
+              const userId = request['user']["id"];
               UserService.checkUserRightAndRespond(userId, EditRightType.EditCoursesCatalogue, null, response, () => {
 
                 // remove it
@@ -156,11 +156,11 @@ courseRouter.route('/:course_id/reset')
             // ====================================
             .get((request: Request, response: Response) => {
 
-              var courseId = request.params['course_id'];
+              const courseId = request.params['course_id'];
 
               debug("GET /" + courseId + "/reset");
 
-              var userId = request['user']["id"];
+              const userId = request['user']["id"];
               UserService.checkUserRightAndRespond(userId, EditRightType.EditCoursesCatalogue, null, response, () => {
 
                 UserCourse.removeByCourseId(courseId)
@@ -185,13 +185,13 @@ courseRouter.route('/:course_id/userValues')
             // ====================================
             .put((request: Request, response: Response) => {
 
-              var courseId = request.params['course_id'];
+              const courseId = request.params['course_id'];
 
               debug("PUT /" + courseId + "/userValues");
 
               // console.log("0-----");
               // debug(request.body);
-              var userCourse = new IUserCourse(request.body);
+              const userCourse = new IUserCourse(request.body);
 
               userCourse.userId = request['user']["id"];
               userCourse.courseId = courseId;
@@ -220,14 +220,14 @@ courseRouter.route('/:course_id/para/:paragraphNums')
             // ============================================
             .put((request: Request, response: Response) => {
 
-              var courseId = request.params['course_id'];
-              var paragraphNums = JSON.parse("[" + request.params['paragraphNums'] + "]");
-              var userId = request['user']["id"];
+              const courseId = request.params['course_id'];
+              const paragraphNums = JSON.parse("[" + request.params['paragraphNums'] + "]");
+              const userId = request['user']["id"];
 
               debug("PUT /" + courseId + "/para/" + paragraphNums);
               //debug(request.body);
 
-              var paragraph = new IParagraph(request.body);
+              const paragraph = new IParagraph(request.body);
               //debug(paragraph);
 
               UserService.checkUserRightAndRespond(userId, EditRightType.EditCourse, courseId, response, () => {
@@ -277,9 +277,9 @@ courseRouter.route('/:course_id/para/:paragraphNums')
             // ============================================
             .delete((request: Request, response: Response) => {
 
-              var courseId = request.params['course_id'];
-              var paragraphNums = JSON.parse("[" + request.params['paragraphNums'] + "]");
-              var userId = request['user']["id"];
+              const courseId = request.params['course_id'];
+              const paragraphNums = JSON.parse("[" + request.params['paragraphNums'] + "]");
+              const userId = request['user']["id"];
 
               debug("DEL /" + courseId + "/para/" + paragraphNums);
 
@@ -329,14 +329,14 @@ courseRouter.route('/:course_id/para/:srcParaNums/move')
             // ============================================
             .put((request: Request, response: Response) => {
 
-              var courseId = request.params['course_id'];
-              var srcParaNums = JSON.parse("[" + request.params['srcParaNums'] + "]");
-              var userId = request['user']["id"];
+              const courseId = request.params['course_id'];
+              const srcParaNums = JSON.parse("[" + request.params['srcParaNums'] + "]");
+              const userId = request['user']["id"];
 
               debug("PUT /" + courseId + "/para/" + srcParaNums + "/move");
               //debug(request.body);
 
-              var trgParaNum = request.body['trgParaNum'];
+              const trgParaNum = request.body['trgParaNum'];
               //debug(trgParaNum);
 
               UserService.checkUserRightAndRespond(userId, EditRightType.EditCourse, courseId, response, () => {
@@ -391,9 +391,9 @@ courseRouter.route('/:course_id/para/:trgParaNums/add')
             // ============================================
             .put((request: Request, response: Response) => {
 
-              var courseId = request.params['course_id'];
-              var trgParaNums = JSON.parse("[" + request.params['trgParaNums'] + "]");
-              var userId = request['user']["id"];
+              const courseId = request.params['course_id'];
+              const trgParaNums = JSON.parse("[" + request.params['trgParaNums'] + "]");
+              const userId = request['user']["id"];
 
               debug("PUT /" + courseId + "/para/" + trgParaNums + "/add");
               //debug(request.body);
@@ -462,14 +462,14 @@ courseRouter.route('/:course_id/part/:partNums')
             // ============================================
             .put((request: Request, response: Response) => {
 
-              var courseId = request.params['course_id'];
-              var partNums = JSON.parse("[" + request.params['partNums'] + "]");
-              var userId = request['user']["id"];
+              const courseId = request.params['course_id'];
+              const partNums = JSON.parse("[" + request.params['partNums'] + "]");
+              const userId = request['user']["id"];
 
               debug("PUT /" + courseId + "/part/" + partNums);
               //debug(request.body);
 
-              var coursePart = new ICoursePart(request.body);
+              const coursePart = new ICoursePart(request.body);
               //(coursePart);
 
               UserService.checkUserRightAndRespond(userId, EditRightType.EditCourse, courseId, response, () => {
@@ -521,9 +521,9 @@ courseRouter.route('/:course_id/part/:partNums')
             // ============================================
             .delete((request: Request, response: Response) => {
 
-              var courseId = request.params['course_id'];
-              var partNums = JSON.parse("[" + request.params['partNums'] + "]");
-              var userId = request['user']["id"];
+              const courseId = request.params['course_id'];
+              const partNums = JSON.parse("[" + request.params['partNums'] + "]");
+              const userId = request['user']["id"];
 
               debug("DEL /" + courseId + "/part/" + partNums);
 
@@ -573,14 +573,14 @@ courseRouter.route('/:course_id/part/:srcPartNums/move')
             // ============================================
             .put((request: Request, response: Response) => {
 
-              var courseId = request.params['course_id'];
-              var srcPartNums = JSON.parse("[" + request.params['srcPartNums'] + "]");
-              var userId = request['user']["id"];
+              const courseId = request.params['course_id'];
+              const srcPartNums = JSON.parse("[" + request.params['srcPartNums'] + "]");
+              const userId = request['user']["id"];
 
               debug("PUT /" + courseId + "/part/" + srcPartNums + "/move");
               //debug(request.body);
 
-              var trgPartNums = request.body;
+              const trgPartNums = request.body;
               //debug(trgPartNums);
 
               UserService.checkUserRightAndRespond(userId, EditRightType.EditCourse, courseId, response, () => {
@@ -639,9 +639,9 @@ courseRouter.route('/:course_id/part/:trgPartNums/add')
             // ============================================
             .put((request: Request, response: Response) => {
 
-              var courseId = request.params['course_id'];
-              var trgPartNums = JSON.parse("[" + request.params['trgPartNums'] + "]");
-              var userId = request['user']["id"];
+              const courseId = request.params['course_id'];
+              const trgPartNums = JSON.parse("[" + request.params['trgPartNums'] + "]");
+              const userId = request['user']["id"];
 
               debug("PUT /" + courseId + "/part/" + trgPartNums + "/add");
               //debug(request.body);
@@ -677,6 +677,12 @@ courseRouter.route('/:course_id/part/:trgPartNums/add')
                       parts: [],
                       contents: []
                     });
+                    coursePart.contents = [
+                      new IParagraph({
+                        type: ParagraphType.MarkDown,
+                        content: ""
+                      })
+                    ];
 
                     // add the part to the trg
                     trgParentParts.splice(trgPartIndex, 0, coursePart);
@@ -708,14 +714,14 @@ courseRouter.route('/:course_id/:paragraph_id/userChoice')
             // ============================================
             .put((request: Request, response: Response) => {
 
-              var courseId = request.params['course_id'];
-              var paragraphId = request.params['paragraph_id'];
-              var userId = request['user']["id"];
+              const courseId = request.params['course_id'];
+              const paragraphId = request.params['paragraph_id'];
+              const userId = request['user']["id"];
 
               debug("PUT /" + courseId + "/" + paragraphId + "/userChoice");
               //debug(request.body);
 
-              var userChoice = new UserChoice(request.body);
+              const userChoice = new UserChoice(request.body);
               //debug(userChoice);
 
               // Search the userValues
@@ -774,14 +780,14 @@ courseRouter.route('/:course_id/:paragraph_id/userChoice/check')
             // ============================================
             .put((request: Request, response: Response) => {
 
-              var courseId = request.params['course_id'];
-              var paragraphId = request.params['paragraph_id'];
-              var userId = request['user']["id"];
+              const courseId = request.params['course_id'];
+              const paragraphId = request.params['paragraph_id'];
+              const userId = request['user']["id"];
 
               debug("PUT /" + courseId + "/" + paragraphId + "/userChoice/check'");
               //debug(request.body);
 
-              var userChoice = new UserChoice(request.body);
+              const userChoice = new UserChoice(request.body);
               //debug(userChoice);
 
               // Search the user Values (to check if check can be done)
@@ -874,14 +880,14 @@ courseRouter.route('/:course_id/:paragraph_id/userChoice/test')
             // ============================================
             .put((request: Request, response: Response) => {
 
-              var courseId = request.params['course_id'];
-              var paragraphId = request.params['paragraph_id'];
-              var userId = request['user']["id"];
+              const courseId = request.params['course_id'];
+              const paragraphId = request.params['paragraph_id'];
+              const userId = request['user']["id"];
 
               debug("PUT /" + courseId + "/" + paragraphId + "/userChoice/test'");
               //debug(request.body);
 
-              var userChoice = new UserChoice(request.body);
+              const userChoice = new UserChoice(request.body);
               //debug(userChoice);
 
               // Search the user Values (to check if check can be done)
@@ -977,8 +983,8 @@ courseRouter.route('/:course_id/:paragraph_id/userChoice/test')
  * @private
  */
 function _respondWithCoursesList(request: Request, response: Response) {
-  var currentOnly = false;
-  var progressOnly = false;
+  let currentOnly = false;
+  let progressOnly = false;
   if (request.query['currentOnly']) {
     currentOnly = (request.query['currentOnly'] === "true");
   }

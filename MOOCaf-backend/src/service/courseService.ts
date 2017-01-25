@@ -9,13 +9,14 @@ import UserCourse = require("../models/UserCourse");
 import IUserPart = require("../models/iUserParts");
 import UserChoice = require("../models/userChoice");
 import IUserChoices = require("../models/iUserChoices");
+import { ParagraphType } from "../models/eParagraphType";
 
-var debug = require('debug')('server:service:course');
+const debug = require('debug')('server:service:course');
 
 export default class CourseService {
 
 
-  static getCourses(userId: string, currentOnly: boolean, progressOnly: boolean): Promise <ICourse[]> {
+  static getCourses (userId: string, currentOnly: boolean, progressOnly: boolean): Promise <ICourse[]> {
 
     return new Promise<ICourse[]>((resolve, reject) => {
       Course.find()
@@ -25,7 +26,7 @@ export default class CourseService {
               User.findById(userId)
                   .then(user => {
                     // fill each paragraph with users values
-                    var promises = _.map(courses,
+                    const promises = _.map(courses,
                       p => CourseService.fillCourseForUser(p, user));
                     Promise.all(promises)
                            .then((completedCourses: ICourse[]) => {
@@ -67,7 +68,7 @@ export default class CourseService {
    * @returns {Promise<Course>}
    * @private
    */
-  static fillCourseForUser(course: Course, user: User): Promise < Course > {
+  static fillCourseForUser (course: Course, user: User): Promise < Course > {
     //debug("fillCourseForUser : " + course["id"] + ", " + user["id"]);
 
 
@@ -85,6 +86,12 @@ export default class CourseService {
           parts: [],
           contents: []
         }));
+        course.parts[0].contents = [
+          new IParagraph({
+            type: ParagraphType.MarkDown,
+            content: ""
+          })
+        ];
         // Save the course
         Course
           .updateOrCreate(course)
@@ -105,13 +112,13 @@ export default class CourseService {
       } else {
 
         // define the default values
-        var isFavorite = false;
-        var interest = 0;
-        var dateSeen: Date = null;
-        var isNew = null;
-        var dateFollowed = null;
-        var dateFollowedEnd = null;
-        var percentFollowed = 0;
+        let isFavorite = false;
+        let interest = 0;
+        let dateSeen: Date = null;
+        let isNew = null;
+        let dateFollowed = null;
+        let dateFollowedEnd = null;
+        let percentFollowed = 0;
 
         // get values from the user
         if (user && user.courses && user.courses[course["id"]]) {
@@ -188,7 +195,7 @@ export default class CourseService {
    * @param courseParts
    * @returns  the searched paragraph
    */
-  static  searchParagraphById(paragraphId: string, courseParts: ICoursePart[]): IParagraph {
+  static  searchParagraphById (paragraphId: string, courseParts: ICoursePart[]): IParagraph {
 
     let returnedParagraph: IParagraph = null;
 
@@ -219,7 +226,7 @@ export default class CourseService {
    * @param courseParts
    * @returns  the searched paragraph
    */
-  static searchParagraphByPath(paragraphNums: number[], courseParts: ICoursePart[]): IParagraph {
+  static searchParagraphByPath (paragraphNums: number[], courseParts: ICoursePart[]): IParagraph {
 
     let part = CourseService.searchPartByPath(paragraphNums.slice(0, -1), courseParts);
 
@@ -234,7 +241,7 @@ export default class CourseService {
    * @param courseParts
    * @returns  the searched paragraph
    */
-  static searchPartById(partId: string, courseParts: ICoursePart[]): ICoursePart {
+  static searchPartById (partId: string, courseParts: ICoursePart[]): ICoursePart {
 
     let returnedPart: ICoursePart = null;
 
@@ -263,7 +270,7 @@ export default class CourseService {
    * @param courseParts
    * @returns  the searched paragraph
    */
-  static searchPartByPath(partNums: number[], courseParts: ICoursePart[]): ICoursePart {
+  static searchPartByPath (partNums: number[], courseParts: ICoursePart[]): ICoursePart {
 
     let part = courseParts[partNums[0]];
     for (let i = 1; i < partNums.length; i++) {
@@ -282,10 +289,10 @@ export default class CourseService {
    * @param userChoice
    * @returns {UserCourse}
    */
-  static initOrFillUserCourse(userCourse: UserCourse, courseId: string, userId: string, paragraphId: string, userChoice: UserChoice) {
+  static initOrFillUserCourse (userCourse: UserCourse, courseId: string, userId: string, paragraphId: string, userChoice: UserChoice) {
     // Init user choice if needed
     if (userCourse == null) {
-      userCourse = new UserCourse({courseId: courseId, userId: userId});
+      userCourse = new UserCourse({ courseId: courseId, userId: userId });
     }
     if (userCourse.userChoices == null) {
       userCourse.userChoices = {};
@@ -309,7 +316,7 @@ export default class CourseService {
    * @param userCourse
    * @private
    */
-  static calcProgression(userCourse: UserCourse): Promise<UserCourse> {
+  static calcProgression (userCourse: UserCourse): Promise<UserCourse> {
 
     let courseId = userCourse.courseId;
 
@@ -350,7 +357,7 @@ export default class CourseService {
     });
   }
 
-  private static _calcProgressionOnParts(parts: ICoursePart[], userCourse: UserCourse): IUserPart {
+  private static _calcProgressionOnParts (parts: ICoursePart[], userCourse: UserCourse): IUserPart {
 
     let ret = new IUserPart();
     ret.countParagraph = 0;

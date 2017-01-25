@@ -126,11 +126,11 @@ export class CoursePageComponent implements OnInit {
 
           //this._logger.debug(course);
           // If no part... add an fake one
-          if (course.parts.length == 0) {
-            course.parts.push(new CoursePart({
-              title: "Not yet defined"
-            }));
-          }
+          // if (course.parts.length == 0) {
+          //   course.parts.push(new CoursePart({
+          //     title: "Not yet defined"
+          //   }));
+          // }
 
           this.course = course;
           //console.log(course);
@@ -162,19 +162,19 @@ export class CoursePageComponent implements OnInit {
           this.selectedPartIsLast = isLast;
 
           // Add an empty markdown paragraph if none
-          if (!selectedPart.contents || (selectedPart.contents.length == 0)) {
-            selectedPart.contents = [
-              new Paragraph({
-                type: ParagraphType.MarkDown,
-                content: ""
-              })
-            ];
-            // and save it
-            this._courseService.saveCoursePart(this.course.id, this.selectedPartNums, selectedPart)
-                .then(coursePart => {
-                  this.selectedPart = coursePart;
-                })
-          }
+          // if (!selectedPart.contents || (selectedPart.contents.length == 0)) {
+          //   selectedPart.contents = [
+          //     new Paragraph({
+          //       type: ParagraphType.MarkDown,
+          //       content: ""
+          //     })
+          //   ];
+          //   // and save it
+          //   this._courseService.saveCoursePart(this.course.id, this.selectedPartNums, selectedPart)
+          //       .then(coursePart => {
+          //         this.selectedPart = coursePart;
+          //       })
+          // }
 
           this._previousValue = this.selectedPart.title;
         })
