@@ -5,6 +5,7 @@ import UserService from "../service/userService";
 import { EditRightType } from "../service/userService";
 import { Stats } from "fs";
 import { unescape } from "querystring";
+import db from "../models/db";
 
 const UPLOAD_TMP = 'uploads/';
 const UPLOAD_FILES = 'files/';
@@ -63,7 +64,14 @@ filesApiRouter.route('/upload')
                         } else {
                           setTimeout(
                             () => {
-                              response.status(200).send("OK");
+                              // put it in Db
+                              db.saveFile(trgPath)
+                                .then(() => {
+                                  response.status(200).send("OK");
+                                })
+                                .catch((err) => {
+                                  response.status(500).send("System error " + err);
+                                });
                             },
                             0
                           )
@@ -129,7 +137,14 @@ filesApiRouter.route('/:course_id/*')
 
                   deleteRecursive(filePath)
                     .then(() => {
-                      response.json({ data: "" })
+                      // delete it in Db
+                      db.deleteFile(filePath)
+                        .then(() => {
+                          response.json({ data: "" })
+                        })
+                        .catch((err) => {
+                          response.status(500).send("System error " + err);
+                        });
                     })
                     .catch(err => {
                       response.status(500).send("System error " + err);
@@ -148,12 +163,12 @@ fileRouter.route('/:course_id/*')
           .get((request: Request, response: Response) => {
 
             const courseId = request.params['course_id'];
-            const path = unescape(request.path.substring(request.path.indexOf('/', 1)+1));
-            debug("GET /" + courseId + "/"+path);
+            const path = unescape(request.path.substring(request.path.indexOf('/', 1) + 1));
+            debug("GET /" + courseId + "/" + path);
 
             const basePath1 = _path.resolve(UPLOAD_FILES);
             const basePath2 = _path.resolve(UPLOAD_FILES, courseId);
-            const filePath = _path.resolve(UPLOAD_FILES, courseId+'/', path);
+            const filePath = _path.resolve(UPLOAD_FILES, courseId + '/', path);
 
 
             debug(basePath1);
@@ -161,14 +176,13 @@ fileRouter.route('/:course_id/*')
             debug(filePath);
 
             // test to avoid moving along
-            if (basePath2.startsWith(basePath1+'/') && filePath.startsWith(basePath2+'/')) {
-              debug("sending "+filePath);
+            if (basePath2.startsWith(basePath1 + '/') && filePath.startsWith(basePath2 + '/')) {
+              debug("sending " + filePath);
               response.sendFile(filePath);
             } else {
-              debug("error "+filePath);
+              debug("error " + filePath);
               response.status(404).json({ status: 500, message: "Not found." });
             }
-
 
 
           });
