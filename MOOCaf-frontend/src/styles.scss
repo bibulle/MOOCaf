@@ -54,6 +54,10 @@ button[md-icon-button] {
   margin-right: auto;
   display: block;
 }
+.md-overlay-pane {
+  max-height: 100%;
+  overflow: auto;
+}
 
 .class md-sidenav-layout md-sidenav, .class .toggleSchedule {
    background-color: md-color($md-primary, lighter);
@@ -130,6 +134,10 @@ not-found {
 
 .paragraph .editor textarea {
   min-height: 5em;
+}
+
+.paragraph .content img {
+  max-width: 100%;
 }
 
 .md-display-1 {
@@ -212,4 +220,8 @@ not-found {
   outline: none;
   border: none;
   text-decoration: none;
+}
+
+simple-notifications .simple-notification-wrapper {
+  width: auto;
 }

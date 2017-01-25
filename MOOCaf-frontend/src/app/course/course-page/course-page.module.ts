@@ -1,16 +1,12 @@
-import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { NgModule } from "@angular/core";
+import { CommonModule } from "@angular/common";
 import { FormsModule } from "@angular/forms";
-
-import { MdSidenavModule } from "@angular/material";
-import { MdIconModule } from "@angular/material";
-
-// import { FlexModule } from "../../widget/flex/flex.module";
+import { MdSidenavModule, MdIconModule } from "@angular/material";
 import { ScrollDetectorModule } from "../../widget/scroll-detector/scroll-detector.module";
-
-import { CoursePageComponent } from './course-page.component';
+import { CoursePageComponent } from "./course-page.component";
 import { ScheduleModule } from "./schedule/schedule.module";
 import { ParagraphModule } from "../../paragraph/paragraph.module";
+import { FileManagerModule } from "./file-manager/file-manager.component";
 
 @NgModule({
   imports: [
@@ -18,12 +14,19 @@ import { ParagraphModule } from "../../paragraph/paragraph.module";
     MdIconModule,
     MdSidenavModule,
     FormsModule,
-    // FlexModule,
     ScrollDetectorModule,
     ScheduleModule,
-    ParagraphModule
+    ParagraphModule,
+    FileManagerModule,
   ],
-  declarations: [CoursePageComponent],
-  exports: [CoursePageComponent]
+  declarations: [
+    CoursePageComponent
+  ],
+  entryComponents: [
+  ],
+  exports: [
+    CoursePageComponent
+  ]
 })
-export class CoursePageModule { }
+export class CoursePageModule {
+}
