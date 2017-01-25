@@ -60,8 +60,8 @@ export abstract class ParagraphAbstractComponent {
               return this._courseService.saveParagraph(this.courseId, this.paragraphNums, paragraph)
                          .then(paragraph => {
                            this._notificationService.message("All your modifications have been saved...");
-                           this.data = paragraph;
-                           this.prepareData();
+                           //this.data = paragraph;
+                           //this.prepareData();
                          })
                          .catch(error => {
                            this._logger.error(error);
@@ -113,7 +113,7 @@ export abstract class ParagraphAbstractComponent {
    * @private
    */
   protected _fillObj(trg: any, src: any) {
-    for (var k in src) {
+    for (let k in src) {
 
       if (src[k] instanceof Array) {
         if (!trg[k] || !(trg[k] instanceof Array)) {
