@@ -137,7 +137,7 @@ export class CoursePageComponent implements OnInit {
 
           // calculate the part to select (the first not finished)
           if (this.selectedPartNums == null) {
-            console.log("calculate the part to select");
+            //console.log("calculate the part to select");
             this.selectedPartNums = this._getFirstPartNotFinished(this.course.parts) || [0];
           }
 
