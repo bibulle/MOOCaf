@@ -1,5 +1,5 @@
 <div class="class md-content" flex="100" layout="column" layout-align="start stretch" *ngIf="course">
-  <md-sidenav-layout flex="100">
+  <md-sidenav-layout flex="100" layout="column">
 
     <md-sidenav #schedule (open)="scheduleButton.focus()" [opened]="true" mode="side" align="start">
       <class-schedule [course]="course" (notifySelectedPart)='onNotifySelectedPartNum($event)'

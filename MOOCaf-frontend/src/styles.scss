@@ -105,6 +105,11 @@ not-found {
   height: 100%;
 }
 
+course-page .md-sidenav-content {
+  display: flex;
+  flex: 1 1 100%;
+}
+
 .editor {
   display: none;
 }
