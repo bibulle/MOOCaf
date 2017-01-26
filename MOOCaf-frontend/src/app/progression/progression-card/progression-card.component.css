@@ -12,6 +12,7 @@
   flex: 1 1 100%;
   align-self: stretch;
   border: 1px solid #CCC;
+  display: flex;
 }
 .percent {
   flex: 0 0 10%;
@@ -21,20 +22,14 @@
 
 .stat1 {
   background-color: #555555;
-  /*width: 30%;*/
-  height: 100%;
-  float: left;
+  align-self: stretch;
 }
 .stat2 {
   background-color: #a8a8a8;
-  /*width: 20%;*/
-  height: 100%;
-  float: left;
+  align-self: stretch;
 }
 .stat3 {
   background-color: #543232;
-  /*width: 20%;*/
-  height: 100%;
-  float: left;
+  align-self: stretch;
 }
 
