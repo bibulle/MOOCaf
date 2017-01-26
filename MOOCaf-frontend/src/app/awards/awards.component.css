@@ -4,6 +4,7 @@ h2.next {
 
 .awards {
   position: relative;
+  overflow: auto;
 }
 
 .award-list {
