@@ -15,7 +15,7 @@ SAVE_PATH=saves/`date +%Y_%m_%d`
 
 mkdir ${SAVE_PATH} 2>/dev/null
 
-for col in awards courses usercourses users userstats
+for col in awards courses usercourses users userstats fs.chunks fs.files
 do
   ${MONGOEXPORT} --host ${HOST} --db MOOCer --collection ${col} --out ${SAVE_PATH}/${col}.json
 done
