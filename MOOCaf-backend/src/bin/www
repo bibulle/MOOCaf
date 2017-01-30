@@ -5,13 +5,15 @@
  */
 
 var app = require('../app').app;
-var debug = require('debug')('server:server');
+var debug = require('debug')('server:server:debug');
+var info = require('debug')('server:server:info');
+var error = require('debug')('server:server:error');
 var http = require('http');
 
-debug('Starting.....');
+info('Starting www.....');
 
 process.on('uncaughtException', (err) => {
-  console.log(`Caught exception: ${err}`);
+  error(`Caught exception: ${err}`);
 });
 
 /**
@@ -71,11 +73,11 @@ function onError(error) {
   // handle specific listen errors with friendly messages
   switch (error.code) {
     case 'EACCES':
-      console.error(bind + ' requires elevated privileges');
+      error(bind + ' requires elevated privileges');
       process.exit(1);
       break;
     case 'EADDRINUSE':
-      console.error(bind + ' is already in use');
+      error(bind + ' is already in use');
       process.exit(1);
       break;
     default:

@@ -1,18 +1,20 @@
 #!/usr/bin/env node
 
-var debug = require('debug')('server:batch');
+var debug = require('debug')('server:batch:debug');
+var info = require('debug')('server:batch:info');
+var error = require('debug')('server:batch:error');
 var CronJob = require('cron').CronJob;
 
 var OpenStackService = require("../service/openStackService").default;
 
 
-debug('Starting.....');
+info('Starting batch.....');
 
 
 //========================================================================
 var reBuildLinuxServer = function () {
 
-  debug("Rebuild Linux Server");
+  info("Rebuild Linux Server");
 
   OpenStackService
     .rebuildServerByName("MOOCer-Linux")
@@ -20,7 +22,7 @@ var reBuildLinuxServer = function () {
       debug("done");
     })
     .catch(err=> {
-      debug(err);
+      error(err);
     })
 
 };

@@ -1,5 +1,7 @@
 
-var debug = require('debug')('server:service:open-stack');
+var debug = require('debug')('server:service:open-stack:debug');
+var info = require('debug')('server:service:open-stack:info');
+var error = require('debug')('server:service:open-stack:error');
 
 export default class OpenStackService {
 
@@ -8,13 +10,42 @@ export default class OpenStackService {
   //noinspection TypeScriptUnresolvedVariable,TypeScriptValidateJSTypes
   static openStack = require('pkgcloud').compute.createClient({
     provider: 'openstack', // required
+    //useServiceCatalog: false,
+    //useInternal: false,
+    //domainName: 'Default',
+    //projectDomainName: 'Default',
     username: 'User_DevNet', // required
     password: 'D3vNet', // required
     region: 'regionOne',
     tenantName: 'Tenant_DevNet',
     authUrl: 'http://10.71.68.10:5000', // required
-    version: "v2.0"
+    //keystoneAuthVersion: 'v3',
+    //version: "v3",
+    //url: "http://10.71.68.10:8774/v2/4b3905ae3def440da48a4ceca7e29192"
   });
+
+  /*
+  BE CAREFUL, pkgcloud must be patch :
+    in serviceCatalog.js
+
+
+   var ServiceCatalog = function (catalog) {
+   var self = this;
+
+   self.services = {};
+
+   _.each(catalog, function (service) {
+   // Special hack for rackspace with two compute types
+   if (service.type === 'compute' && service.name === 'cloudServers') {
+   return;
+   }
+
+   if (!self.services[service.name])   <==== added line
+       self.services[service.name] = new Service(service);
+   });
+   };
+
+   */
 
 
 
@@ -25,6 +56,7 @@ export default class OpenStackService {
    * @returns {Promise<void>}
    */
   static rebuildServerByName(serverName: string): Promise<void> {
+    debug("rebuildServerByName "+serverName);
 
     return new Promise<void>((resolve, reject) => {
       // Get servers
@@ -32,6 +64,7 @@ export default class OpenStackService {
         .getServers()
         .then(servers => {
 
+          debug("  servers found "+servers);
           var serverMOOC;
 
           servers.forEach(server => {
