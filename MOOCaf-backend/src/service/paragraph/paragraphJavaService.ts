@@ -1,17 +1,19 @@
 import Paragraph = require("../../models/paragraph");
 import { ParagraphType } from "../../models/eParagraphType";
 import { IParagraph } from "../../models/iParagraph";
+import IUserChoices = require("../../models/iUserChoices");
 import { IParagraphService } from "./iParagraphService";
+import User = require("../../models/user");
+import result = require("lodash/result");
 import { Job, JobStatus } from "../../models/job";
 import JobService from "../jobService";
+import reject = require("lodash/reject");
 import SshUtil from "../ssh/sshUtil";
-import IUserChoices = require("../../models/iUserChoices");
-import User = require("../../models/user");
 
 
-const debug = require('debug')('server:service:paragraph-telnet:debug');
+const debug = require('debug')('server:service:paragraph-java:debug');
 
-export default class ParagraphTelnetService implements IParagraphService {
+export default class ParagraphJavaService implements IParagraphService {
 
 
   /**
@@ -22,10 +24,17 @@ export default class ParagraphTelnetService implements IParagraphService {
 
 
     return new IParagraph({
-      type: ParagraphType.Telnet,
+      type: ParagraphType.Java,
       content: {
-        before: "echo 'do something before'",
-        after: "echo 'do something after'",
+        codeBefore: `class Toto {
+  public static void main(String [] args) {
+    `,
+        codeAfter: `}`,
+        actionBefore: "cd\n rm -fr test1\n mkdir test1\n cd test1",
+        codeFileName: "toto.java",
+        compileCommand: "javac toto.java",
+        execCommand: "java -cp . Toto",
+        actionAfter: "cd\n rm -fr test1",
         label: 'This is the title of the question',
         question: 'What do you think ?\n\nSecond line',
         size: 20
@@ -121,18 +130,41 @@ export default class ParagraphTelnetService implements IParagraphService {
 
     debug('testUserChoice');
 
-    const before = `${paragraph.content['before']}`;
-    const after = `${paragraph.content['after']}`;
-    const commandsBefore = `${before}`.split('\n');
-    const commands = (userChoice.userChoice || "").split('\n');
-    const commandsAfter = `${after}`.split('\n');
+    // Get all paragraph values
+    const actionBefore = `${paragraph.content['actionBefore']}`;
+    const actionAfter = `${paragraph.content['actionAfter']}`;
+
+    const codeBefore = `${paragraph.content['codeBefore']}`;
+    const codeAfter = `${paragraph.content['codeAfter']}`;
+    const codeFileName = `${paragraph.content['codeFileName']}`;
+
+    const compileCommand = `${paragraph.content['compileCommand']}`;
+    const execCommand = `${paragraph.content['execCommand']}`;
+
+    // Construct the code and the command to put it in a java file
+    const fullCode = `
+${codeBefore}
+${userChoice.userChoice || ""}
+${codeAfter}`;
+    const codeScript = `echo '${fullCode.replace(/'/g, "'\"'\"'")}' > ${codeFileName}`;
 
 
+    // Scripts to exec
+    const commandsBefore = []
+      .concat(actionBefore.split('\n'))
+      .concat(codeScript);
+
+    const commands = []
+      .concat(compileCommand.split('\n'))
+      .concat(execCommand.split('\n'));
+
+    const commandsAfter = []
+      .concat(actionAfter.split('\n'));
 
 
     return SshUtil.launch(commandsBefore, commands, commandsAfter, userId, userChoice);
 
-   }
+  }
+
 
 }
-

@@ -1,7 +1,7 @@
 import { NgModule } from "@angular/core";
 import { CommonModule } from "@angular/common";
 import { FormsModule } from "@angular/forms";
-import { MdSidenavModule, MdIconModule } from "@angular/material";
+import { MdSidenavModule, MdIconModule, MdTooltipModule, MdButtonModule } from "@angular/material";
 import { ScrollDetectorModule } from "../../widget/scroll-detector/scroll-detector.module";
 import { CoursePageComponent } from "./course-page.component";
 import { ScheduleModule } from "./schedule/schedule.module";
@@ -12,7 +12,9 @@ import { FileManagerModule } from "./file-manager/file-manager.component";
   imports: [
     CommonModule,
     MdIconModule,
+    MdButtonModule,
     MdSidenavModule,
+    MdTooltipModule,
     FormsModule,
     ScrollDetectorModule,
     ScheduleModule,

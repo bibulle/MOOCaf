@@ -2,7 +2,9 @@ import { Router, Response, Request } from "express";
 import * as jwt from "express-jwt";
 import * as _ from "lodash";
 import { secret } from "../config";
-const debug = require('debug')('server:routes:course');
+const debug = require('debug')('server:routes:course:debug');
+const info = require('debug')('server:routes:course:info');
+const error = require('debug')('server:routes:course:error');
 import Course from "../models/course";
 import User = require("../models/user");
 import UserChoice = require("../models/userChoice");
@@ -811,7 +813,7 @@ courseRouter.route('/:course_id/:paragraph_id/userChoice/check')
                                   // Subscribe to jobRouter change
                                   JobService.subscribeJob(job.id, (j) => {
 
-                                    debug(j);
+                                    //debug(j);
 
                                     userCourse.userChoices[paragraphId] = j.result;
 
