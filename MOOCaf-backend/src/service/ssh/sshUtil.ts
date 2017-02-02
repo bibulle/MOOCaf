@@ -260,7 +260,7 @@ export class TelnetResultBuilder {
    * @param data
    * @param addSeparator (in case of real error, if no separator already, add one)
    */
-  addStdErr (data: string, addSeparator = false) {
+  addStdErr (data: string, addSeparator?) {
     if (addSeparator && !this._result.match(this._separatorInRe)) {
       this._addResult(`IN${this._separator}\r\n`, "err")
     }
@@ -315,7 +315,7 @@ export class TelnetResultBuilder {
    * @param noSplit (do we need to split)
    * @private
    */
-  private _addResult (data: string, type: string, noSplit = false): void {
+  private _addResult (data: string, type: string, noSplit?): void {
     if (this._result.length > 1024 * 1024) {
       return;
     }
