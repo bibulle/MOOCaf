@@ -813,7 +813,7 @@ courseRouter.route('/:course_id/:paragraph_id/userChoice/check')
                                   // Subscribe to jobRouter change
                                   JobService.subscribeJob(job.id, (j) => {
 
-                                    debug(j);
+                                    //debug(j);
 
                                     userCourse.userChoices[paragraphId] = j.result;
 
