@@ -1,29 +1,32 @@
 <div class="paragraph-buttons" *ngIf="edited"  [class.add-paragraph-clicked]="addParagraphClicked">
-  <button md-icon-button (click)="moveUp()" class="md-primary" *ngIf="(paragraphNum != 0)" title="Move up">
+  <button md-icon-button (click)="moveUp()" class="md-primary" *ngIf="(paragraphNum != 0)" md-tooltip="Move up">
     <md-icon>arrow_upward</md-icon>
   </button>
-  <button md-icon-button (click)="moveDown()" class="md-primary" *ngIf="paragraphCount-1 != paragraphNum" title="Move down">
+  <button md-icon-button (click)="moveDown()" class="md-primary" *ngIf="paragraphCount-1 != paragraphNum" md-tooltip="Move down" tooltip-position="before">
     <md-icon>arrow_downward</md-icon>
   </button>
-  <button md-icon-button (click)="addParagraphSibling()" class="md-primary" title="Add a sibling paragraph">
+  <button md-icon-button (click)="addParagraphSibling()" class="md-primary" md-tooltip="Add a sibling paragraph">
     <md-icon>note_add</md-icon>
   </button>
-  <button md-icon-button (click)="addParagraphSibling('markdown')" class="md-primary add-paragraph-type markdown" title="Add a text paragraph">
+  <button md-icon-button (click)="addParagraphSibling('markdown')" class="md-primary add-paragraph-type markdown" md-tooltip="Add a text paragraph" tooltip-position="before">
     <md-icon>subject</md-icon>
   </button>
-  <button md-icon-button (click)="addParagraphSibling('question-check')" class="md-primary add-paragraph-type question-check" title="Add a question checkbox paragraph">
+  <button md-icon-button (click)="addParagraphSibling('question-check')" class="md-primary add-paragraph-type question-check" md-tooltip="Add a question checkbox paragraph" tooltip-position="before">
     <md-icon>check_box</md-icon>
   </button>
-  <button md-icon-button (click)="addParagraphSibling('question-radio')" class="md-primary add-paragraph-type question-radio" title="Add a question radio paragraph">
+  <button md-icon-button (click)="addParagraphSibling('question-radio')" class="md-primary add-paragraph-type question-radio" md-tooltip="Add a question radio paragraph" tooltip-position="before">
     <md-icon>radio_button_checked</md-icon>
   </button>
-  <button md-icon-button (click)="addParagraphSibling('question-text')" class="md-primary add-paragraph-type question-text" title="Add a question text paragraph">
+  <button md-icon-button (click)="addParagraphSibling('question-text')" class="md-primary add-paragraph-type question-text" md-tooltip="Add a question text paragraph" tooltip-position="before">
     <md-icon>short_text</md-icon>
   </button>
-  <button md-icon-button (click)="addParagraphSibling('telnet')" class="md-primary add-paragraph-type telnet" title="Add a telnet paragraph">
+  <button md-icon-button (click)="addParagraphSibling('telnet')" class="md-primary add-paragraph-type telnet" md-tooltip="Add a telnet paragraph" tooltip-position="before">
     <md-icon>computer</md-icon>
   </button>
-  <button md-icon-button (click)="deleteParagraph()" class="md-primary" [class.md-warn]="deleteParagraphClicked" title="Delete paragraph">
+  <button md-icon-button (click)="addParagraphSibling('java')" class="md-primary add-paragraph-type java" md-tooltip="Add a java paragraph" tooltip-position="before">
+    <md-icon>local_cafe</md-icon>
+  </button>
+  <button md-icon-button (click)="deleteParagraph()" class="md-primary" [class.md-warn]="deleteParagraphClicked" md-tooltip="Delete paragraph" tooltip-position="before">
     <md-icon class="delete">delete</md-icon>
     <md-icon class="warning">announcement</md-icon>
   </button>
@@ -31,3 +34,4 @@
 <paragraph-markdown *ngIf="(data.type == ParagraphType.MarkDown)" [data]="data" [courseId]="courseId" [paragraphNums]="paragraphNums"></paragraph-markdown>
 <paragraph-form     *ngIf="(data.type == ParagraphType.Form)"     [data]="data" [courseId]="courseId" [paragraphNums]="paragraphNums"></paragraph-form>
 <paragraph-telnet   *ngIf="(data.type == ParagraphType.Telnet)"   [data]="data" [courseId]="courseId" [paragraphNums]="paragraphNums"></paragraph-telnet>
+<paragraph-java     *ngIf="(data.type == ParagraphType.Java)"     [data]="data" [courseId]="courseId" [paragraphNums]="paragraphNums"></paragraph-java>

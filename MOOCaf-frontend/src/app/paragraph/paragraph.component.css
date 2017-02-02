@@ -83,6 +83,7 @@
 
 .paragraph-buttons .material-icons {
   font-size: 18px;
+  line-height: 18px;
 }
 
 .paragraph-buttons md-icon {
@@ -119,5 +120,8 @@
 }
 .paragraph-buttons .add-paragraph-type.telnet{
   right: 134px;
+}
+.paragraph-buttons .add-paragraph-type.java{
+  right: 159px;
 }
 

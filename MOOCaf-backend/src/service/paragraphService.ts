@@ -10,8 +10,9 @@ import ParagraphFormService from "./paragraph/paragraphFormService";
 import ParagraphTelnetService from "./paragraph/paragraphTelnetService";
 import ParagraphMarkdownService from "./paragraph/paragraphMarkdownService";
 import { Job } from "../models/job";
+import ParagraphJavaService from "./paragraph/paragraphJavaService";
 
-var debug = require('debug')('server:service:paragraph');
+const debug = require('debug')('server:service:paragraph:debug');
 
 export default class ParagraphService {
 
@@ -39,7 +40,7 @@ export default class ParagraphService {
     //debug({"checkUserChoice": paragraph});
 
     return new Promise<Job>((resolve) => {
-      var ret = ParagraphService._checkIfOpenAndRespondOrAction(paragraph, userChoice, response);
+      const ret = ParagraphService._checkIfOpenAndRespondOrAction(paragraph, userChoice, response);
 
       // Not open, already respond... do nothing else
       if (!ret) {
@@ -70,7 +71,7 @@ export default class ParagraphService {
     //debug("checkUserChoice");
 
     return new Promise<Job>((resolve, reject) => {
-      var ret = ParagraphService._checkIfOpenAndRespondOrAction(paragraph, userChoice, response);
+      const ret = ParagraphService._checkIfOpenAndRespondOrAction(paragraph, userChoice, response);
       // Not open, already respond... do nothing else
       if (!ret) {
         resolve(null)
@@ -125,6 +126,9 @@ export default class ParagraphService {
 
       case ParagraphType.Telnet:
         return new ParagraphTelnetService();
+
+      case ParagraphType.Java:
+        return new ParagraphJavaService();
 
       case ParagraphType.MarkDown:
       default:
