@@ -232,6 +232,11 @@ courseRouter.route('/:course_id/para/:paragraphNums')
               const paragraph = new IParagraph(request.body);
               //debug(paragraph);
 
+              // Sort the answer to be sure it could be compared to user choice
+              if (paragraph.answer instanceof Array) {
+                paragraph.answer = paragraph.answer.sort();
+              }
+
               UserService.checkUserRightAndRespond(userId, EditRightType.EditCourse, courseId, response, () => {
 
                 // Search the userValues
@@ -724,7 +729,12 @@ courseRouter.route('/:course_id/:paragraph_id/userChoice')
               //debug(request.body);
 
               const userChoice = new UserChoice(request.body);
-              //debug(userChoice);
+              // debug(userChoice);
+
+              // Sort the user choice to be sure it could be compared to answer
+              if (userChoice.userChoice instanceof Array) {
+                userChoice.userChoice = userChoice.userChoice.sort();
+              }
 
               // Search the userValues
               UserCourse.findByUserIdCourseId(userId, courseId)

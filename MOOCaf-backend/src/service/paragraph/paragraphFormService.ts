@@ -7,7 +7,7 @@ import { IParagraphService } from "./iParagraphService";
 import { Job, JobStatus } from "../../models/job";
 import JobService from "../jobService";
 
-var debug = require('debug')('server:service:paragraph-form');
+const debug = require('debug')('server:service:paragraph-form:debug');
 
 export default class ParagraphFormService implements IParagraphService {
 
